@@ -1,0 +1,1037 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Mastercom ESS",
+    "version": "1.0.11"
+  },
+  "servers": [
+    {
+      "url": "http://localhost/mcts_extranet-api"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Users",
+      "description": "Everything about Users",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "http://swagger.io"
+      }
+    },
+    {
+      "name": "Employees",
+      "description": "Everything about Employees",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "http://swagger.io"
+      }
+    },
+    {
+      "name": "Timesheets",
+      "description": "Everything about Timesheets",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "http://swagger.io"
+      }
+    },
+    {
+      "name": "Projects",
+      "description": "Everything about Projects",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "http://swagger.io"
+      }
+    },
+    {
+      "name": "Holidays",
+      "description": "Everything about Holidays",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "http://swagger.io"
+      }
+    },
+    {
+      "name": "Locations",
+      "description": "Everything about Locations",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "http://swagger.io"
+      }
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization"
+      }
+    }
+  },
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
+  "paths": {
+    "/user/login": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Login for User",
+        "description": "For user Login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Order"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/probationconfirm": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Probation Confirmation for Employee",
+        "description": "For Probation confirmation",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Order"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/relieveemployee": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Relieving for Employee",
+        "description": "For Relieving",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Order"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/employees/create": {
+      "post": {
+        "tags": [
+          "Employees"
+        ],
+        "summary": "Create a Employee",
+        "description": "For creating Employee",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": ""
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Emplyee created Successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/employees/update/{EmpID}": {
+      "put": {
+        "tags": [
+          "Employees"
+        ],
+        "summary": "Update a Employee",
+        "operationId": "getEmpByID",
+        "parameters": [
+          {
+            "name": "EmpID",
+            "in": "path",
+            "description": "ID of Employee",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": ""
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Employee Updated Successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/employees/view/{EmpID}": {
+      "get": {
+        "tags": [
+          "Employees"
+        ],
+        "summary": "View an Employee Details By Employee ID",
+        "parameters": [
+          {
+            "name": "EmpID",
+            "in": "path",
+            "description": "ID of Employee",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Employee Updated Successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/employees": {
+      "get": {
+        "tags": [
+          "Employees"
+        ],
+        "summary": "List of all Employees",
+        "parameters": [
+          {
+            "name": "EmployeeID",
+            "in": "query",
+            "description": "ID of Employee",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "Email",
+            "in": "query",
+            "description": "Email of Employee",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Showing List of Employees",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/timesheet/add": {
+      "post": {
+        "tags": [
+          "Timesheets"
+        ],
+        "summary": "Timesheet Entrty",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": ""
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Timesheets added!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/timesheet/update/{TsID}": {
+      "put": {
+        "tags": [
+          "Timesheets"
+        ],
+        "summary": "Timesheet Update",
+        "parameters": [
+          {
+            "name": "TsID",
+            "in": "path",
+            "description": "ID of Timesheet",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": ""
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Timesheets updated successfully!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/timesheet/approve/{TsID}/{status}": {
+      "put": {
+        "tags": [
+          "Timesheets"
+        ],
+        "summary": "Approval of Timesheet",
+        "parameters": [
+          {
+            "name": "TsID",
+            "in": "path",
+            "description": "ID of Timesheet",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "status",
+            "in": "path",
+            "description": "ID of Timesheet",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Timesheets Approved successfully!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/timesheet/reject/{TsID}/{status}": {
+      "put": {
+        "tags": [
+          "Timesheets"
+        ],
+        "summary": "Rejection of Timesheet",
+        "parameters": [
+          {
+            "name": "TsID",
+            "in": "path",
+            "description": "ID of Timesheet",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "status",
+            "in": "path",
+            "description": "ID of Timesheet",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "default": 2
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Timesheets Rejected successfully!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/timesheet/delete/{TsID}": {
+      "delete": {
+        "tags": [
+          "Timesheets"
+        ],
+        "summary": "Deletion of Timesheet",
+        "parameters": [
+          {
+            "name": "TsID",
+            "in": "path",
+            "description": "ID of Timesheet",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Timesheets Deleted successfully!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/timesheet": {
+      "get": {
+        "tags": [
+          "Timesheets"
+        ],
+        "summary": "List Timesheets",
+        "parameters": [
+          {
+            "name": "TSDate",
+            "in": "query",
+            "description": "Filter Date",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "Start",
+            "in": "query",
+            "description": "Start Time",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "time"
+            }
+          },
+          {
+            "name": "Finish",
+            "in": "query",
+            "description": "Finish Time",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "time"
+            }
+          },
+          {
+            "name": "Location",
+            "in": "query",
+            "description": "Select Location",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ProjectId",
+            "in": "query",
+            "description": "Select Project",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "FromDate",
+            "in": "query",
+            "description": "Select From Date",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "ToDate",
+            "in": "query",
+            "description": "Select To Date",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of Timesheets",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/projects/create": {
+      "post": {
+        "tags": [
+          "Projects"
+        ],
+        "summary": "Create a Project",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": ""
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Project Created Successfully!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/projects/update/{ProjectID}": {
+      "put": {
+        "tags": [
+          "Projects"
+        ],
+        "summary": "Update a Project by Project ID",
+        "parameters": [
+          {
+            "name": "ProjectID",
+            "in": "path",
+            "description": "Project ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": ""
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Project Updated Successfully!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/projects/assign": {
+      "post": {
+        "tags": [
+          "Projects"
+        ],
+        "summary": "Assign a Project to Employee",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": ""
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Project Assigned Successfully!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/holidays/create": {
+      "post": {
+        "tags": [
+          "Holidays"
+        ],
+        "summary": "Creating Holiday",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": ""
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Holiday Created Successfully!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/holidays/update/{HolidayID}": {
+      "put": {
+        "tags": [
+          "Holidays"
+        ],
+        "summary": "Update a Holiday by Holiday ID",
+        "parameters": [
+          {
+            "name": "HolidayID",
+            "in": "path",
+            "description": "Holiday ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": ""
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Holiday Updated Successfully!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/holidays/delete/{HolidayID}": {
+      "delete": {
+        "tags": [
+          "Holidays"
+        ],
+        "summary": "Delete a Holiday by Holiday ID",
+        "parameters": [
+          {
+            "name": "HolidayID",
+            "in": "path",
+            "description": "Holiday ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Holiday Deleted Successfully!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/holidays": {
+      "get": {
+        "tags": [
+          "Holidays"
+        ],
+        "summary": "List of Holidays",
+        "parameters": [
+          {
+            "name": "HolidayDt",
+            "in": "query",
+            "description": "Filter Date",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "HolidayDesc",
+            "in": "query",
+            "description": "Holiday Description",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Location",
+            "in": "query",
+            "description": "Finish Time",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of Holidays!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/locations/create": {
+      "post": {
+        "tags": [
+          "Locations"
+        ],
+        "summary": "Creating a Location",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": ""
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Location Created successfully!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/locations/update/{LocationID}": {
+      "put": {
+        "tags": [
+          "Locations"
+        ],
+        "summary": "Updating Location by ID",
+        "parameters": [
+          {
+            "name": "LocationID",
+            "in": "path",
+            "required": true,
+            "description": "ID of Location",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": ""
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Location Updated Successfully!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/locations/delete/{LocationID}": {
+      "delete": {
+        "tags": [
+          "Locations"
+        ],
+        "summary": "Delete a Location by Location ID",
+        "parameters": [
+          {
+            "name": "LocationID",
+            "in": "path",
+            "description": "Location ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Location Deleted Successfully!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    }
+  }
+}

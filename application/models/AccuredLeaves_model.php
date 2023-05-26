@@ -733,7 +733,7 @@ class AccuredLeaves_model extends CI_Model {
                     else
                     {
                         $this->db->query("UPDATE mcts_extranet.`dbo.accuredleaves` as t1,
-                                        (select accuredleaves,LOP from mcts_extranet.`dbo.accuredleaves` where EmployeeID=$emps->EmployeeID) as t2
+                                        (select accuredleaves,LOP,LeaveBalance from mcts_extranet.`dbo.accuredleaves` where EmployeeID=$emps->EmployeeID) as t2
                                         set t1.accuredleaves = t2.accuredleaves+$advanceleaves,t1.LOP=t2.LOP+0,
                                         t1.LeaveBalance = t2.LeaveBalance+$advanceleaves
                                         where t1.EmployeeID=$emps->EmployeeID");

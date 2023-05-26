@@ -28,21 +28,14 @@ class Timesheet extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                
+                $_POST = json_decode(file_get_contents("php://input"), true);
+
                 $this->form_validation->set_rules('TSDate', 'Time Sheet Date', 'trim|required');
                 $this->form_validation->set_rules('Start', 'Start Time', 'trim|required|numeric|max_length[4]');
                 $this->form_validation->set_rules('Finish', 'Finish Time', 'trim|required|numeric|max_length[4]');
                 $this->form_validation->set_rules('Activity', 'Activity', 'trim|required');
                 $this->form_validation->set_rules('ProjectId', 'Project ID', 'trim|required|numeric|max_length[3]');
 
-                // checking date format
-                if (!preg_match("/^(0[1-9]|[1-2][0-9]|3[0-1])-(0[1-9]|1[0-2])-[0-9]{4}$/",$this->input->post('TSDate'))) {
-                    $message = array('message' => 'Timesheet Date format is invalid, please give date format as DD-MM-YYYY');
-                    $message['status'] = false;
-                    $this->response($message,REST_Controller::HTTP_BAD_REQUEST);
-                    return false;
-                } 
-                
                 if ($this->form_validation->run() === false) {
                     $errors = $this->form_validation->error_array();
                     $errors['status'] = false;
@@ -50,6 +43,14 @@ class Timesheet extends REST_Controller
                     return false;
                 }
                 
+                // checking date format
+                if (!preg_match("/^(0[1-9]|[1-2][0-9]|3[0-1])-(0[1-9]|1[0-2])-[0-9]{4}$/",$this->input->post('TSDate'))) {
+                    $message = array('message' => 'Timesheet Date format is invalid, please give date format as DD-MM-YYYY');
+                    $message['status'] = false;
+                    $this->response($message,REST_Controller::HTTP_BAD_REQUEST);
+                    return false;
+                }
+
                 $now = time(); // or your date as well
                 $your_date = strtotime($this->input->post("TSDate"));
                 $datediff = $now - $your_date;
@@ -219,6 +220,8 @@ class Timesheet extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
+                
+                $_POST = json_decode(file_get_contents("php://input"), true);
                 
                 $this->form_validation->set_data($this->put());
                 $this->form_validation->set_rules('TSDate', 'Time Sheet Date', 'trim|required');

@@ -28,6 +28,8 @@ class Projects extends REST_Controller
             {
                 if($this->session->userdata('Role')=='User')
                 {
+                    $_POST = json_decode(file_get_contents("php://input"), true);
+
                     $this->form_validation->set_rules('ProjectName', 'Project Name', 'trim|required|max_length[50]');
                     $this->form_validation->set_rules('VendorID', 'Vendor ID', 'trim|required|max_length[50]');
                     $this->form_validation->set_rules('EndClient', 'End Client', 'trim|required|max_length[255]');
@@ -95,6 +97,8 @@ class Projects extends REST_Controller
             {
                 if($this->session->userdata('Role')=='User')
                 {
+                    $_POST = json_decode(file_get_contents("php://input"), true);
+
                     $this->form_validation->set_rules('EmployeeID', 'Employee', 'trim|required|numeric');
                     $this->form_validation->set_rules('ProjectID', 'Project', 'trim|required|numeric');
                     $this->form_validation->set_rules('AssignedDt', 'Assigned Date', 'trim|required');
@@ -189,6 +193,8 @@ class Projects extends REST_Controller
             {
                 if($this->session->userdata('Role')=='User')
                 {
+                    $_POST = json_decode(file_get_contents("php://input"), true);
+                    
                     $this->form_validation->set_data($this->put());
                     $this->form_validation->set_rules('ProjectName', 'Project Name', 'trim|required|max_length[50]');
                     $this->form_validation->set_rules('VendorID', 'Vendor ID', 'trim|required|max_length[50]');

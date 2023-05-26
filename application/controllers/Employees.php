@@ -71,7 +71,8 @@ class Employees extends REST_Controller
             {
                 if($this->session->userdata('Role')=='User')
                 {
-                    
+                    $_POST = json_decode(file_get_contents("php://input"), true);
+
                     $this->form_validation->set_rules('FirstName', 'Firstname', 'trim|required|alpha_numeric|max_length[50]');
                     $this->form_validation->set_rules('LastName', 'Lastname', 'trim|required|alpha_numeric|max_length[50]');
                     $this->form_validation->set_rules('EmailName', 'Email', 'trim|required|max_length[50]');
@@ -298,6 +299,8 @@ class Employees extends REST_Controller
             {
                 if($this->session->userdata('Role')=='User'){
                     
+                    $_POST = json_decode(file_get_contents("php://input"), true);
+
                     $this->form_validation->set_data($this->put());
                     $this->form_validation->set_rules('FirstName', 'First Name', 'trim|required|alpha_numeric|max_length[50]');
                     $this->form_validation->set_rules('LastName', 'Last Name', 'trim|required|alpha_numeric|max_length[50]');
