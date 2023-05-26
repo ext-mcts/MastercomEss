@@ -27,6 +27,8 @@ class Locations extends REST_Controller
             {
                 if($this->session->userdata('Role')=='User')
                 {
+                    $_POST = json_decode(file_get_contents("php://input"), true);
+
                     $this->form_validation->set_rules('LocationName', 'Location Name', 'trim|required|max_length[21]');
                     $this->form_validation->set_rules('ParentLocationID', 'Parent Location Name', 'trim|required|numeric');
 
@@ -104,6 +106,8 @@ class Locations extends REST_Controller
             {
                 if($this->session->userdata('Role')=='User')
                 {
+                    $_POST = json_decode(file_get_contents("php://input"), true);
+                    
                     $this->form_validation->set_data($this->put());
                     $this->form_validation->set_rules('LocationName', 'Location Name', 'trim|required|max_length[21]');
                     $this->form_validation->set_rules('ParentLocationID', 'Parent Location Name', 'trim|required|numeric');

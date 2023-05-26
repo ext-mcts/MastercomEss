@@ -274,8 +274,13 @@ class User_model extends CI_Model {
 
 		$query=$this->db->query($sql);
 
-		$this->accuredleaves_model->CheckLeavesOnReleavingDate($data);
+		$reducedleaves = $this->accuredleaves_model->CheckLeavesOnReleavingDate($data);
 
+		$this->db->query("UPDATE mcts_extranet.`dbo.accuredleaves` as t1,
+                                        (select accuredleaves,LeaveBalance from mcts_extranet.`dbo.accuredleaves` where EmployeeID='".$data['EmployeeID']."') as t2
+                                        set t1.accuredleaves = t2.accuredleaves-$reducedleaves,
+                                        t1.LeaveBalance = t2.LeaveBalance-$reducedleaves
+                                        where t1.EmployeeID='".$data['EmployeeID']."'");
 		if($query==1)
 			return true;
 		else

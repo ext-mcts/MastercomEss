@@ -34,8 +34,8 @@ class Locations_model extends CI_Model {
     /* function - Creating Location */
     public function create_location($data)
     {
-        $sql = "INSERT INTO `mcts_extranet`.`dbo.locations` (LocationName) 
-                VALUES ('".$data['LocationName']."')";
+        $sql = "INSERT INTO `mcts_extranet`.`dbo.locations` (LocationName,ParentLocationID) 
+                VALUES ('".$data['LocationName']."','".$data['ParentLocationID']."')";
 
         $query=$this->db->query($sql);
         if($query)
@@ -48,7 +48,7 @@ class Locations_model extends CI_Model {
     public function update_location($data,$locationid)
     {
         $sql = "UPDATE `mcts_extranet`.`dbo.locations` SET 
-                LocationName='".$data['LocationName']."'
+                LocationName='".$data['LocationName']."',ParentLocationID='".$data['ParentLocationID']."'
                 WHERE LocationID='$locationid'";
 
         $query=$this->db->query($sql);

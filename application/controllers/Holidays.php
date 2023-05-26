@@ -27,6 +27,8 @@ class Holidays extends REST_Controller
             {
                 if($this->session->userdata('Role')=='User')
                 {
+                    $_POST = json_decode(file_get_contents("php://input"), true);
+
                     $this->form_validation->set_rules('HolidayDate', 'Holiday Date', 'trim|required');
                     $this->form_validation->set_rules('HolidayDesc', 'Holiday Description', 'trim|required|max_length[39]');
                     $this->form_validation->set_rules('Location', 'Location', 'trim|required|numeric');
@@ -41,7 +43,7 @@ class Holidays extends REST_Controller
 
                     // Checking date format
                     if (!preg_match("/^(0[1-9]|[1-2][0-9]|3[0-1])-(0[1-9]|1[0-2])-[0-9]{4}$/",$this->input->post('HolidayDate'))) {
-                        $message = array('message' => 'Timesheet Date format is invalid, please give date format as DD-MM-YYYY');
+                        $message = array('message' => 'Holiday Date format is invalid, please give date format as DD-MM-YYYY');
                         $message['status'] = false;
                         $this->response($message,REST_Controller::HTTP_BAD_REQUEST);
                         return false;
@@ -124,6 +126,8 @@ class Holidays extends REST_Controller
             {
                 if($this->session->userdata('Role')=='User')
                 {
+                    $_POST = json_decode(file_get_contents("php://input"), true);
+                    
                     $this->form_validation->set_data($this->put());
                     $this->form_validation->set_rules('HolidayDate', 'Holiday Date', 'trim|required');
                     $this->form_validation->set_rules('HolidayDesc', 'Holiday Description', 'trim|required|max_length[39]');

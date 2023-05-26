@@ -83,6 +83,8 @@ class User extends REST_Controller {
 	 */
 	public function login_post() {
 		
+		$_POST = json_decode(file_get_contents("php://input"), true);
+
 		// set validation rules
 		$this->form_validation->set_rules('username', 'Username', 'trim|required|max_length[50]');
 		$this->form_validation->set_rules('password', 'Password', 'trim|required|max_length[50]');
@@ -163,6 +165,8 @@ class User extends REST_Controller {
 	/* probation confirmation API */
 	public function probationconfirm_post()
 	{
+		$_POST = json_decode(file_get_contents("php://input"), true);
+		
 		$this->form_validation->set_rules('EmployeeID', 'EmployeeID', 'trim|required|numeric');
 		$this->form_validation->set_rules('probationdate', 'Probation Date', 'trim');
 
@@ -181,7 +185,7 @@ class User extends REST_Controller {
 
 		if($data)
 		{
-			$message = array('message' => 'Leaves calculated successfully.');
+			$message = array('message' => 'Probation Confirmed successfully.');
 			$message['status'] = true;
 			$this->response($message, REST_Controller::HTTP_CREATED);
 		}
@@ -201,6 +205,9 @@ class User extends REST_Controller {
 	/* updating leaves at the time of employee relieving */
 	public function relieveemployee_post()
 	{
+
+		$_POST = json_decode(file_get_contents("php://input"), true);
+
 		$this->form_validation->set_rules('relievingdate', 'Relieving Date', 'trim');
 		$this->form_validation->set_rules('EmployeeID', 'EmployeeID', 'trim|required|numeric');
 
