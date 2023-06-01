@@ -10,6 +10,7 @@ class AccuredLeaves_model extends CI_Model {
         $this->load->model("user_model");
         $this->load->model("leaves_model");
         $this->load->model("timesheet_model");
+        $this->load->model("holidays_model");
 	}
 
     public function add_accuredleaves($data)
@@ -1025,11 +1026,13 @@ class AccuredLeaves_model extends CI_Model {
             $get_emps = $this->user_model->GetProbationCompletionEmps();
         }
 
-        //foreach($get_emps as $emps)
-        //{
-            $approvedleavesformonth = $this->leaves_model->getLeavesByEmpID(164,1,$data['month']);
-            $unapprovedleavesformonth = $this->leaves_model->getLeavesByEmpID(164,0,$data['month']);
-            $timesheet = $this->timesheet_model->get_timesheet_by_empid($data['month'],164);
+        $getholidaysformonth = $this->holidays_model->get_holidays_by_location($data['month'],$data['year'],1);
+        
+        foreach($get_emps as $emps)
+        {
+            $approvedleavesformonth = $this->leaves_model->getLeavesByEmpID($emps->EmployeeID,1,$data['month']);
+            $unapprovedleavesformonth = $this->leaves_model->getLeavesByEmpID($emps->EmployeeID,0,$data['month']);
+            $timesheetfilleddays = $this->timesheet_model->get_timesheet_by_empid($data['month'],$emps->EmployeeID);
         
             $firstday = 1;
 
@@ -1037,7 +1040,7 @@ class AccuredLeaves_model extends CI_Model {
 
             $lastday = date('t',strtotime($data['month']));
 
-            foreach($timesheet as $tsdays)
+            foreach($timesheetfilleddays as $tsdays)
             {
                 $availabledates[] = date('Y-m-d',strtotime($tsdays->TSDate));
             }
@@ -1051,52 +1054,46 @@ class AccuredLeaves_model extends CI_Model {
                 $formatted = $day->format("Y-m-d");
                 if(!in_array($formatted, $availabledates)) $timesheetnotfillingdays[] = $formatted;
             }
-
-            $i=0;
-            foreach($timesheetnotfillingdays as $missed)
-            {
-                $day = date('D',strtotime($missed));
-                
-                if($day=='Sun' || $day=='Sat')
-                {
-                    unset($timesheetnotfillingdays[$i]);
-                    $i++;
-                    continue;
-                }
-                $i++;
-            }
             
-            $getaccuredleaves = $this->getAccuredLeaves(164);
+            $weekoffsperweek = 4*(7-$emps->WorkingDaysPerWeek);
+
+            $totaldaysinmonth = date('t',strtotime($data['month']));
+
+            $timesheetmisseddays = $totaldaysinmonth-$weekoffsperweek-count($timesheetfilleddays)-$getholidaysformonth->holidays;
+
+            $getaccuredleaves = $this->getAccuredLeaves($emps->EmployeeID);
            
             $lop = 0;
 
             $leaveBalance = $getaccuredleaves->AccuredLeaves;
 
             if($getaccuredleaves->LeaveBalance < 0)
-            {echo 'here';
+            {
                 $lop = $approvedleavesformonth->leaves + ($getaccuredleaves->LeaveBalance*-1) + $unapprovedleavesformonth->leaves;
             }
 
             if($getaccuredleaves->LeaveBalance==0)
-            {echo 'here2';
+            {
                 $lop = $approvedleavesformonth->leaves;
             }
             else if(($getaccuredleaves->LeaveBalance - $approvedleavesformonth->leaves)<0)
             {
-                echo 'here3';
+                
                 $lop = ($getaccuredleaves->LeaveBalance - $approvedleavesformonth->leaves) * -1;
                 $leaveBalance = 0;
             }
             else if(($getaccuredleaves->LeaveBalance - $approvedleavesformonth->leaves) > 0)
-            {echo 'here4';
-                $lop = $lop + $unapprovedleavesformonth->leaves + count($timesheetnotfillingdays);
+            {
+                //$lop = $lop + $unapprovedleavesformonth->leaves + $timesheetmisseddays;
                 $leaveBalance = $getaccuredleaves->LeaveBalance - $approvedleavesformonth->leaves;
             }
             
-echo '----';echo $lop;echo '--------';echo $leaveBalance;echo '<br>';exit;
-            /*$this->db->query("UPDATE `mcts_extranet`.`dbo.accuredleaves` SET  AccuredLeaves='".$leaveBalance."', LOP='".$lop."', LeaveBalance='".$leaveBalance."', 
+            $lop_final = $lop + $unapprovedleavesformonth->leaves + $timesheetmisseddays;
+
+//echo '----';echo $lop_final;echo '--------';echo $leaveBalance;echo '<br>';exit;
+            $this->db->query("UPDATE `mcts_extranet`.`dbo.accuredleaves` SET  AccuredLeaves='".$leaveBalance."', LOP='".$lop_final."', LeaveBalance='".$leaveBalance."', 
                             ApprovedLeavesTakenTillDate='".$approvedleavesformonth->leaves."', UnApprovedLeavesForTheMonth='".$unapprovedleavesformonth->leaves."'
-                            WHERE EmployeeID='".$emps->EmployeeID."'");*/
-        //}
+                            WHERE EmployeeID='".$emps->EmployeeID."'");
+        }
     }
 }
