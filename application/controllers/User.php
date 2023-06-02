@@ -108,6 +108,7 @@ class User extends REST_Controller {
 				// set session user datas
 				$_SESSION['EmployeeID']      = (int)$user->EmployeeID;
 				$_SESSION['EmailName']     = (string)$user->EmailName;
+				$_SESSION['Location']     = (int)$user->WorkLocation;
 				$_SESSION['logged_in']    = (bool)true;
 				$_SESSION['Role'] = (string)$user->Role;
 				

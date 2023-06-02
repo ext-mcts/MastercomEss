@@ -57,6 +57,14 @@
         "description": "Find out more",
         "url": "http://swagger.io"
       }
+    },
+    {
+      "name": "Tickets",
+      "description": "Everything about Tickets",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "http://swagger.io"
+      }
     }
   ],
   "components": {
@@ -1017,6 +1025,166 @@
         "responses": {
           "200": {
             "description": "Location Deleted Successfully!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/ticket/create": {
+      "post": {
+        "tags": [
+          "Tickets"
+        ],
+        "summary": "Create a Ticket",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": ""
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ticket Created successfully!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/ticket/update/{TicketID}": {
+      "put": {
+        "tags": [
+          "Tickets"
+        ],
+        "summary": "Update a Ticket by ID",
+        "parameters": [
+          {
+            "name": "TicketID",
+            "in": "path",
+            "required": true,
+            "description": "ID of Ticket",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": ""
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ticket Updated Successfully!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/ticket/delete/{TicketID}": {
+      "delete": {
+        "tags": [
+          "Tickets"
+        ],
+        "summary": "Delete a Ticket by Ticket ID",
+        "parameters": [
+          {
+            "name": "TicketID",
+            "in": "path",
+            "description": "Ticket ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ticket Deleted Successfully!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/ticket": {
+      "get": {
+        "tags": [
+          "Tickets"
+        ],
+        "summary": "List of Tickets",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Ticket Status",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "priority",
+            "in": "query",
+            "description": "Ticket Priority",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of Tickets!",
             "content": {
               "application/json": {
                 "schema": {
