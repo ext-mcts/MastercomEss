@@ -25,7 +25,7 @@ class Locations extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if($decodedToken['status'])
             {
-                if($this->session->userdata('Role')=='User')
+                if($this->session->userdata('Role')=='Admin')
                 {
                     $_POST = json_decode(file_get_contents("php://input"), true);
 
@@ -104,7 +104,7 @@ class Locations extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->session->userdata('Role')=='User')
+                if($this->session->userdata('Role')=='Admin')
                 {
                     $_POST = json_decode(file_get_contents("php://input"), true);
                     
@@ -188,7 +188,7 @@ class Locations extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->session->userdata('Role')=='User')
+                if($this->session->userdata('Role')=='Admin')
                 {
                     $check = $this->locations_model->check_location_allocation($locationid);
 

@@ -23,7 +23,7 @@ class Configemail extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->session->userdata('Role')=='User')
+                if($this->session->userdata('Role')=='Admin')
                 {
                     $this->form_validation->set_data($this->put());
                     $this->form_validation->set_rules('Email', 'Config Email', 'trim|required');

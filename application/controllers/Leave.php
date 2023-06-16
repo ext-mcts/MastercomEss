@@ -170,7 +170,7 @@ class Leave extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->session->userdata('Role')=='User')
+                if($this->session->userdata('Role')=='Admin' || $this->session->userdata('Role')=='Manager')
                 {
                     $data = $this->leaves_model->accept_reject_leave($leaveid,$status); // updating status as Approve
 
@@ -280,7 +280,7 @@ class Leave extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->session->userdata('Role')=='User')
+                if($this->session->userdata('Role')=='Admin' || $this->session->userdata('Role')=='Manager')
                 {
                     $ldata = $this->put();
                     $data = $this->leaves_model->accept_reject_leave($leaveid,$status,$ldata); // updating status as Approve

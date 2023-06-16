@@ -26,7 +26,7 @@ class Projects extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->session->userdata('Role')=='User')
+                if($this->session->userdata('Role')=='Admin' || $this->session->userdata('Role')=='Manager')
                 {
                     $_POST = json_decode(file_get_contents("php://input"), true);
 
@@ -95,7 +95,7 @@ class Projects extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->session->userdata('Role')=='User')
+                if($this->session->userdata('Role')=='Admin' || $this->session->userdata('Role')=='Manager')
                 {
                     $_POST = json_decode(file_get_contents("php://input"), true);
 
@@ -191,7 +191,7 @@ class Projects extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->session->userdata('Role')=='User')
+                if($this->session->userdata('Role')=='Admin' || $this->session->userdata('Role')=='Manager')
                 {
                     $_POST = json_decode(file_get_contents("php://input"), true);
                     

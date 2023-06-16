@@ -397,7 +397,7 @@ class AccuredLeaves_model extends CI_Model {
                 }
             }
 
-            echo $addleaves;echo '<br>';echo $excesleaves;echo '<br>';echo $advanceleaves;exit;
+            //echo $addleaves;echo '<br>';echo $excesleaves;echo '<br>';echo $advanceleaves;exit;
             $accuredleaves = $addleaves+$advanceleaves+$excesleaves;
 
             $result = $this->db->query("SELECT * FROM `mcts_extranet`.`dbo.accuredleaves` WHERE EmployeeID ='".$empdata['EmployeeID']."' ");
@@ -756,6 +756,7 @@ class AccuredLeaves_model extends CI_Model {
 
             
         //}
+        return true;
     }
 
     public function ChangePolicyRightNow($data)
@@ -899,6 +900,8 @@ class AccuredLeaves_model extends CI_Model {
         $this->db->query("UPDATE `mcts_extranet`.`dbo.globalconfigparameters` 
                         SET NextCronRunMonth='".$new_nextcycle."', LeavesCycleYear='".$ls."',Status=1
                         WHERE LeavesCycle='".$data["Cycle"]."'");
+
+        return true;
     }
 
     public function getAccuredLeaves($empid)

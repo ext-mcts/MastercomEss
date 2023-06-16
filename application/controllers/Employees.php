@@ -27,25 +27,32 @@ class Employees extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                $filterdata = array();
-
-                if($this->input->get("EmployeeID")) $filterdata['EmployeeID']=$this->input->get("EmployeeID");
-                if($this->input->get("Email")) $filterdata['EmailName']=$this->input->get("Email");
-                $filterdata['Page'] = $_GET['Page'];
-
-                $data = $this->user_model->get_all_users($filterdata); // getting all employees
-                if(count($data)>=1)
+                if($this->session->userdata('Role')=='Admin')
                 {
-                    $message = array('page' => $_GET['Page'],
-                                    'total_rows' => count($data),
-                                    'results' => $data,);
-                    $message['status'] = true;
-                    $this->response($message, REST_Controller::HTTP_OK);
-                }
-                else{ 
-                    $message = array('message' => 'Something went wrong!.');
+                    $filterdata = array();
+
+                    if($this->input->get("EmployeeID")) $filterdata['EmployeeID']=$this->input->get("EmployeeID");
+                    if($this->input->get("Email")) $filterdata['EmailName']=$this->input->get("Email");
+                    $filterdata['Page'] = $_GET['Page'];
+
+                    $data = $this->user_model->get_all_users($filterdata); // getting all employees
+                    if(count($data)>=1)
+                    {
+                        $message = array('page' => $_GET['Page'],
+                                        'total_rows' => count($data),
+                                        'results' => $data,);
+                        $message['status'] = true;
+                        $this->response($message, REST_Controller::HTTP_OK);
+                    }
+                    else{ 
+                        $message = array('message' => 'Something went wrong!.');
+                        $message['status'] = false;
+                        $this->response($message, REST_Controller::HTTP_OK);
+                    }
+                } else {
+                    $message = array('message' => 'This Role not allowed to View list of employees');
                     $message['status'] = false;
-                    $this->response($message, REST_Controller::HTTP_OK);
+                    $this->response($message,REST_Controller::HTTP_UNAUTHORIZED);
                 }
             }
             else {
@@ -69,7 +76,7 @@ class Employees extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->session->userdata('Role')=='User')
+                if($this->session->userdata('Role')=='Admin')
                 {
                     $_POST = json_decode(file_get_contents("php://input"), true);
 
@@ -297,7 +304,7 @@ class Employees extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->session->userdata('Role')=='User'){
+                if($this->session->userdata('Role')=='Admin'){
                     
                     $_POST = json_decode(file_get_contents("php://input"), true);
 
@@ -517,7 +524,7 @@ class Employees extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->session->userdata('Role')=='User')
+                if($this->session->userdata('Role')=='Admin')
                 {
                     $data = $this->user_model->get_user($empid); // Getting Employee details with ID
 
@@ -562,7 +569,7 @@ class Employees extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->session->userdata('Role')=='User')
+                if($this->session->userdata('Role')=='Admin')
                 {
                     $filterdata['Page'] = $_GET['Page'];
 

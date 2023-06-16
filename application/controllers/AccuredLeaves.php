@@ -23,7 +23,7 @@ class AccuredLeaves extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->session->userdata('Role')=='User')
+                if($this->session->userdata('Role')=='Admin')
                 {
                     $this->form_validation->set_rules('Cycle', 'Cycle', 'trim|required|max_length[50]');
                     $this->form_validation->set_rules('LeavesConsiderInProbation', 'Leaves Consider In Probation', 'trim|required|max_length[5]');
@@ -78,28 +78,110 @@ class AccuredLeaves extends REST_Controller
 
     public function changecycle_post()
     {
-        $this->form_validation->set_rules('Cycle', 'Cycle', 'trim|required|max_length[50]'); // Monthly or Quartarly or Half yearly or Yearly
-        //$this->form_validation->set_rules('Cycletype', 'Cycle Type', 'trim|required|max_length[50]');// future or current
-        //$this->form_validation->set_rules('LeavesConsiderInProbation', 'Leaves Consider In Probation', 'trim|required|max_length[5]'); // Yes or No
-       //$this->form_validation->set_rules('ProbationPeriod', 'Probation Time Period', 'trim|required|max_length[5]'); // in months (Ex: 1,2,3,4..)
-        //$this->form_validation->set_rules('LeavesCarryForward', 'Leaves Carry Forward', 'trim|required|max_length[10]'); // Yes or No
-        $this->form_validation->set_rules('LeavesCycleYear', 'Select Leaves Cycle Year Start Month', 'trim|required|numeric'); // in months (Ex: 1,2,3,4..)
-
-        if ($this->form_validation->run() === false) 
+        $headers = $this->input->request_headers(); 
+        if (isset($headers['Authorization'])) 
         {
-            $errors = $this->form_validation->error_array();
-            $errors['status'] = false;
-            $this->response($errors,REST_Controller::HTTP_BAD_REQUEST);
-            return false;
+            $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+            if ($decodedToken['status'])
+            {
+                if($this->session->userdata('Role')=='Admin')
+                {
+                    $this->form_validation->set_rules('Cycle', 'Cycle', 'trim|required|max_length[50]'); // Monthly or Quartarly or Half yearly or Yearly
+                    //$this->form_validation->set_rules('Cycletype', 'Cycle Type', 'trim|required|max_length[50]');// future or current
+                    //$this->form_validation->set_rules('LeavesConsiderInProbation', 'Leaves Consider In Probation', 'trim|required|max_length[5]'); // Yes or No
+                    //$this->form_validation->set_rules('ProbationPeriod', 'Probation Time Period', 'trim|required|max_length[5]'); // in months (Ex: 1,2,3,4..)
+                    //$this->form_validation->set_rules('LeavesCarryForward', 'Leaves Carry Forward', 'trim|required|max_length[10]'); // Yes or No
+                    $this->form_validation->set_rules('LeavesCycleYear', 'Select Leaves Cycle Year Start Month', 'trim|required|numeric'); // in months (Ex: 1,2,3,4..)
+
+                    if ($this->form_validation->run() === false) 
+                    {
+                        $errors = $this->form_validation->error_array();
+                        $errors['status'] = false;
+                        $this->response($errors,REST_Controller::HTTP_BAD_REQUEST);
+                        return false;
+                    }
+
+                    $data = $this->accuredleaves_model->ChangePolicyRightNow($this->input->post());
+
+                    if($data)
+                    {
+                        $message = array('message' => 'Leaves cycle changed successfully.');
+                        $message['status'] = true;
+                        $this->response($message, REST_Controller::HTTP_OK);
+                        return false;
+                    }
+                    else{ 
+                        $message = array('message' => 'Something went wrong!.');
+                        $message['status'] = false;
+                        $this->response($message, REST_Controller::HTTP_OK);
+                        return false;
+                    }
+                }
+                else
+                {
+                    $message = array('message' => 'This Role not allowed to Change leave cycle');
+                    $message['status'] = false;
+                    $this->response($message,REST_Controller::HTTP_UNAUTHORIZED);
+                }
+            }
+            else 
+            {
+                $this->response($decodedToken);
+            }
         }
-
-        $data = $this->accuredleaves_model->ChangePolicyRightNow($this->input->post());
-
+        else
+        {
+            $message = array('message' => 'Authentication failed');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+        }
     }
 
     public function runscheduleforleaves_post()
     {
-        $data = $this->accuredleaves_model->RunScheduleForLeaveCalculation();
+        $headers = $this->input->request_headers(); 
+        if (isset($headers['Authorization'])) 
+        {
+            $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+            if ($decodedToken['status'])
+            {
+                if($this->session->userdata('Role')=='Admin')
+                {
+                    $data = $this->accuredleaves_model->RunScheduleForLeaveCalculation();
+
+                    if($data)
+                    {
+                        $message = array('message' => 'Schedule for Leaves Running successfully.');
+                        $message['status'] = true;
+                        $this->response($message, REST_Controller::HTTP_OK);
+                        return false;
+                    }
+                    else{ 
+                        $message = array('message' => 'Something went wrong!.');
+                        $message['status'] = false;
+                        $this->response($message, REST_Controller::HTTP_OK);
+                        return false;
+                    }
+
+                }
+                else
+                {
+                    $message = array('message' => 'This Role not allowed to Run Schedule for Leaves');
+                    $message['status'] = false;
+                    $this->response($message,REST_Controller::HTTP_UNAUTHORIZED);
+                }
+            }
+            else 
+            {
+                $this->response($decodedToken);
+            }
+        }
+        else
+        {
+            $message = array('message' => 'Authentication failed');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+        }
     }
 
     public function calculate_get()
