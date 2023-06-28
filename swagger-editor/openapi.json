@@ -93,7 +93,15 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Order"
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
               }
             }
           }
@@ -123,7 +131,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Order"
+                "$ref": ""
               }
             }
           }
@@ -153,7 +161,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Order"
+                "$ref": ""
               }
             }
           }
@@ -183,7 +191,72 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": ""
+                "type": "object",
+                "properties": {
+                  "EmailName": {
+                    "type": "string"
+                  },
+                  "Password": {
+                    "type": "string"
+                  },
+                  "FirstName": {
+                    "type": "string"
+                  },
+                  "LastName": {
+                    "type": "string"
+                  },
+                  "Role": {
+                    "type": "string"
+                  },
+                  "Designation": {
+                    "type": "string"
+                  },
+                  "Department": {
+                    "type": "string"
+                  },
+                  "WorkLocation": {
+                    "type": "integer"
+                  },
+                  "Phone1": {
+                    "type": "string"
+                  },
+                  "PANNumber": {
+                    "type": "string"
+                  },
+                  "BankName": {
+                    "type": "string"
+                  },
+                  "BankAccNumber": {
+                    "type": "string"
+                  },
+                  "Manager": {
+                    "type": "integer"
+                  },
+                  "Grade": {
+                    "type": "integer"
+                  },
+                  "Address": {
+                    "type": "string"
+                  },
+                  "Phone2": {
+                    "type": "string"
+                  },
+                  "DOB": {
+                    "type": "string"
+                  },
+                  "PFAccount": {
+                    "type": "string"
+                  },
+                  "Aadhar": {
+                    "type": "string"
+                  },
+                  "JoinDate": {
+                    "type": "string"
+                  },
+                  "Passport": {
+                    "type": "string"
+                  }
+                }
               }
             }
           }
@@ -230,7 +303,63 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": ""
+                "type": "object",
+                "properties": {
+                  "EmailName": {
+                    "type": "string"
+                  },
+                  "FirstName": {
+                    "type": "string"
+                  },
+                  "LastName": {
+                    "type": "string"
+                  },
+                  "Role": {
+                    "type": "string"
+                  },
+                  "Designation": {
+                    "type": "string"
+                  },
+                  "Department": {
+                    "type": "string"
+                  },
+                  "WorkLocation": {
+                    "type": "integer"
+                  },
+                  "Phone1": {
+                    "type": "string"
+                  },
+                  "PANNumber": {
+                    "type": "string"
+                  },
+                  "BankName": {
+                    "type": "string"
+                  },
+                  "BankAccNumber": {
+                    "type": "string"
+                  },
+                  "Manager": {
+                    "type": "integer"
+                  },
+                  "Grade": {
+                    "type": "integer"
+                  },
+                  "DOB": {
+                    "type": "string"
+                  },
+                  "PFAccount": {
+                    "type": "string"
+                  },
+                  "Aadhar": {
+                    "type": "string"
+                  },
+                  "JoinDate": {
+                    "type": "string"
+                  },
+                  "Passport": {
+                    "type": "string"
+                  }
+                }
               }
             }
           }
@@ -347,7 +476,24 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": ""
+                "type": "object",
+                "properties": {
+                  "TSDate": {
+                    "type": "string"
+                  },
+                  "Start": {
+                    "type": "string"
+                  },
+                  "Finish": {
+                    "type": "string"
+                  },
+                  "Activity": {
+                    "type": "string"
+                  },
+                  "ProjectId": {
+                    "type": "integer"
+                  }
+                }
               }
             }
           }
@@ -357,9 +503,7 @@
             "description": "Timesheets added!",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": ""
-                }
+                "schema": null
               }
             }
           }
@@ -393,7 +537,24 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": ""
+                "type": "object",
+                "properties": {
+                  "TSDate": {
+                    "type": "string"
+                  },
+                  "Start": {
+                    "type": "string"
+                  },
+                  "Finish": {
+                    "type": "string"
+                  },
+                  "Activity": {
+                    "type": "string"
+                  },
+                  "ProjectId": {
+                    "type": "integer"
+                  }
+                }
               }
             }
           }
@@ -653,7 +814,33 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": ""
+                "type": "object",
+                "properties": {
+                  "ProjectName": {
+                    "type": "string"
+                  },
+                  "VendorID": {
+                    "type": "string"
+                  },
+                  "EndClient": {
+                    "type": "string"
+                  },
+                  "ProjectCode": {
+                    "type": "string"
+                  },
+                  "Category": {
+                    "type": "string"
+                  },
+                  "ProjectType": {
+                    "type": "string"
+                  },
+                  "Manager": {
+                    "type": "string"
+                  },
+                  "Manager2": {
+                    "type": "string"
+                  }
+                }
               }
             }
           }
@@ -698,7 +885,33 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": ""
+                "type": "object",
+                "properties": {
+                  "ProjectName": {
+                    "type": "string"
+                  },
+                  "VendorID": {
+                    "type": "string"
+                  },
+                  "EndClient": {
+                    "type": "string"
+                  },
+                  "ProjectCode": {
+                    "type": "string"
+                  },
+                  "Category": {
+                    "type": "string"
+                  },
+                  "ProjectType": {
+                    "type": "string"
+                  },
+                  "Manager": {
+                    "type": "string"
+                  },
+                  "Manager2": {
+                    "type": "string"
+                  }
+                }
               }
             }
           }
@@ -732,7 +945,21 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": ""
+                "type": "object",
+                "properties": {
+                  "EmployeeID": {
+                    "type": "integer"
+                  },
+                  "ProjectID": {
+                    "type": "integer"
+                  },
+                  "AssignedDt": {
+                    "type": "string"
+                  },
+                  "Role": {
+                    "type": "string"
+                  }
+                }
               }
             }
           }
@@ -777,7 +1004,21 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": ""
+                  "type": "object",
+                  "properties": {
+                    "HolidayDate": {
+                      "type": "string"
+                    },
+                    "HolidayDesc": {
+                      "type": "string"
+                    },
+                    "Location": {
+                      "type": "integer"
+                    },
+                    "HolidayType": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -811,7 +1052,21 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": ""
+                "type": "object",
+                "properties": {
+                  "HolidayDate": {
+                    "type": "string"
+                  },
+                  "HolidayDesc": {
+                    "type": "string"
+                  },
+                  "Location": {
+                    "type": "integer"
+                  },
+                  "HolidayType": {
+                    "type": "integer"
+                  }
+                }
               }
             }
           }
@@ -936,7 +1191,15 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": ""
+                "type": "object",
+                "properties": {
+                  "LocationName": {
+                    "type": "string"
+                  },
+                  "ParentLocationID": {
+                    "type": "integer"
+                  }
+                }
               }
             }
           }
@@ -981,7 +1244,15 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": ""
+                "type": "object",
+                "properties": {
+                  "LocationName": {
+                    "type": "string"
+                  },
+                  "ParentLocationID": {
+                    "type": "integer"
+                  }
+                }
               }
             }
           }
@@ -1051,7 +1322,33 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": ""
+                "type": "object",
+                "properties": {
+                  "dept": {
+                    "type": "string"
+                  },
+                  "deptperson": {
+                    "type": "string"
+                  },
+                  "category": {
+                    "type": "string"
+                  },
+                  "priority": {
+                    "type": "string"
+                  },
+                  "subject": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "contact": {
+                    "type": "string"
+                  },
+                  "location": {
+                    "type": "string"
+                  }
+                }
               }
             }
           }
@@ -1061,9 +1358,7 @@
             "description": "Ticket Created successfully!",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": ""
-                }
+                "schema": null
               }
             }
           }
@@ -1096,7 +1391,33 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": ""
+                "type": "object",
+                "properties": {
+                  "dept": {
+                    "type": "string"
+                  },
+                  "deptperson": {
+                    "type": "string"
+                  },
+                  "category": {
+                    "type": "string"
+                  },
+                  "priority": {
+                    "type": "string"
+                  },
+                  "subject": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "contact": {
+                    "type": "string"
+                  },
+                  "location": {
+                    "type": "string"
+                  }
+                }
               }
             }
           }

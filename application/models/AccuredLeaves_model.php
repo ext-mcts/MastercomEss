@@ -1035,13 +1035,22 @@ class AccuredLeaves_model extends CI_Model {
         {
             $approvedleavesformonth = $this->leaves_model->getLeavesByEmpID($emps->EmployeeID,1,$data['month']);
             $unapprovedleavesformonth = $this->leaves_model->getLeavesByEmpID($emps->EmployeeID,0,$data['month']);
-            $timesheetfilleddays = $this->timesheet_model->get_timesheet_by_empid($data['month'],$emps->EmployeeID);
-        
-            $firstday = 1;
+            //$timesheetfilleddays = $this->timesheet_model->get_timesheet_by_empid($data['month'],164);
 
-            $availabledates = array();
+            $aprvdleaves = 0;
+            $unaprvdleaves = 0;
 
-            $lastday = date('t',strtotime($data['month']));
+            if(count($approvedleavesformonth)>=1)
+            {
+                $aprvdleaves = $approvedleavesformonth->leaves;
+            }
+
+            if(count($unapprovedleavesformonth)>=1)
+            {
+                $unaprvdleaves = $unapprovedleavesformonth->leaves;
+            }
+
+            /*$availabledates = array();
 
             foreach($timesheetfilleddays as $tsdays)
             {
@@ -1056,13 +1065,28 @@ class AccuredLeaves_model extends CI_Model {
             foreach($period as $day) {
                 $formatted = $day->format("Y-m-d");
                 if(!in_array($formatted, $availabledates)) $timesheetnotfillingdays[] = $formatted;
-            }
+            }*/
             
-            $weekoffsperweek = 4*(7-$emps->WorkingDaysPerWeek);
+            
+            /*$weekspermonth = $this->weeks($data['month'], $data['year']);
+            $weekoffspermonth = $weekspermonth*(7-5);*/
+
+            $weekoffdaysforemp = 'Sat,Sun';
+
+            $empweekoffdays = $this->getEmpWeekOffDays($emps->EmployeeID, $data['month'], $data['year']);
+
+            if(!empty($empweekoffdays))
+            {
+                $weekoffdaysforemp = $empweekoffdays->WeekOffDays;
+            }
+
+            $weekspermonth = $this->getWeekOffDaysCount($weekoffdaysforemp, $data['month'], $data['year']);
+            
+            $weekoffspermonth = $weekspermonth*(7-$emps->WorkingDaysPerWeek);
 
             $totaldaysinmonth = date('t',strtotime($data['month']));
 
-            $timesheetmisseddays = $totaldaysinmonth-$weekoffsperweek-count($timesheetfilleddays)-$getholidaysformonth->holidays;
+            $timesheetmisseddays = $totaldaysinmonth-$weekoffspermonth-count($timesheetfilleddays)-$getholidaysformonth->holidays;
 
             $getaccuredleaves = $this->getAccuredLeaves($emps->EmployeeID);
            
@@ -1071,32 +1095,102 @@ class AccuredLeaves_model extends CI_Model {
             $leaveBalance = $getaccuredleaves->AccuredLeaves;
 
             if($getaccuredleaves->LeaveBalance < 0)
-            {
-                $lop = $approvedleavesformonth->leaves + ($getaccuredleaves->LeaveBalance*-1) + $unapprovedleavesformonth->leaves;
+            { 
+                $lop_final = $aprvdleaves + ($getaccuredleaves->LeaveBalance*-1) + $unaprvdleaves;
             }
 
             if($getaccuredleaves->LeaveBalance==0)
-            {
-                $lop = $approvedleavesformonth->leaves;
+            { 
+                $lop_final = $aprvdleaves+$unaprvdleaves + $timesheetmisseddays;
             }
-            else if(($getaccuredleaves->LeaveBalance - $approvedleavesformonth->leaves)<0)
+            else if(($getaccuredleaves->LeaveBalance - $aprvdleaves)<0)
             {
                 
-                $lop = ($getaccuredleaves->LeaveBalance - $approvedleavesformonth->leaves) * -1;
+                $lop_final = (($getaccuredleaves->LeaveBalance - $aprvdleaves) * -1)+$unaprvdleaves + $timesheetmisseddays;
                 $leaveBalance = 0;
             }
-            else if(($getaccuredleaves->LeaveBalance - $approvedleavesformonth->leaves) > 0)
+            else if(($getaccuredleaves->LeaveBalance - $aprvdleaves) > 0)
             {
-                //$lop = $lop + $unapprovedleavesformonth->leaves + $timesheetmisseddays;
-                $leaveBalance = $getaccuredleaves->LeaveBalance - $approvedleavesformonth->leaves;
+                $lop_final = $unaprvdleaves + $timesheetmisseddays;
+                $leaveBalance = $getaccuredleaves->LeaveBalance - $aprvdleaves;
             }
-            
-            $lop_final = $lop + $unapprovedleavesformonth->leaves + $timesheetmisseddays;
 
-//echo '----';echo $lop_final;echo '--------';echo $leaveBalance;echo '<br>';exit;
             $this->db->query("UPDATE `mcts_extranet`.`dbo.accuredleaves` SET  AccuredLeaves='".$leaveBalance."', LOP='".$lop_final."', LeaveBalance='".$leaveBalance."', 
-                            ApprovedLeavesTakenTillDate='".$approvedleavesformonth->leaves."', UnApprovedLeavesForTheMonth='".$unapprovedleavesformonth->leaves."'
+                            ApprvdLeavesTakenTillDate='".$aprvdleaves."', UnApprovedLeavesForTheMonth='".$unaprvdleaves."'
                             WHERE EmployeeID='".$emps->EmployeeID."'");
+
         }
+    }
+    return true;
+
+    function getWeeks($date, $rollover)
+    {
+        $cut = substr($date, 0, 8);
+        $daylen = 86400;
+
+        $timestamp = strtotime($date);
+        $first = strtotime($cut . "00");
+        $elapsed = ($timestamp - $first) / $daylen;
+
+        $weeks = 1;
+
+        for ($i = 1; $i <= $elapsed; $i++)
+        {
+            $dayfind = $cut . (strlen($i) < 2 ? '0' . $i : $i);
+            $daytimestamp = strtotime($dayfind);
+
+            $day = strtolower(date("l", $daytimestamp));
+
+            if($day == strtolower($rollover))  $weeks ++;
+        }
+
+        return $weeks;
+    }
+
+    function weeks($month, $year){
+        $firstday = date("w", mktime(0, 0, 0, $month, 1, $year)); 
+        $lastday = date("t", mktime(0, 0, 0, $month, 1, $year)); 
+        if ($firstday!=0) $count_weeks = 1 + ceil(($lastday-8+$firstday)/7);
+        else $count_weeks = 1 + ceil(($lastday-1)/7);
+        return $count_weeks;
+    } 
+
+    function getWeekOffDaysCount($weekoffdays, $month, $year, )
+    {
+        $days = explode(',', $weekoffdays);
+
+        $noofdays = date('t',strtotime($month));
+
+        $weekoffs = 0;
+
+        for($i=1; $i<=$noofdays;$i++)
+        {
+            if(count($days)==2)
+            {
+                $day = $days[0];
+                $day2 = $days[1];
+                if(date('D',strtotime($year.'-'.$month.'-'.$i))==$day || date('D',strtotime($year.'-'.$month.'-'.$i))==$day2)
+                {
+                    $weekoffs++;
+                }
+            }
+            else
+            {
+                $day = $days[0];
+
+                if(date('D',strtotime($year.'-'.$month.'-'.$i))==$day)
+                {
+                    $weekoffs++;
+                }
+            }
+        }
+        return $weekoffs;
+    }
+
+    public function getEmpWeekOffDays($empid, $month, $year)
+    {
+        $sql = "SELECT * FROM mcts_extranet.`dbo.employeeshifts` WHERE EmployeeID=$empid AND ShiftMonth=$month AND ShiftYear=$year";
+        $query=$this->db->query($sql);
+		return $query->row();
     }
 }
