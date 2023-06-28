@@ -115,6 +115,7 @@ class User extends REST_Controller {
 				// user login ok
                 $token_data['EmployeeID'] = $user_id;
                 $token_data['EmailName'] = $user->EmailName; 
+				$token_data['Role'] = $user->Role; 
                 $tokenData = $this->authorization_token->generateToken($token_data);
                 $final = array();
                 $final['access_token'] = $tokenData;

@@ -7,12 +7,37 @@ require (APPPATH.'/libraries/REST_Controller.php');
 class Documents extends REST_Controller
 {
 
+    public $userdetails;
+
     public function __construct()
     {
         parent::__construct();
         $this->load->model("user_model");
         $this->load->library('Authorization_Token');
         $this->load->model('documents_model');
+
+        $this->userdetails = decode_token($this->input->get_request_header('Authorization')); // here we are calling helper
+
+        /* Start - this block is for avoiding CROS error */
+        if (isset($_SERVER['HTTP_ORIGIN'])) {
+            header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
+            header('Access-Control-Allow-Credentials: true');
+            header('Access-Control-Max-Age: 86400');    // cache for 1 day
+        }
+    
+        // Access-Control headers are received during OPTIONS requests
+        if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    
+            if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
+                header("Access-Control-Allow-Methods: GET, POST, OPTIONS");         
+    
+            if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
+                header("Access-Control-Allow-Headers:        {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
+    
+            exit(0);
+        }
+        /* End - this block is for avoiding CROS error */
+
     }
 
     public function upload_post()
@@ -23,7 +48,7 @@ class Documents extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->session->userdata('Role')=='Admin')
+                if($this->userdetails->Role=='Admin')
                 {
 
                     if(empty($_FILES))
@@ -120,7 +145,7 @@ class Documents extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->session->userdata('Role')=='Admin')
+                if($this->userdetails->Role=='Admin')
                 {
                     $doc_id = $this->uri->segment(3);
 
@@ -192,7 +217,7 @@ class Documents extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->session->userdata('Role')=='Admin')
+                if($this->userdetails->Role=='Admin')
                 {
                     $doc_id = $this->uri->segment(3); // Document ID
 
@@ -268,7 +293,7 @@ class Documents extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->session->userdata('Role')=='Admin')
+                if($this->userdetails->Role=='Admin')
                 {
                     $docid = $this->uri->segment(3);
 
