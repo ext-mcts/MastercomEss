@@ -1120,8 +1120,9 @@ class AccuredLeaves_model extends CI_Model {
                             WHERE EmployeeID='".$emps->EmployeeID."'");
 
         }
+        return true;
     }
-    return true;
+    
 
     function getWeeks($date, $rollover)
     {
