@@ -570,6 +570,8 @@ class Timesheet extends REST_Controller
             {
                 $filterdata = array();
 
+                $filterdata["Role"] = $this->userdetails->Role;
+                
                 if($this->input->get("TSID")) $filterdata['TSID']=$this->input->get("TSID");
                 if($this->input->get("TSDate"))
                 {
