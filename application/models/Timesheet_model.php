@@ -71,7 +71,7 @@ class Timesheet_model extends CI_Model
     public function get_all_timesheet_entries($data)
     {
         $wherecond = '1=1 AND';
-        if($this->session->userdata('Role')=='User') 
+        if($data['Role']=='User') 
         {
             $tsid = "TS".$this->session->userdata('EmployeeID');
             $wherecond .= " TSID LIKE '%$tsid%'";
@@ -84,7 +84,7 @@ class Timesheet_model extends CI_Model
 			$page = (isset($data['Page']) && is_numeric($data['Page']) ) ? $data['Page'] : 1;
   			$paginationStart = ($page - 1) * PER_PAGE_RECORDS;
 			$wherecond = '1=1 AND';
-            if($this->session->userdata('Role')=='User') 
+            if($data['Role']=='User') 
             {
                 $tsid = "TS".$this->session->userdata('EmployeeID');
                 $wherecond .= " TSID LIKE '%$tsid%' AND";
