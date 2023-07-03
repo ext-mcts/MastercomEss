@@ -234,13 +234,6 @@ class User extends REST_Controller {
 		$this->form_validation->set_rules('relievingdate', 'Relieving Date', 'trim');
 		$this->form_validation->set_rules('EmployeeID', 'EmployeeID', 'trim|required|numeric');
 
-		if (!preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/",$this->input->post('relievingdate'))) {
-			$message = array('message' => 'Joining Date format is invalid, please give date format as YYYY-MM-DD');
-			$message['status'] = false;
-			$this->response($message,REST_Controller::HTTP_BAD_REQUEST);
-			return false;
-		} 
-
 		if ($this->form_validation->run() === false) {
 			$errors = $this->form_validation->error_array();
 			$errors['status'] = false;

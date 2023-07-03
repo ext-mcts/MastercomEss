@@ -76,7 +76,7 @@ class Documents extends REST_Controller
                             'file_name' => $image['name']
                             );
 
-                        $id = $this->session->userdata('EmployeeID');
+                        $id = $this->userdetails->EmployeeID;
 
                         if (!is_dir($config['upload_path'].$id)) {
                             //Create our directory if it does not exist

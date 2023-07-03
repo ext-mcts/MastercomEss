@@ -13,6 +13,8 @@ class Ticket extends REST_Controller
         $this->load->library('Authorization_Token');
         $this->load->model("ticket_model");
 
+        $this->userdetails = decode_token($this->input->get_request_header('Authorization')); // here we are calling helper
+
         /* Start - this block is for avoiding CROS error */
         if (isset($_SERVER['HTTP_ORIGIN'])) {
             header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
@@ -64,6 +66,7 @@ class Ticket extends REST_Controller
 
                 $tktdata = array();
                 $tktdata = $this->input->post();
+                $tktdata['EmailName'] = $this->userdetails->EmailName;
 
                 $data = $this->ticket_model->create_ticket($tktdata);
 

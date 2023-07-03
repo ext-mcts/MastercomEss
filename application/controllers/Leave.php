@@ -60,14 +60,6 @@ class Leave extends REST_Controller
                     return false;
                 }
 
-                //checking date format
-                if (!preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/",$this->input->post('Date'))) {
-                    $message = array('message' => 'Leave Date format is invalid, please give date format as YYYY-MM-DD');
-                    $message['status'] = false;
-                    $this->response($message,REST_Controller::HTTP_BAD_REQUEST);
-                    return false;
-                } 
-
                 $startDate = strtotime(date('Y-m-d', strtotime($this->input->post('Date')) ) );
                 $currentDate = strtotime(date('Y-m-d'));
 
@@ -78,7 +70,7 @@ class Leave extends REST_Controller
                     return false;
                 }
 
-                $check = $this->leaves_model->check_leaves($this->session->userdata('EmployeeID'),$this->input->post('Date'));
+                $check = $this->leaves_model->check_leaves($this->userdetails->EmployeeID,$this->input->post('Date'));
 
                 if(count($check)==1){
                     $message = array('message' => 'This Employee already applied leave for this date!');
@@ -89,7 +81,7 @@ class Leave extends REST_Controller
 
                 $leavedata = array();
                 $leavedata = $this->input->post();
-                $leavedata["EmployeeID"] = $this->session->userdata('EmployeeID');
+                $leavedata["EmployeeID"] = $this->userdetails->EmployeeID;
 
                 $data = $this->leaves_model->apply_leave($leavedata);// Inserting Employee
 
