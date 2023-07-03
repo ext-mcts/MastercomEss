@@ -146,22 +146,6 @@ class Employees extends REST_Controller
                         return false;
                     }
 
-                    //checking date format
-                    if (!preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/",$this->input->post('DOB'))) {
-                        $message = array('message' => 'Date of Birth Date format is invalid, please give date format as YYYY-MM-DD');
-                        $message['status'] = false;
-                        $this->response($message,REST_Controller::HTTP_BAD_REQUEST);
-                        return false;
-                    } 
-
-                    //checking date format
-                    if (!preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/",$this->input->post('JoinDate'))) {
-                        $message = array('message' => 'Joining Date format is invalid, please give date format as YYYY-MM-DD');
-                        $message['status'] = false;
-                        $this->response($message,REST_Controller::HTTP_BAD_REQUEST);
-                        return false;
-                    } 
-
                     // Validating Email, actually we can do it by is_unique, but because of dots in database table name, we can't do that
                     // if($this->input->post('EmailName'))
                     // {
@@ -372,28 +356,6 @@ class Employees extends REST_Controller
                         $errors['status'] = false;
                         $this->response($errors,REST_Controller::HTTP_BAD_REQUEST);
                         return false;
-                    }
-
-                    if($this->put('DOB'))
-                    {
-                        // checking date format
-                        if (!preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/",$this->put('DOB'))) {
-                            $message = array('message' => 'Date of Birth Date format is invalid, please give date format as YYYY-MM-DD');
-                            $message['status'] = false;
-                            $this->response($message,REST_Controller::HTTP_BAD_REQUEST);
-                            return false;
-                        } 
-                    }
-
-                    if($this->put('JoinDate'))
-                    {
-                        // checking date format
-                        if (!preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/",$this->put('JoinDate'))) {
-                            $message = array('message' => 'Joining Date format is invalid, please give date format as YYYY-MM-DD');
-                            $message['status'] = false;
-                            $this->response($message,REST_Controller::HTTP_BAD_REQUEST);
-                            return false;
-                        } 
                     }
                     
                     if($this->put('WorkLocation'))

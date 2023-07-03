@@ -137,14 +137,6 @@ class Projects extends REST_Controller
                         return false;
                     }
 
-                    // Checking Date format
-                    if (!preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/",$this->input->post('AssignedDt'))) {
-                        $message = array('message' => 'Assigned Date format is invalid, please give date format as YYYY-MM-DD');
-                        $message['status'] = false;
-                        $this->response($message,REST_Controller::HTTP_BAD_REQUEST);
-                        return false;
-                    } 
-
                     // Checking duplicate, with same Employee and same Project mapped or not
                     $check = $this->projects_model->check_project_with_employee($this->input->post('EmployeeID'),$this->input->post('ProjectID'));
                     if(count($check)>=1){

@@ -65,14 +65,6 @@ class Holidays extends REST_Controller
                         return false;
                     }
 
-                    // Checking date format
-                    if (!preg_match("/^(0[1-9]|[1-2][0-9]|3[0-1])-(0[1-9]|1[0-2])-[0-9]{4}$/",$this->input->post('HolidayDate'))) {
-                        $message = array('message' => 'Holiday Date format is invalid, please give date format as DD-MM-YYYY');
-                        $message['status'] = false;
-                        $this->response($message,REST_Controller::HTTP_BAD_REQUEST);
-                        return false;
-                    } 
-
                     $date = date('Y-m-d 00:00:00',strtotime($this->input->post('HolidayDate')));
                     $date_check = $this->holidays_model->check_holiday_date($date,$this->input->post('Location'));
                     
@@ -165,14 +157,6 @@ class Holidays extends REST_Controller
                         $this->response($errors,REST_Controller::HTTP_BAD_REQUEST);
                         return false;
                     }
-                    
-                    // Checking date format
-                    if (!preg_match("/^(0[1-9]|[1-2][0-9]|3[0-1])-(0[1-9]|1[0-2])-[0-9]{4}$/",$this->put('HolidayDate'))) {
-                        $message = array('message' => 'Holiday Date format is invalid, please give date format as DD-MM-YYYY');
-                        $message['status'] = false;
-                        $this->response($message,REST_Controller::HTTP_BAD_REQUEST);
-                        return false;
-                    } 
 
                     $checkdate = $this->holidays_model->check_holiday_date(date('Y-m-d 00:00:00',strtotime($this->put('HolidayDate'))),$this->put('Location'),$holidayid);
 

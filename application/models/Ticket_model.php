@@ -18,7 +18,7 @@ class Ticket_model extends CI_Model {
                 (TktCategory,AssignedToDept,AssignedToPerson,TktSubject,TktDescription,TktStatus,RaisedBy,Location,
                 Priority,ContactNo,TktCreatedDt,TntCloseDt) 
                 VALUES ('".$data['category']."','".$data['dept']."','".$data['deptperson']."','".$data['subject']."',
-                        '".$data['description']."','Open','".$this->session->userdata('EmailName')."','".$location[0]->LocationName."',
+                        '".$data['description']."','Open','".$data['EmailName']."','".$location[0]->LocationName."',
                         '".$data['priority']."','".$data['contact']."','".date('Y-m-d h:i:s')."',
                         '".date('Y-m-d H:i:s', strtotime(date('Y-m-d h:i:s') . ' +1 day'))."')";
 

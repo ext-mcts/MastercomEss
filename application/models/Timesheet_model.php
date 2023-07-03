@@ -73,7 +73,7 @@ class Timesheet_model extends CI_Model
         $wherecond = '1=1 AND';
         if($data['Role']=='User') 
         {
-            $tsid = "TS".$this->session->userdata('EmployeeID');
+            $tsid = "TS".$data['EmployeeID'];
             $wherecond .= " TSID LIKE '%$tsid%'";
         } 
         $wherecond = rtrim($wherecond, ' AND');
@@ -86,7 +86,7 @@ class Timesheet_model extends CI_Model
 			$wherecond = '1=1 AND';
             if($data['Role']=='User') 
             {
-                $tsid = "TS".$this->session->userdata('EmployeeID');
+                $tsid = "TS".$data['EmployeeID'];
                 $wherecond .= " TSID LIKE '%$tsid%' AND";
             } 
 			//if(!empty($data['TSID'])) $wherecond .= " TSID='".$data['TSID']."' AND";

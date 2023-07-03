@@ -67,14 +67,6 @@ class Timesheet extends REST_Controller
                     $this->response($errors,REST_Controller::HTTP_BAD_REQUEST);
                     return false;
                 }
-                
-                // checking date format
-                if (!preg_match("/^(0[1-9]|[1-2][0-9]|3[0-1])-(0[1-9]|1[0-2])-[0-9]{4}$/",$this->input->post('TSDate'))) {
-                    $message = array('message' => 'Timesheet Date format is invalid, please give date format as DD-MM-YYYY');
-                    $message['status'] = false;
-                    $this->response($message,REST_Controller::HTTP_BAD_REQUEST);
-                    return false;
-                }
 
                 $now = time(); // or your date as well
                 $your_date = strtotime($this->input->post("TSDate"));
@@ -91,7 +83,7 @@ class Timesheet extends REST_Controller
 
                 $tsid = "";
                 $tsid .= "TS";
-                $tsid .=$this->session->userdata('EmployeeID');
+                $tsid .=$this->userdetails->EmployeeID;
                 $tsid .="_".date('YMd',strtotime($this->input->post('TSDate')));
                 $tsid .="_".$this->input->post('ProjectId');
                 
@@ -130,13 +122,13 @@ class Timesheet extends REST_Controller
                 
                 /* if leave applied on selected date, we are sending alert to report Manager as Email */
 
-                $checkleave = $this->leaves_model->check_leaves($this->session->userdata('EmployeeID'),$this->input->post('TSDate'));
+                $checkleave = $this->leaves_model->check_leaves($this->userdetails->EmployeeID,$this->input->post('TSDate'));
 
                 if(!empty($checkleave))
                 {
                     if($checkleave[0]->Approved==1)
                     {
-                        $getmanager = $this->user_model->get_user($this->session->userdata('EmployeeID'));
+                        $getmanager = $this->user_model->get_user($this->userdetails->EmployeeID);
                         $getmanageremail = $this->user_model->get_user($getmanager->Manager);
                         $config = Array(        
                             'protocol' => 'smtp',
@@ -262,14 +254,6 @@ class Timesheet extends REST_Controller
                     $this->response($errors,REST_Controller::HTTP_BAD_REQUEST);
                     return false;
                 }
-
-                // checking date format
-                if (!preg_match("/^(0[1-9]|[1-2][0-9]|3[0-1])-(0[1-9]|1[0-2])-[0-9]{4}$/",$this->put('TSDate'))) {
-                    $message = array('message' => 'Timesheet Date format is invalid, please give date format as DD-MM-YYYY');
-                    $message['status'] = false;
-                    $this->response($message,REST_Controller::HTTP_BAD_REQUEST);
-                    return false;
-                } 
                 
                 $now = time(); // or your date as well
                 $your_date = strtotime($this->put("TSDate"));
@@ -571,19 +555,10 @@ class Timesheet extends REST_Controller
                 $filterdata = array();
 
                 $filterdata["Role"] = $this->userdetails->Role;
+                $filterdata["EmployeeID"] = $this->userdetails->EmployeeID;
                 
                 if($this->input->get("TSID")) $filterdata['TSID']=$this->input->get("TSID");
-                if($this->input->get("TSDate"))
-                {
-                    // checking date format
-                    if (!preg_match("/^(0[1-9]|[1-2][0-9]|3[0-1])-(0[1-9]|1[0-2])-[0-9]{4}$/",$this->input->get('TSDate'))) {
-                        $message = array('message' => 'Time Sheet Date format is invalid, please give date format as DD-MM-YYYY');
-                        $message['status'] = false;
-                        $this->response($message,REST_Controller::HTTP_BAD_REQUEST);
-                        return false;
-                    } 
-                    $filterdata['TSDate']=$this->input->get("TSDate");
-                } 
+                if($this->input->get("TSDate")) $filterdata['TSDate']=$this->input->get("TSDate");
                 if($this->input->get("Start")) $filterdata['Start']=$this->input->get("Start");
                 if($this->input->get("Finish")) $filterdata['Finish']=$this->input->get("Finish");
                 if($this->input->get("Location")) $filterdata['Location']=$this->input->get("Location");
