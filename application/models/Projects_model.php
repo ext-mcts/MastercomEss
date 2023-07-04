@@ -82,4 +82,31 @@ class Projects_model extends CI_Model {
         return $query->result();
     }
 
+    public function get_vendors($data=null)
+	{
+		$sql = "SELECT * FROM `mcts_extranet`.`dbo.vendors`";
+		if(!empty($data))
+		{
+			$page = (isset($data['Page']) && is_numeric($data['Page']) ) ? $data['Page'] : 1;
+  			$paginationStart = ($page - 1) * PER_PAGE_RECORDS;
+			$sql = "SELECT * FROM `mcts_extranet`.`dbo.vendors` ORDER BY id ASC LIMIT $paginationStart,".PER_PAGE_RECORDS;
+		}
+		
+		$query=$this->db->query($sql);
+		return $query->result();
+	}
+
+    public function get_endclients($data=null)
+	{
+		$sql = "SELECT * FROM `mcts_extranet`.`dbo.endclients`";
+		if(!empty($data))
+		{
+			$page = (isset($data['Page']) && is_numeric($data['Page']) ) ? $data['Page'] : 1;
+  			$paginationStart = ($page - 1) * PER_PAGE_RECORDS;
+			$sql = "SELECT * FROM `mcts_extranet`.`dbo.endclients` ORDER BY id ASC LIMIT $paginationStart,".PER_PAGE_RECORDS;
+		}
+		
+		$query=$this->db->query($sql);
+		return $query->result();
+	}
 }

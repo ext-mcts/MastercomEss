@@ -52,12 +52,13 @@ class Employees extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role=='Admin')
+                if($this->userdetails->Role==1)  // 1- admin
                 {
                     $filterdata = array();
 
                     if($this->input->get("EmployeeID")) $filterdata['EmployeeID']=$this->input->get("EmployeeID");
                     if($this->input->get("Email")) $filterdata['EmailName']=$this->input->get("Email");
+                    if($this->input->get("Department")) $filterdata['Department']=$this->input->get("Department");
                     $filterdata['Page'] = $_GET['Page'];
 
                     $data = $this->user_model->get_all_users($filterdata); // getting all employees
@@ -101,7 +102,7 @@ class Employees extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role=='Admin')
+                if($this->userdetails->Role==1)  //1- admin
                 {
                     $_POST = json_decode(file_get_contents("php://input"), true);
 
@@ -109,13 +110,13 @@ class Employees extends REST_Controller
                     $this->form_validation->set_rules('LastName', 'Lastname', 'trim|required|alpha_numeric|max_length[50]');
                     $this->form_validation->set_rules('EmailName', 'Email', 'trim|required|max_length[50]');
                     $this->form_validation->set_rules('Password', 'Password', 'trim|required|max_length[50]');
-                    $this->form_validation->set_rules('Role', 'Role', 'trim|required|max_length[50]');
+                    $this->form_validation->set_rules('Role', 'Role', 'trim|required|numeric|max_length[3]');
                     $this->form_validation->set_rules('WorkLocation', 'Work Location', 'trim|numeric|max_length[3]');
-                    $this->form_validation->set_rules('Department', 'Departmant', 'trim|required|max_length[50]');
-                    $this->form_validation->set_rules('Designation', 'Designation', 'trim|required|max_length[50]');
+                    $this->form_validation->set_rules('Department', 'Departmant', 'trim|required|numeric|max_length[3]');
+                    $this->form_validation->set_rules('Designation', 'Designation', 'trim|required|numeric|max_length[3]');
                     $this->form_validation->set_rules('Phone1', 'Phone Number1', 'trim|required|max_length[50]');
                     $this->form_validation->set_rules('PANNumber', 'PAN Number', 'trim|required|max_length[10]');
-                    $this->form_validation->set_rules('BankName', 'Bank Name', 'trim|required|max_length[50]');
+                    $this->form_validation->set_rules('BankName', 'Bank Name', 'trim|required|numeric|max_length[3]');
                     $this->form_validation->set_rules('BankAccNumber', 'Bank Account Number', 'trim|required|max_length[16]');
                     $this->form_validation->set_rules('Manager', 'Reporting Manager', 'trim|required|numeric|max_length[3]');
                     $this->form_validation->set_rules('Grade', 'Grade', 'trim|required|numeric|max_length[3]');
@@ -313,7 +314,7 @@ class Employees extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role=='Admin'){
+                if($this->userdetails->Role==1){
                     
                     $_POST = json_decode(file_get_contents("php://input"), true);
 
@@ -321,13 +322,13 @@ class Employees extends REST_Controller
                     $this->form_validation->set_rules('FirstName', 'First Name', 'trim|required|alpha_numeric|max_length[50]');
                     $this->form_validation->set_rules('LastName', 'Last Name', 'trim|required|alpha_numeric|max_length[50]');
                     $this->form_validation->set_rules('EmailName', 'Email', 'trim|required|max_length[50]');
-                    $this->form_validation->set_rules('Role', 'Role', 'trim|required|max_length[50]');
+                    $this->form_validation->set_rules('Role', 'Role', 'trim|required|numeric|max_length[3]');
                     $this->form_validation->set_rules('WorkLocation', 'Work Location', 'trim|numeric|required|max_length[3]');
-                    $this->form_validation->set_rules('Department', 'Departmant', 'trim|required|max_length[50]');
-                    $this->form_validation->set_rules('Designation', 'Designation', 'trim|required|max_length[50]');
+                    $this->form_validation->set_rules('Department', 'Departmant', 'trim|required|numeric|max_length[3]');
+                    $this->form_validation->set_rules('Designation', 'Designation', 'trim|required|numeric|max_length[3]');
                     $this->form_validation->set_rules('Phone1', 'Phone Number1', 'trim|required|max_length[50]');
                     $this->form_validation->set_rules('PANNumber', 'PAN Number', 'trim|required|max_length[10]');
-                    $this->form_validation->set_rules('BankName', 'Bank Name', 'trim|required|max_length[50]');
+                    $this->form_validation->set_rules('BankName', 'Bank Name', 'trim|required|numeric|max_length[3]');
                     $this->form_validation->set_rules('BankAccNumber', 'Bank Account Number', 'trim|required|max_length[16]');
                     $this->form_validation->set_rules('Manager', 'Reporting Manager', 'trim|required|numeric|max_length[3]');
                     $this->form_validation->set_rules('Grade', 'Grade', 'trim|required|numeric|max_length[3]');
@@ -511,7 +512,7 @@ class Employees extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role=='Admin')
+                if($this->userdetails->Role==1)
                 {
                     $data = $this->user_model->get_user($empid); // Getting Employee details with ID
 
@@ -556,7 +557,7 @@ class Employees extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role=='Admin')
+                if($this->userdetails->Role==1)
                 {
                     $filterdata['Page'] = $_GET['Page'];
 

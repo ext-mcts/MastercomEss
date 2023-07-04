@@ -212,7 +212,7 @@ class User_model extends CI_Model {
 		{
 			$page = (isset($data['Page']) && is_numeric($data['Page']) ) ? $data['Page'] : 1;
   			$paginationStart = ($page - 1) * PER_PAGE_RECORDS;
-			$wherecond = '1=1 AND';
+			$wherecond = 'RelievingDt IS NOT NULL AND';
 			if(!empty($data['EmployeeID'])) $wherecond .= " EmployeeID=".$data['EmployeeID']." AND";
 			if(!empty($data['EmailName']))	$wherecond .= " EmailName LIKE '%".$data['EmailName']."%' AND";
 			$wherecond = rtrim($wherecond, ' AND');
@@ -303,6 +303,41 @@ class User_model extends CI_Model {
 
 		$query=$this->db->query($sql);
 		
+		return $query->result();
+	}
+
+	public function get_roles()
+	{
+		$sql = "SELECT * FROM `mcts_extranet`.`dbo.roles`";
+		$query=$this->db->query($sql);
+		return $query->result();
+	}
+
+	public function get_banks()
+	{
+		$sql = "SELECT * FROM `mcts_extranet`.`dbo.banks`";
+		$query=$this->db->query($sql);
+		return $query->result();
+	}
+
+	public function get_departments()
+	{
+		$sql = "SELECT * FROM `mcts_extranet`.`dbo.departments`";
+		$query=$this->db->query($sql);
+		return $query->result();
+	}
+
+	public function get_designations()
+	{
+		$sql = "SELECT * FROM `mcts_extranet`.`dbo.designations`";
+		$query=$this->db->query($sql);
+		return $query->result();
+	}
+
+	public function get_empbydept($empid)
+	{
+		$sql = "SELECT * FROM `mcts_extranet`.`dbo.employees` WHERE Department=$empid";
+		$query=$this->db->query($sql);
 		return $query->result();
 	}
 }

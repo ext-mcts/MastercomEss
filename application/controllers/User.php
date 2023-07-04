@@ -247,4 +247,165 @@ class User extends REST_Controller {
 		$data = $this->user_model->updaterelievingdate($empdata);
 	}
 
+	public function get_roles_get()
+	{
+        $headers = $this->input->request_headers(); 
+        if (isset($headers['Authorization'])) 
+        {
+            $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+            if ($decodedToken['status'])
+            {
+				$data = $this->user_model->get_roles();
+				if(count($data)>=1)
+				{
+					$message = array('results' => $data);
+					$message['status'] = true;
+					$this->response($message, REST_Controller::HTTP_OK);
+				}
+				else{ 
+					$message = array('message' => 'Something went wrong!.');
+					$message['status'] = false;
+					$this->response($message, REST_Controller::HTTP_OK);
+				}
+			}
+            else {
+                $this->response($decodedToken);
+            }
+        }
+        else {
+            $message = array('message' => 'Authentication failed');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+        }
+	}
+
+	public function get_banks_get()
+	{
+        $headers = $this->input->request_headers(); 
+        if (isset($headers['Authorization'])) 
+        {
+            $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+            if ($decodedToken['status'])
+            {
+				$data = $this->user_model->get_banks();
+				if(count($data)>=1)
+				{
+					$message = array('results' => $data);
+					$message['status'] = true;
+					$this->response($message, REST_Controller::HTTP_OK);
+				}
+				else{ 
+					$message = array('message' => 'Something went wrong!.');
+					$message['status'] = false;
+					$this->response($message, REST_Controller::HTTP_OK);
+				}
+			}
+            else {
+                $this->response($decodedToken);
+            }
+        }
+        else {
+            $message = array('message' => 'Authentication failed');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+        }
+	}
+
+	public function get_departments_get()
+	{
+        $headers = $this->input->request_headers(); 
+        if (isset($headers['Authorization'])) 
+        {
+            $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+            if ($decodedToken['status'])
+            {
+				$data = $this->user_model->get_departments();
+				if(count($data)>=1)
+				{
+					$message = array('results' => $data);
+					$message['status'] = true;
+					$this->response($message, REST_Controller::HTTP_OK);
+				}
+				else{ 
+					$message = array('message' => 'Something went wrong!.');
+					$message['status'] = false;
+					$this->response($message, REST_Controller::HTTP_OK);
+				}
+			}
+            else {
+                $this->response($decodedToken);
+            }
+        }
+        else {
+            $message = array('message' => 'Authentication failed');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+        }
+	}
+
+	public function get_designations_get()
+	{
+        $headers = $this->input->request_headers(); 
+        if (isset($headers['Authorization'])) 
+        {
+            $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+            if ($decodedToken['status'])
+            {
+				$data = $this->user_model->get_designations();
+				if(count($data)>=1)
+				{
+					$message = array('results' => $data);
+					$message['status'] = true;
+					$this->response($message, REST_Controller::HTTP_OK);
+				}
+				else{ 
+					$message = array('message' => 'Something went wrong!.');
+					$message['status'] = false;
+					$this->response($message, REST_Controller::HTTP_OK);
+				}
+			}
+            else {
+                $this->response($decodedToken);
+            }
+        }
+        else {
+            $message = array('message' => 'Authentication failed');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+        }
+	}
+
+	public function get_empbydeptid_get()
+	{
+		$empid = $this->uri->segment(3); // Employee ID
+
+        $headers = $this->input->request_headers(); 
+        if (isset($headers['Authorization'])) 
+        {
+            $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+            if ($decodedToken['status'])
+            {
+				$data = $this->user_model->get_empbydept($empid);
+				if(count($data)>=1)
+				{
+					$message = array('results' => $data);
+					$message['status'] = true;
+					$this->response($message, REST_Controller::HTTP_OK);
+				}
+				else{ 
+					$message = array('message' => 'Something went wrong!.');
+					$message['status'] = false;
+					$this->response($message, REST_Controller::HTTP_OK);
+				}
+			}
+            else {
+                $this->response($decodedToken);
+            }
+        }
+        else {
+            $message = array('message' => 'Authentication failed');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+        }
+	}
 }

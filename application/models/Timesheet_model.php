@@ -145,4 +145,18 @@ class Timesheet_model extends CI_Model
         $query=$this->db->query($sql);
 		return $query->result();
     }
+
+    public function get_categories()
+	{
+		$sql = "SELECT * FROM `mcts_extranet`.`dbo.tktcategories`";
+		$query=$this->db->query($sql);
+		return $query->result();
+	}
+
+    public function get_priorities()
+	{
+		$sql = "SELECT * FROM `mcts_extranet`.`dbo.tktpriorities`";
+		$query=$this->db->query($sql);
+		return $query->result();
+	}
 }

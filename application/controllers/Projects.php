@@ -127,7 +127,7 @@ class Projects extends REST_Controller
                     $this->form_validation->set_rules('EmployeeID', 'Employee', 'trim|required|numeric');
                     $this->form_validation->set_rules('ProjectID', 'Project', 'trim|required|numeric');
                     $this->form_validation->set_rules('AssignedDt', 'Assigned Date', 'trim|required');
-                    $this->form_validation->set_rules('Role', 'Role', 'trim|required|max_length[50]');
+                    $this->form_validation->set_rules('Role', 'Role', 'trim|required|numeric|max_length[3]');
                     #$this->form_validation->set_rules('ReportingTo', 'Reporting Manager', 'trim|required|max_length[50]');
 
                     if ($this->form_validation->run() === false) {
@@ -269,4 +269,80 @@ class Projects extends REST_Controller
             return false;
         }
     }
+
+    public function get_vendors_get()
+	{
+		$_GET['Page'] = $_GET['Page'] ?? 1;
+        $headers = $this->input->request_headers(); 
+        if (isset($headers['Authorization'])) 
+        {
+            $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+            if ($decodedToken['status'])
+            {
+				$filterdata = array();
+				$filterdata['Page'] = $_GET['Page'];
+
+				$data = $this->user_model->get_vendors($filterdata); // getting all employees
+				if(count($data)>=1)
+				{
+					$message = array('page' => $_GET['Page'],
+									'total_rows' => count($data),
+									'results' => $data,);
+					$message['status'] = true;
+					$this->response($message, REST_Controller::HTTP_OK);
+				}
+				else{ 
+					$message = array('message' => 'Something went wrong!.');
+					$message['status'] = false;
+					$this->response($message, REST_Controller::HTTP_OK);
+				}
+			}
+            else {
+                $this->response($decodedToken);
+            }
+        }
+        else {
+            $message = array('message' => 'Authentication failed');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+        }
+	}
+
+    public function get_endclients_get()
+	{
+		$_GET['Page'] = $_GET['Page'] ?? 1;
+        $headers = $this->input->request_headers(); 
+        if (isset($headers['Authorization'])) 
+        {
+            $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+            if ($decodedToken['status'])
+            {
+				$filterdata = array();
+				$filterdata['Page'] = $_GET['Page'];
+
+				$data = $this->user_model->get_endclients($filterdata); // getting all employees
+				if(count($data)>=1)
+				{
+					$message = array('page' => $_GET['Page'],
+									'total_rows' => count($data),
+									'results' => $data,);
+					$message['status'] = true;
+					$this->response($message, REST_Controller::HTTP_OK);
+				}
+				else{ 
+					$message = array('message' => 'Something went wrong!.');
+					$message['status'] = false;
+					$this->response($message, REST_Controller::HTTP_OK);
+				}
+			}
+            else {
+                $this->response($decodedToken);
+            }
+        }
+        else {
+            $message = array('message' => 'Authentication failed');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+        }
+	}
 }
