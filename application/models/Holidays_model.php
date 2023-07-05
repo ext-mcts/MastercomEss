@@ -13,7 +13,7 @@ class Holidays_model extends CI_Model {
     public function create_holiday($data)
     {
         $sql = "INSERT INTO `mcts_extranet`.`dbo.holidays` (HolidayDt, HolidayDesc, Location, HolidayType) 
-                VALUES ('".date('Y-m-d 00:00:00',strtotime($data['HolidayDate']))."','".$data['HolidayDesc']."',
+                VALUES ('".date('Y-m-d',strtotime($data['HolidayDate']))."','".$data['HolidayDesc']."',
                 '".$data['Location']."','".$data['HolidayType']."')";
 
         $query=$this->db->query($sql);
@@ -46,7 +46,7 @@ class Holidays_model extends CI_Model {
     public function update_holidays($data,$holidayid)
     {
         $sql = "UPDATE `mcts_extranet`.`dbo.holidays` SET 
-                HolidayDt= '".date('Y-m-d 00:00:00',strtotime($data['HolidayDate']))."',
+                HolidayDt= '".date('Y-m-d',strtotime($data['HolidayDate']))."',
                 HolidayDesc='".$data['HolidayDesc']."',Location='".$data['Location']."',HolidayType='".$data['HolidayType']."'
                 WHERE HolidayID='$holidayid'";
 
@@ -79,7 +79,7 @@ class Holidays_model extends CI_Model {
   			$paginationStart = ($page - 1) * PER_PAGE_RECORDS;
             $wherecond = '';
 			$wherecond .= '1=1 AND';
-			if(!empty($data['HolidayDt'])) $wherecond .= " HolidayDt='".date('Y-m-d 00:00:00',strtotime($data['HolidayDt']))."' AND";
+			if(!empty($data['HolidayDt'])) $wherecond .= " HolidayDt='".date('Y-m-d',strtotime($data['HolidayDt']))."' AND";
 			if(!empty($data['HolidayDesc']))	$wherecond .= " HolidayDesc LIKE '%".$data['HolidayDesc']."%' AND";
             if(!empty($data['Location'])) $wherecond .= " Location=".$data['Location']." AND";
             if(!empty($data['Year'])){

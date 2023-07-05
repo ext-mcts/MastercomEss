@@ -22,7 +22,7 @@ class Timesheet_model extends CI_Model
     public function timesheet_single_entry($data)
     {
         $sql = "INSERT INTO `mcts_extranet`.`dbo.timesheetdetails` (TSID, TSDate, Start, Finish, Activity, ProjectId, NumofHrs)
-                VALUES ('".$data['TSID']."','".date('Y-m-d 00:00:00',strtotime($data['TSDate']))."','".$data['Start']."',
+                VALUES ('".$data['TSID']."','".date('Y-m-d',strtotime($data['TSDate']))."','".$data['Start']."',
                         '".$data['Finish']."','".$data['Activity']."','".$data['ProjectId']."','".$data['NumofHrs']."')";
         $query=$this->db->query($sql);
         if($query)
@@ -43,7 +43,7 @@ class Timesheet_model extends CI_Model
     public function update_tsdetails_byproject($tsid,$data)
     {
         $sql = "UPDATE `mcts_extranet`.`dbo.timesheetdetails` SET
-                TSDate = '".date('d-m-Y 00:00:00',strtotime($data['TSDate']))."', Start = '".$data['Start']."',Finish='".$data['Finish']."',Activity='".$data['Activity']."',ProjectId='".$data['ProjectId']."'
+                TSDate = '".date('d-m-Y',strtotime($data['TSDate']))."', Start = '".$data['Start']."',Finish='".$data['Finish']."',Activity='".$data['Activity']."',ProjectId='".$data['ProjectId']."'
                 WHERE TSDetailsID='$tsid'";
 
         $query=$this->db->query($sql);
@@ -90,22 +90,22 @@ class Timesheet_model extends CI_Model
                 $wherecond .= " TSID LIKE '%$tsid%' AND";
             } 
 			//if(!empty($data['TSID'])) $wherecond .= " TSID='".$data['TSID']."' AND";
-			if(!empty($data['TSDate']))	$wherecond .= " TSDate = '".date('d-m-Y 00:00:00',strtotime($data['TSDate']))."' AND";
+			if(!empty($data['TSDate']))	$wherecond .= " TSDate = '".date('d-m-Y',strtotime($data['TSDate']))."' AND";
             if(!empty($data['Start'])) $wherecond .= " Start=".$data['Start']." AND";
             if(!empty($data['Finish'])) $wherecond .= " Finish=".$data['Finish']." AND";
             if(!empty($data['Location'])) $wherecond .= " Location=".$data['Location']." AND";
             if(!empty($data['ProjectId'])) $wherecond .= " ProjectId=".$data['ProjectId']." AND";
             if(!empty($data['FromDate']) && !empty($data['ToDate'])) 
             {
-                $wherecond .= " TSDate>='".date('d-m-Y 00:00:00',strtotime($data['FromDate']))."' AND TSDate<='".date('d-m-Y 00:00:00',strtotime($data['ToDate']))."' AND";
+                $wherecond .= " TSDate>='".date('d-m-Y',strtotime($data['FromDate']))."' AND TSDate<='".date('d-m-Y',strtotime($data['ToDate']))."' AND";
             }
             if(!empty($data['FromDate']) && empty($data['ToDate'])) 
             {
-                $wherecond .= " TSDate>='".date('d-m-Y 00:00:00',strtotime($data['FromDate']))."' AND";
+                $wherecond .= " TSDate>='".date('d-m-Y',strtotime($data['FromDate']))."' AND";
             }
             if(empty($data['FromDate']) && !empty($data['ToDate'])) 
             {
-                $wherecond .= " TSDate<='".date('d-m-Y 00:00:00',strtotime($data['ToDate']))."' AND";
+                $wherecond .= " TSDate<='".date('d-m-Y',strtotime($data['ToDate']))."' AND";
             }
 			$wherecond = rtrim($wherecond, ' AND');
 			$sql = "SELECT * FROM `mcts_extranet`.`dbo.timesheetdetails` WHERE $wherecond ORDER BY TSDate DESC LIMIT $paginationStart,".PER_PAGE_RECORDS;

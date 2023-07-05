@@ -12,7 +12,7 @@ class Leaves_model extends CI_Model {
     public function apply_leave($data)
     {
         $sql = "INSERT INTO `mcts_extranet`.`dbo.leave` (EmployeeID,LStartDt,Reason) 
-                VALUES ('".$data['EmployeeID']."','".date('Y-m-d 00:00:00',strtotime($data['Date']))."','".$data['Reason']."')";
+                VALUES ('".$data['EmployeeID']."','".date('Y-m-d',strtotime($data['Date']))."','".$data['Reason']."')";
 
         $query=$this->db->query($sql);
         if($query)
@@ -23,7 +23,7 @@ class Leaves_model extends CI_Model {
 
     public function check_leaves($empid,$date)
     {
-        $sql = "SELECT * FROM `mcts_extranet`.`dbo.leave` WHERE EmployeeID=$empid AND LStartDt='".date('Y-m-d 00:00:00', strtotime($date))."'";
+        $sql = "SELECT * FROM `mcts_extranet`.`dbo.leave` WHERE EmployeeID=$empid AND LStartDt='".date('Y-m-d', strtotime($date))."'";
         $query = $this->db->query($sql);
         return $query->result();
     }

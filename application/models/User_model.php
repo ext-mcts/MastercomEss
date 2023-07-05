@@ -26,10 +26,10 @@ class User_model extends CI_Model {
 				VALUES 
 				('".$data['FirstName']."','".$data['LastName']."','".$data['EmailName']."',
 				'".$data['Password']."','".$data['Role']."','".$data['WorkLocation']."','".$data['Department']."',
-				'".$data['Designation']."','".date('Y-m-d 00:00:00',strtotime($data['JoinDate']))."','".$data['Phone1']."','".$data['PANNumber']."',
+				'".$data['Designation']."','".date('Y-m-d',strtotime($data['JoinDate']))."','".$data['Phone1']."','".$data['PANNumber']."',
 				'".$data['BankName']."','".$data['BankAccNumber']."','".$data['Manager']."','".$data['Grade']."',
 				'".$data['Address']."','".$data['FathersName']."','".$data['TempAddress']."','".$data['Phone2']."',
-				'".$data['AppLetterRef']."','".$data['BranchDetails']."','".date('Y-m-d 00:00:00',strtotime($data['DOB']))."',
+				'".$data['AppLetterRef']."','".$data['BranchDetails']."','".date('Y-m-d',strtotime($data['DOB']))."',
 				'".$data['JobRole']."','".$data['Level']."','".$data['Vertical']."','".$data['PFAccount']."',
 				'".$data['AltEmailID']."','".$data['Technology']."','".$data['Language']."','".$data['Aadhar']."','".$data['Passport']."')";
 
@@ -112,7 +112,7 @@ class User_model extends CI_Model {
 		if(isset($data['Phone2']))	$sql.=",Phone2='".$data['Phone2']."'";
 		if(isset($data['AppLetterRef']))	$sql.=",AppLetterRef='".$data['AppLetterRef']."'";
 		if(isset($data['BranchDetails']))	$sql.=",BranchDetails='".$data['BranchDetails']."'";
-		if(isset($data['DOB']))	$sql.=",DOB='".date('Y-m-d 00:00:00',strtotime($data['DOB']))."'";
+		if(isset($data['DOB']))	$sql.=",DOB='".date('Y-m-d',strtotime($data['DOB']))."'";
 		if(isset($data['JobRole']))	$sql.=",JobRole='".$data['JobRole']."'";
 		if(isset($data['Level']))	$sql.=",Level='".$data['Level']."'";
 		if(isset($data['Vertical']))	$sql.=",Vertical='".$data['Vertical']."'";

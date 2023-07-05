@@ -49,8 +49,8 @@ class Projects_model extends CI_Model {
     {
         $sql = "INSERT INTO `mcts_extranet`.`dbo.employee2project`
                 (EmployeeID,ProjectID,AssignedDt,Role,ReportingTo,CreatedDt) 
-                VALUES ('".$data['EmployeeID']."','".$data['ProjectID']."','".date('Y-m-d 00:00:00',strtotime($data['AssignedDt']))."',
-                        '".$data['Role']."','".$data['ReportingTo']."','".date('Y-m-d 00:00:00')."')";
+                VALUES ('".$data['EmployeeID']."','".$data['ProjectID']."','".date('Y-m-d',strtotime($data['AssignedDt']))."',
+                        '".$data['Role']."','".$data['ReportingTo']."','".date('Y-m-d')."')";
         $query=$this->db->query($sql);
         if($query)
             return true;
