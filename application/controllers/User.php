@@ -408,4 +408,36 @@ class User extends REST_Controller {
             $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
         }
 	}
+
+	public function get_allusers_get()
+	{
+        $headers = $this->input->request_headers(); 
+        if (isset($headers['Authorization'])) 
+        {
+            $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+            if ($decodedToken['status'])
+            {
+				$data = $this->user_model->get_users();
+				if(count($data)>=1)
+				{
+					$message = array('results' => $data);
+					$message['status'] = true;
+					$this->response($message, REST_Controller::HTTP_OK);
+				}
+				else{ 
+					$message = array('message' => 'Something went wrong!.');
+					$message['status'] = false;
+					$this->response($message, REST_Controller::HTTP_OK);
+				}
+			}
+            else {
+                $this->response($decodedToken);
+            }
+        }
+        else {
+            $message = array('message' => 'Authentication failed');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+        }
+	}
 }

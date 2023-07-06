@@ -109,4 +109,25 @@ class Projects_model extends CI_Model {
 		$query=$this->db->query($sql);
 		return $query->result();
 	}
+
+    public function get_all_projects($data=null)
+	{
+		$sql = "SELECT * FROM `mcts_extranet`.`dbo.projects`";
+		if(!empty($data))
+		{
+			$page = (isset($data['Page']) && is_numeric($data['Page']) ) ? $data['Page'] : 1;
+  			$paginationStart = ($page - 1) * PER_PAGE_RECORDS;
+			$wherecond = '1=1 AND';
+			if(!empty($data['VendorID'])) $wherecond .= " VendorID=".$data['VendorID']." AND";
+			if(!empty($data['ProjectName']))	$wherecond .= " ProjectName LIKE '%".$data['ProjectName']."%' AND";
+            if(!empty($data['EndClient'])) $wherecond .= " EndClient=".$data['EndClient']." AND";
+            if(!empty($data['ProjectCode'])) $wherecond .= " ProjectCode=".$data['ProjectCode']." AND";
+            if(!empty($data['Category'])) $wherecond .= " Category=".$data['Category']." AND";
+			$wherecond = rtrim($wherecond, ' AND');
+			$sql = "SELECT * FROM `mcts_extranet`.`dbo.projects` WHERE $wherecond ORDER BY ProjectID DESC LIMIT $paginationStart,".PER_PAGE_RECORDS;
+		}
+		
+		$query=$this->db->query($sql);
+		return $query->result();
+	}
 }

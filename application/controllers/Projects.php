@@ -42,6 +42,57 @@ class Projects extends REST_Controller
 
     }
 
+    public function index_get()
+    {
+        $_GET['Page'] = $_GET['Page'] ?? 1;
+        $headers = $this->input->request_headers(); 
+        if (isset($headers['Authorization'])) 
+        {
+            $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+            if ($decodedToken['status'])
+            {
+                if($this->userdetails->Role==1)  // 1- admin
+                {
+                    $filterdata = array();
+
+                    if($this->input->get("ProjectName")) $filterdata['ProjectName']=$this->input->get("ProjectName");
+                    if($this->input->get("VendorID")) $filterdata['VendorID']=$this->input->get("VendorID");
+                    if($this->input->get("EndClient")) $filterdata['EndClient']=$this->input->get("EndClient");
+                    if($this->input->get("ProjectCode")) $filterdata['ProjectCode']=$this->input->get("ProjectCode");
+                    if($this->input->get("Category")) $filterdata['Category']=$this->input->get("Category");
+                    $filterdata['Page'] = $_GET['Page'];
+
+                    $data = $this->projects_model->get_all_projects($filterdata); // getting all employees
+                    if(count($data)>=1)
+                    {
+                        $message = array('page' => $_GET['Page'],
+                                        'total_rows' => count($data),
+                                        'results' => $data,);
+                        $message['status'] = true;
+                        $this->response($message, REST_Controller::HTTP_OK);
+                    }
+                    else{ 
+                        $message = array('message' => 'Something went wrong!.');
+                        $message['status'] = false;
+                        $this->response($message, REST_Controller::HTTP_OK);
+                    }
+                } else {
+                    $message = array('message' => 'This Role not allowed to View list of projects');
+                    $message['status'] = false;
+                    $this->response($message,REST_Controller::HTTP_UNAUTHORIZED);
+                }
+            }
+            else {
+                $this->response($decodedToken);
+            }
+        }
+        else {
+            $message = array('message' => 'Authentication failed');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+        }
+    }
+
     /* Create Project API */
     public function create_post()
     {

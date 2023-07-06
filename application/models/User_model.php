@@ -340,4 +340,11 @@ class User_model extends CI_Model {
 		$query=$this->db->query($sql);
 		return $query->result();
 	}
+
+	public function get_users()
+	{
+		$sql = "SELECT * FROM `mcts_extranet`.`dbo.employees` WHERE RelievingDt IS NULL AND QuitDate IS NULL";
+		$query=$this->db->query($sql);
+		return $query->result();
+	}
 }
