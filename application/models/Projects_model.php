@@ -130,4 +130,12 @@ class Projects_model extends CI_Model {
 		$query=$this->db->query($sql);
 		return $query->result();
 	}
+
+    public function get_project($project_id) {
+		
+		$sql = "SELECT * from `mcts_extranet`.`dbo.projects` where ProjectID = '$project_id'";
+		$query=$this->db->query($sql);
+		return $query->row();
+		
+	}
 }

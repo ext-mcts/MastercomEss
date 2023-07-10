@@ -321,6 +321,59 @@ class Projects extends REST_Controller
         }
     }
 
+    public function view_get()
+    {
+        $projid = $this->uri->segment(3); // Project ID
+
+        if(!is_numeric($projid) || empty($projid) || $projid==0){
+            $message = array('message' => 'Project ID not numeric/empty/too lengthy');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_BAD_REQUEST);
+            return false;
+        }
+
+        $headers = $this->input->request_headers(); 
+        if (isset($headers['Authorization'])) 
+        {
+            $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+            if ($decodedToken['status'])
+            {
+                if($this->userdetails->Role==1)
+                {
+                    $data = $this->projects_model->get_project($projid); // Getting Employee details with ID
+
+                    if($data)
+                    {
+                        $message = array('results' => $data);
+                        $message['status'] = true;
+                        $this->response($message, REST_Controller::HTTP_OK);
+                    }
+                    else{ 
+                        $message = array('message' => 'Something went wrong!.');
+                        $message['status'] = false;
+                        $this->response($message, REST_Controller::HTTP_OK);
+                    }
+                }
+                else
+                {
+                    $message = array('message' => 'This Role not allowed to view Project details');
+                    $message['status'] = false;
+                    $this->response($message,REST_Controller::HTTP_UNAUTHORIZED);
+                }
+            }
+            else
+            {
+                $this->response($decodedToken);
+            }
+        }
+        else 
+        {
+            $message = array('message' => 'Authentication failed');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+        }
+    }
+
     public function get_vendors_get()
 	{
 		$_GET['Page'] = $_GET['Page'] ?? 1;

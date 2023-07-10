@@ -652,4 +652,57 @@ class Timesheet extends REST_Controller
             return false; 
         }
     }
+
+    public function view_get()
+    {
+        $tsid = $this->uri->segment(3); // Project ID
+
+        if(!is_numeric($tsid) || empty($tsid) || $tsid==0){
+            $message = array('message' => 'Timesheet ID not numeric/empty/too lengthy');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_BAD_REQUEST);
+            return false;
+        }
+
+        $headers = $this->input->request_headers(); 
+        if (isset($headers['Authorization'])) 
+        {
+            $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+            if ($decodedToken['status'])
+            {
+                if($this->userdetails->Role==1)
+                {
+                    $data = $this->timesheet_model->check_ts_id($tsid);
+
+                    if($data)
+                    {
+                        $message = array('results' => $data);
+                        $message['status'] = true;
+                        $this->response($message, REST_Controller::HTTP_OK);
+                    }
+                    else{ 
+                        $message = array('message' => 'Something went wrong!.');
+                        $message['status'] = false;
+                        $this->response($message, REST_Controller::HTTP_OK);
+                    }
+                }
+                else
+                {
+                    $message = array('message' => 'This Role not allowed to view Project details');
+                    $message['status'] = false;
+                    $this->response($message,REST_Controller::HTTP_UNAUTHORIZED);
+                }
+            }
+            else
+            {
+                $this->response($decodedToken);
+            }
+        }
+        else 
+        {
+            $message = array('message' => 'Authentication failed');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+        }
+    }
 }
