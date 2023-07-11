@@ -188,7 +188,7 @@ class Leave extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role=='Admin' || $this->userdetails->Role=='Manager')
+                if($this->userdetails->Role==1 || $this->userdetails->Role==3)
                 {
                     $data = $this->leaves_model->accept_reject_leave($leaveid,$status); // updating status as Approve
 
@@ -298,7 +298,7 @@ class Leave extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role=='Admin' || $this->userdetails->Role=='Manager')
+                if($this->userdetails->Role==1 || $this->userdetails->Role==3)
                 {
                     $ldata = $this->put();
                     $data = $this->leaves_model->accept_reject_leave($leaveid,$status,$ldata); // updating status as Approve
@@ -422,7 +422,7 @@ class Leave extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role=='Admin' || $this->userdetails->Role=='Manager')
+                if($this->userdetails->Role==1 || $this->userdetails->Role==3)
                 {
                     $this->form_validation->set_rules('month', 'Select LOP Calculation Month', 'trim|required');
 

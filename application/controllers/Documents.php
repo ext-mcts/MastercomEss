@@ -48,7 +48,7 @@ class Documents extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role=='Admin')
+                if($this->userdetails->Role==1)
                 {
 
                     if(empty($_FILES))
@@ -145,7 +145,7 @@ class Documents extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role=='Admin')
+                if($this->userdetails->Role==1)
                 {
                     $doc_id = $this->uri->segment(3);
 
@@ -217,7 +217,7 @@ class Documents extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role=='Admin')
+                if($this->userdetails->Role==1)
                 {
                     $doc_id = $this->uri->segment(3); // Document ID
 
@@ -293,7 +293,7 @@ class Documents extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role=='Admin')
+                if($this->userdetails->Role==1)
                 {
                     $docid = $this->uri->segment(3);
 

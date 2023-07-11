@@ -48,7 +48,7 @@ class AccuredLeaves extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role=='Admin')
+                if($this->userdetails->Role==1)
                 {
                     $this->form_validation->set_rules('Cycle', 'Cycle', 'trim|required|max_length[50]');
                     $this->form_validation->set_rules('LeavesConsiderInProbation', 'Leaves Consider In Probation', 'trim|required|max_length[5]');
@@ -109,7 +109,7 @@ class AccuredLeaves extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role=='Admin')
+                if($this->userdetails->Role==1)
                 {
                     $this->form_validation->set_rules('Cycle', 'Cycle', 'trim|required|max_length[50]'); // Monthly or Quartarly or Half yearly or Yearly
                     //$this->form_validation->set_rules('Cycletype', 'Cycle Type', 'trim|required|max_length[50]');// future or current
@@ -170,7 +170,7 @@ class AccuredLeaves extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role=='Admin')
+                if($this->userdetails->Role==1)
                 {
                     $data = $this->accuredleaves_model->RunScheduleForLeaveCalculation();
 

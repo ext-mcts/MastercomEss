@@ -355,7 +355,7 @@ class Timesheet extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role=='Admin' || $this->userdetails->Role=='Manager')
+                if($this->userdetails->Role==1 || $this->userdetails->Role==3)
                 {
                     $data = $this->timesheet_model->accept_reject_timesheet($tsid,$status); // updating status as Approve
 
@@ -461,7 +461,7 @@ class Timesheet extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role=='Admin' || $this->userdetails->Role=='Manager')
+                if($this->userdetails->Role==1 || $this->userdetails->Role==3)
                 {
                     $data = $this->timesheet_model->accept_reject_timesheet($tsid,$status);// updating status as Reject
 
@@ -613,7 +613,7 @@ class Timesheet extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role=='Admin' || $this->userdetails->Role=='Manager')
+                if($this->userdetails->Role==1 || $this->userdetails->Role==3)
                 {
                     $data = $this->timesheet_model->delete_timesheet($tsid); // deleting Timesheet
 

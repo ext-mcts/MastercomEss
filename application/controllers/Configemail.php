@@ -48,7 +48,7 @@ class Configemail extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role=='Admin')
+                if($this->userdetails->Role==1)
                 {
                     $_POST = json_decode(file_get_contents("php://input"), true);
                     

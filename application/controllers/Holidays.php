@@ -49,7 +49,7 @@ class Holidays extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if($decodedToken['status'])
             {
-                if($this->userdetails->Role=='Admin' || $this->userdetails->Role=='Manager')
+                if($this->userdetails->Role==1 || $this->userdetails->Role==3)
                 {
                     $_POST = json_decode(file_get_contents("php://input"), true);
 
@@ -140,7 +140,7 @@ class Holidays extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role=='Admin' || $this->userdetails->Role=='Manager')
+                if($this->userdetails->Role==1 || $this->userdetails->Role==3)
                 {
                     $_POST = json_decode(file_get_contents("php://input"), true);
                     
@@ -237,7 +237,7 @@ class Holidays extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role=='Admin' || $this->userdetails->Role=='Manager')
+                if($this->userdetails->Role==1 || $this->userdetails->Role==3)
                 {
                     $data = $this->holidays_model->delete_holiday($holidayid); // Deleting Holiday
 
