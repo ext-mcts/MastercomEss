@@ -325,4 +325,35 @@ class Holidays extends REST_Controller
         }
     }
 
+    public function upcoming_holidays_get()
+    {
+        $headers = $this->input->request_headers(); 
+        if (isset($headers['Authorization'])) 
+        {
+            $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+            if ($decodedToken['status'])
+            {
+                $data = $this->holidays_model->get_upcoming_holidays($this->userdetails->Location);
+                if($data)
+                {
+                    $message = array('results' => $data);
+                    $message['status'] = true;
+                    $this->response($message, REST_Controller::HTTP_OK);
+                }
+                else{ 
+                    $message = array('message' => 'No Data found!');
+                    $message['status'] = false;
+                    $this->response($message, REST_Controller::HTTP_OK);
+                }
+            }
+            else {
+                $this->response($decodedToken);
+            }
+        }
+        else {
+            $message = array('message' => 'Authentication failed');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+        }   
+    }
 }

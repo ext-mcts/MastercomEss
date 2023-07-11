@@ -103,4 +103,11 @@ class Holidays_model extends CI_Model {
         $query=$this->db->query($sql);
 		return $query->row();
     }
+
+    public function get_upcoming_holidays($location)
+    {
+        $sql = "SELECT COUNT(*) AS holidays FROM mcts_extranet.`dbo.holidays` WHERE HolidayDt > curdate() AND Location=$location";
+        $query=$this->db->query($sql);
+        return $query->result();
+    }
 }
