@@ -19,4 +19,11 @@ class Attendance_model extends CI_Model {
         else
             return false;
     }
+
+    public function GetSwipes($empid)
+    {
+        $sql = "SELECT * FROM `mcts_extranet`.`dbo.attendancelogs` WHERE EmployeeID=$empid AND SwipeDate='".date('Y-m-d')."'";
+		$query=$this->db->query($sql);
+        return $query->result();
+    }
 }
