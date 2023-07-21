@@ -49,8 +49,15 @@ class Leave extends REST_Controller
             {
                 $_POST = json_decode(file_get_contents("php://input"), true);
                 
-                $this->form_validation->set_rules('Date', 'Leave Date', 'trim|required');
+                $this->form_validation->set_rules('LeaveType', 'Leave Type', 'trim|required');
+                $this->form_validation->set_rules('FromDate', 'From Date', 'trim|required');
+                $this->form_validation->set_rules('FromSession', 'From Session', 'trim|required');
+                $this->form_validation->set_rules('ToDate', 'To Date', 'trim|required');
+                $this->form_validation->set_rules('ToSession', 'To Session', 'trim|required');
                 $this->form_validation->set_rules('Reason', 'Leave Reason', 'trim|required|max_length[255]');
+                $this->form_validation->set_rules('Manager', 'Select Manager', 'trim|required|numeric');
+                $this->form_validation->set_rules('Manager2', 'Select CC', 'trim|numeric');
+                $this->form_validation->set_rules('Contact', 'Contact Number', 'trim|required|numeric');
 
                 if ($this->form_validation->run() === false) 
                 {
@@ -60,7 +67,7 @@ class Leave extends REST_Controller
                     return false;
                 }
 
-                $startDate = strtotime(date('Y-m-d', strtotime($this->input->post('Date')) ) );
+                /*$startDate = strtotime(date('Y-m-d', strtotime($this->input->post('Date')) ) );
                 $currentDate = strtotime(date('Y-m-d'));
 
                 if($startDate < $currentDate) {
@@ -68,22 +75,22 @@ class Leave extends REST_Controller
                     $message['status'] = false;
                     $this->response($message, REST_Controller::HTTP_BAD_REQUEST);
                     return false;
-                }
+                }*/
 
-                $check = $this->leaves_model->check_leaves($this->userdetails->EmployeeID,$this->input->post('Date'));
+                /*$check = $this->leaves_model->check_leaves($this->userdetails->EmployeeID,$this->input->post('Date'));
 
                 if(count($check)==1){
                     $message = array('message' => 'This Employee already applied leave for this date!');
                     $message['status'] = false;
                     $this->response($message,REST_Controller::HTTP_BAD_REQUEST);
                     return false;
-                }
+                }*/
 
                 $leavedata = array();
                 $leavedata = $this->input->post();
                 $leavedata["EmployeeID"] = $this->userdetails->EmployeeID;
 
-                $data = $this->leaves_model->apply_leave($leavedata);// Inserting Employee
+                $data = $this->leaves_model->apply_leave($leavedata);
 
                 if($data)
                 {
@@ -474,5 +481,165 @@ class Leave extends REST_Controller
             $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
             return false;
         } 
+    }
+
+    public function leave_type_get()
+    {
+        $leavetype = $this->uri->segment(3);
+
+        $headers = $this->input->request_headers(); 
+        if (isset($headers['Authorization'])) 
+        {
+            $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+            if ($decodedToken['status'])
+            {
+                $data = $this->accuredleaves_model->get_leave_types($leavetype,$this->userdetails->EmployeeID);
+
+				if($data)
+				{
+					$message = array('results' => $data);
+					$message['status'] = true;
+					$this->response($message, REST_Controller::HTTP_OK);
+				}
+				else{ 
+					$message = array('message' => 'Something went wrong!.');
+					$message['status'] = false;
+					$this->response($message, REST_Controller::HTTP_OK);
+				}
+            }
+            else {
+                $this->response($decodedToken);
+            }
+        }
+        else {
+            $message = array('message' => 'Authentication failed');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+        }
+    }
+
+    public function pending_leaves_get()
+    {
+        $headers = $this->input->request_headers(); 
+        if (isset($headers['Authorization'])) 
+        {
+            $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+            if ($decodedToken['status'])
+            {
+                $data = $this->leaves_model->get_leaves($this->userdetails->EmployeeID,0);
+                $i=0;
+                foreach($data as $leaves)
+                {
+
+                    $days = $this->CaluculateDaysWithSession($leaves->LStartDt,$leaves->SessionFrom,$leaves->LFinishDt,$leaves->SessionTo);
+                    
+                    $data[$i]->noofdays = $days;
+                    $i++;
+                }
+
+				if($data)
+				{
+					$message = array('results' => $data);
+					$message['status'] = true;
+					$this->response($message, REST_Controller::HTTP_OK);
+				}
+				else{ 
+					$message = array('message' => 'Something went wrong!.');
+					$message['status'] = false;
+					$this->response($message, REST_Controller::HTTP_OK);
+				}
+            }
+            else {
+                $this->response($decodedToken);
+            }
+        }
+        else {
+            $message = array('message' => 'Authentication failed');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+        }  
+    }
+
+    public function CaluculateDaysWithSession($frmdt,$ses1,$todt,$ses2)
+    {
+        if($frmdt==$todt)
+        {
+            if($ses1==$ses2)
+            {
+                return 0.5;
+            }
+            if($ses1!=$ses2)
+            {
+                return 1;
+            }
+        }
+
+        if($frmdt!=$todt)
+        {
+            if($ses1==$ses2)
+            {
+                $now = strtotime($todt);
+                $your_date = strtotime($frmdt);
+                $datediff = $now - $your_date;
+                
+                return round($datediff / (60 * 60 * 24))+0.5;
+                
+            }
+            if($ses1!=$ses2)
+            {
+                $now = strtotime($todt);
+                $your_date = strtotime(date('Y-m-d',strtotime('-1 day',strtotime($frmdt))));
+                $datediff = $now - $your_date;
+                
+                return round($datediff / (60 * 60 * 24));
+            }
+        }
+    }
+
+    public function history_get()
+    {
+        $headers = $this->input->request_headers(); 
+        if (isset($headers['Authorization'])) 
+        {
+            $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+            if ($decodedToken['status'])
+            {
+                $data = $this->leaves_model->get_leaves($this->userdetails->EmployeeID);
+                $i=0;
+                foreach($data as $leaves)
+                {
+
+                    $days = $this->CaluculateDaysWithSession($leaves->LStartDt,$leaves->SessionFrom,$leaves->LFinishDt,$leaves->SessionTo);
+                    
+                    $data[$i]->noofdays = $days;
+                    if($leaves->Approved==1)
+                        $data[$i]->Approved = 'Approved';
+                    if($leaves->Approved==2)
+                        $data[$i]->Approved = 'Rejected';
+
+                    $i++;
+                }
+
+				if($data)
+				{
+					$message = array('results' => $data);
+					$message['status'] = true;
+					$this->response($message, REST_Controller::HTTP_OK);
+				}
+				else{ 
+					$message = array('message' => 'Something went wrong!.');
+					$message['status'] = false;
+					$this->response($message, REST_Controller::HTTP_OK);
+				}
+            }
+            else {
+                $this->response($decodedToken);
+            }
+        }
+        else {
+            $message = array('message' => 'Authentication failed');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+        }  
     }
 }

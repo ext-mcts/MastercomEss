@@ -1194,4 +1194,33 @@ class AccuredLeaves_model extends CI_Model {
         $query=$this->db->query($sql);
 		return $query->row();
     }
+
+    public function get_leave_types($leavetype,$empid)
+    {
+        switch($leavetype) {
+            case 'LOP':
+                $sql = "SELECT LOP FROM `mcts_extranet`.`dbo.accuredleaves` WHERE EmployeeID='$empid'";
+                $query=$this->db->query($sql);
+                return $query->row();
+                break;
+            
+            case 'Compoff':
+                $sql = "SELECT CompOffs FROM `mcts_extranet`.`dbo.accuredleaves` WHERE EmployeeID='$empid'";
+                $query=$this->db->query($sql);
+                return $query->row();
+                break;
+
+            case 'Annualleave':
+                $sql = "SELECT LeaveBalance FROM `mcts_extranet`.`dbo.accuredleaves` WHERE EmployeeID='$empid'";
+                $query=$this->db->query($sql);
+                return $query->row();
+                break;
+
+            case 'Paternityleave':
+                $sql = "SELECT PaternityLeaves FROM `mcts_extranet`.`dbo.accuredleaves` WHERE EmployeeID='$empid'";
+                $query=$this->db->query($sql);
+                return $query->row();
+                break;
+        }
+    }
 }

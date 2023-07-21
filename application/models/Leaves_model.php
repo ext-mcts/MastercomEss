@@ -11,8 +11,11 @@ class Leaves_model extends CI_Model {
 
     public function apply_leave($data)
     {
-        $sql = "INSERT INTO `mcts_extranet`.`dbo.leave` (EmployeeID,LStartDt,Reason) 
-                VALUES ('".$data['EmployeeID']."','".date('Y-m-d',strtotime($data['Date']))."','".$data['Reason']."')";
+        $sql = "INSERT INTO `mcts_extranet`.`dbo.leave` (EmployeeID,LStartDt,SessionFrom,LFinishDt,SessionTo,Reason,LeaveType,
+                            Manager,Manager2,Contact) 
+                VALUES ('".$data['EmployeeID']."','".date('Y-m-d',strtotime($data['FromDate']))."','".$data['FromSession']."',
+                        '".date('Y-m-d',strtotime($data['ToDate']))."','".$data['ToSession']."','".$data['Reason']."',
+                        '".$data['LeaveType']."','".$data['Manager']."','".$data['Manager2']."','".$data['Contact']."')";
 
         $query=$this->db->query($sql);
         if($query)
@@ -94,5 +97,25 @@ class Leaves_model extends CI_Model {
         $sql = "SELECT count(*) as leaves FROM `mcts_extranet`.`dbo.leave` WHERE EmployeeID='$empid' AND Approved='$status' AND MONTH(LStartDt) = '$month'";
         $query=$this->db->query($sql);
 		return $query->row();
+    }
+
+    public function get_leaves($empid,$leavestatus=null)
+    {
+        $sql = "SELECT LStartDt, SessionFrom,LFinishDt,SessionTo,Reason,AppliedDate,e.FirstName,lt.LeaveType,l.Approved
+                from mcts_extranet.`dbo.leave` l
+                LEFT JOIN mcts_extranet.`dbo.employees` e ON l.Manager=e.EmployeeID
+                LEFT JOIN mcts_extranet.`dbo.leavetypes` lt ON l.LeaveType=lt.id
+                WHERE l.EmployeeID='$empid'";
+        if($leavestatus!='')
+        {
+            $sql .= "AND Approved='$leavestatus'";
+        }
+        if($leavestatus=='')
+        {
+            $sql .= "AND (Approved=1 OR Approved=2)";
+        }
+
+        $query=$this->db->query($sql);
+		return $query->result();
     }
 }
