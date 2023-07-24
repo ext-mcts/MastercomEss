@@ -140,6 +140,7 @@ class User extends REST_Controller {
 				$token_data['Role'] = $user->Role; 
 				$token_data['Department'] = $user->Department;
 				$token_data['Manager'] = $user->Manager;
+				$token_data['Gender'] = $user->Gender;
                 $tokenData = $this->authorization_token->generateToken($token_data);
                 $final = array();
                 $final['access_token'] = $tokenData;

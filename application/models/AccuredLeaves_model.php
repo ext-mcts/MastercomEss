@@ -1195,7 +1195,7 @@ class AccuredLeaves_model extends CI_Model {
 		return $query->row();
     }
 
-    public function get_leave_types($leavetype,$empid)
+    public function get_leave_balance($leavetype,$empid)
     {
         switch($leavetype) {
             case 'LOP':

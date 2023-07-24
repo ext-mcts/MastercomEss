@@ -12,10 +12,11 @@ class Leaves_model extends CI_Model {
     public function apply_leave($data)
     {
         $sql = "INSERT INTO `mcts_extranet`.`dbo.leave` (EmployeeID,LStartDt,SessionFrom,LFinishDt,SessionTo,Reason,LeaveType,
-                            Manager,Manager2,Contact) 
+                            Manager,Manager2,Contact,LeaveDoc,LeaveDocPath) 
                 VALUES ('".$data['EmployeeID']."','".date('Y-m-d',strtotime($data['FromDate']))."','".$data['FromSession']."',
                         '".date('Y-m-d',strtotime($data['ToDate']))."','".$data['ToSession']."','".$data['Reason']."',
-                        '".$data['LeaveType']."','".$data['Manager']."','".$data['Manager2']."','".$data['Contact']."')";
+                        '".$data['LeaveType']."','".$data['Manager']."','".$data['Manager2']."','".$data['Contact']."',
+                        '".$data['LeaveDoc']."','".$data['LeaveDocPath']."')";
 
         $query=$this->db->query($sql);
         if($query)
@@ -114,6 +115,18 @@ class Leaves_model extends CI_Model {
         {
             $sql .= "AND (Approved=1 OR Approved=2)";
         }
+
+        $query=$this->db->query($sql);
+		return $query->result();
+    }
+
+    public function get_leave_types($gender)
+    {
+        if($gender=='Male')
+            $sql = "SELECT * FROM mcts_extranet.`dbo.leavetypes` WHERE LeaveType!='Maternity Leave'";
+
+        if($gender=='Female')
+            $sql = "SELECT * FROM mcts_extranet.`dbo.leavetypes` WHERE LeaveType!='Paternity Leave'";
 
         $query=$this->db->query($sql);
 		return $query->result();

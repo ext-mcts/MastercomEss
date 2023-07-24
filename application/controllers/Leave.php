@@ -13,8 +13,9 @@ class Leave extends REST_Controller
     {
         parent::__construct();
         $this->load->model("user_model");
-        $this->load->library('Authorization_Token');
+        $this->load->library('Authorization_Token'); 
         $this->load->model("leaves_model");
+        $this->load->library('Base64fileUploads');
 
         $this->userdetails = decode_token($this->input->get_request_header('Authorization')); // here we are calling helper
 
@@ -58,6 +59,7 @@ class Leave extends REST_Controller
                 $this->form_validation->set_rules('Manager', 'Select Manager', 'trim|required|numeric');
                 $this->form_validation->set_rules('Manager2', 'Select CC', 'trim|numeric');
                 $this->form_validation->set_rules('Contact', 'Contact Number', 'trim|required|numeric');
+                $this->form_validation->set_rules('Image', 'Image', 'trim');
 
                 if ($this->form_validation->run() === false) 
                 {
@@ -89,7 +91,18 @@ class Leave extends REST_Controller
                 $leavedata = array();
                 $leavedata = $this->input->post();
                 $leavedata["EmployeeID"] = $this->userdetails->EmployeeID;
+                $leavedata["LeaveDoc"] = '';
+                $leavedata["LeaveDocPath"] = '';
 
+                if(isset($leavedata['Image']))
+                {
+                    $base64file   = new Base64fileUploads();
+                    $return = $base64file->du_uploads('./assets/leave_docs/',trim($leavedata['Image']));
+    
+                    $leavedata["LeaveDoc"] = $return['file_name'];
+                    $leavedata["LeaveDocPath"] = $return['with_path'];
+                }
+                
                 $data = $this->leaves_model->apply_leave($leavedata);
 
                 if($data)
@@ -483,7 +496,7 @@ class Leave extends REST_Controller
         } 
     }
 
-    public function leave_type_get()
+    public function get_balance_get()
     {
         $leavetype = $this->uri->segment(3);
 
@@ -493,7 +506,7 @@ class Leave extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                $data = $this->accuredleaves_model->get_leave_types($leavetype,$this->userdetails->EmployeeID);
+                $data = $this->accuredleaves_model->get_leave_balance($leavetype,$this->userdetails->EmployeeID);
 
 				if($data)
 				{
@@ -642,4 +655,37 @@ class Leave extends REST_Controller
             $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
         }  
     }
+
+    public function leavetypes_get()
+	{
+        $headers = $this->input->request_headers(); 
+        if (isset($headers['Authorization'])) 
+        {
+            $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+            if ($decodedToken['status'])
+            {
+				$data = $this->leaves_model->get_leave_types($this->userdetails->Gender);
+
+				if(count($data)>=1)
+				{
+					$message = array('results' => $data);
+					$message['status'] = true;
+					$this->response($message, REST_Controller::HTTP_OK);
+				}
+				else{ 
+					$message = array('message' => 'Something went wrong!.');
+					$message['status'] = false;
+					$this->response($message, REST_Controller::HTTP_OK);
+				}
+			}
+            else {
+                $this->response($decodedToken);
+            }
+        }
+        else {
+            $message = array('message' => 'Authentication failed');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+        }
+	}
 }
