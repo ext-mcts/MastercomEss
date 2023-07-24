@@ -57,7 +57,7 @@ class Leave extends REST_Controller
                 $this->form_validation->set_rules('ToSession', 'To Session', 'trim|required');
                 $this->form_validation->set_rules('Reason', 'Leave Reason', 'trim|required|max_length[255]');
                 $this->form_validation->set_rules('Manager', 'Select Manager', 'trim|required|numeric');
-                $this->form_validation->set_rules('Manager2', 'Select CC', 'trim|numeric');
+                $this->form_validation->set_rules('Manager2', 'Select CC', 'trim|max_length[255]');
                 $this->form_validation->set_rules('Contact', 'Contact Number', 'trim|required|numeric');
                 $this->form_validation->set_rules('Image', 'Image', 'trim');
 
@@ -91,6 +91,11 @@ class Leave extends REST_Controller
                 $leavedata = array();
                 $leavedata = $this->input->post();
                 $leavedata["EmployeeID"] = $this->userdetails->EmployeeID;
+                $leavedata["Manager2"] = '';
+
+                if($this->input->post('Manager2')) 
+                    $leavedata["Manager2"] = $this->input->post('Manager2');
+
                 $leavedata["LeaveDoc"] = '';
                 $leavedata["LeaveDocPath"] = '';
 
@@ -107,6 +112,61 @@ class Leave extends REST_Controller
 
                 if($data)
                 {
+                    $config = Array(        
+                        'protocol' => 'smtp',
+                        'smtp_host' => 'smtp.mailhostbox.com',
+                        'smtp_port' => 587,
+                        'smtp_user' => 'autoreply@mastercom.co.in',
+                        'smtp_pass' => 'aqQcleX9',
+                        'smtp_timeout' => '4',
+                        'mailtype'  => 'html', 
+                        'charset'   => 'iso-8859-1'
+                    );
+
+                    $empdet = $this->user_model->get_user($leavedata["Manager"]);
+                    $leavedet = $this->leaves_model->get_leave($data);
+                    $list = '';
+                    if($this->input->post('Manager2')) 
+                    {
+                        $ids = explode(',', $leavedata["Manager2"]);
+                        foreach($ids as $id)
+                        {
+                            $empdet = $this->user_model->get_user($id);
+                            $list .= trim($empdet->EmailName).'@mastercom.co.in'.',';
+                        }
+                        $list = rtrim($list, ',');
+                    }
+                    
+                    $this->load->library('email', $config);
+                    $this->email->set_newline("\r\n"); 
+                    $getconfigmail = $this->user_model->get_config_email(); 
+                    $from_email = $getconfigmail[0]->ConfigEmail;
+                    $this->email->from($from_email, 'Mastercom - Leave Application!'); 
+                    $this->email->to('aharshavardhan04@gmail.com');
+                    //$this->email->to(trim($empdet->EmailName).'@mastercom.co.in',trim($this->userdetails->EmailName).'@mastercom.co.in');
+                    //if($this->input->post('Manager2')) 
+                        //$this->email->cc($list);
+                    $this->email->subject('Leave Application - Details');
+                    $message = '<html><body>';
+                    $message .= '<h3>Dear '.$empdet->FirstName.',</h3>'; 
+                    $message .= '<p> You got leave application from '.$this->userdetails->EmailName.'. Here are the details,</P>';  
+                    $message .= '<p>From Date:'.date('d M Y',strtotime($leavedet[0]->LStartDt)).' Session: '.$leavedet[0]->SessionFrom.'</p>';
+                    $message .= '<p>To Date:'.date('d M Y',strtotime($leavedet[0]->LFinishDt)).' Session: '.$leavedet[0]->SessionTo.'</p>';
+                    $message .= '<p>Total Days:'.$this->CaluculateDaysWithSession($leavedet[0]->LStartDt,$leavedet[0]->SessionFrom,$leavedet[0]->LFinishDt,$leavedet[0]->SessionTo).'</p>';
+                    $message .= '<p>Reason:'.$leavedet[0]->Reason.'</p>';
+                    $message .= '<p>For more details: <a href="/mcts_extranet-api/leaves">Click Here</a></p>';
+                    $message .= '<br><br>';
+                    $message .= '<p><h4>Mastercom HR Team.<h4></p>';
+                    $message .= '</body></html>';  
+                                
+                    $this->email->message($message);
+                    if(isset($leavedata['Image']))
+                    {
+                        $atch=base_url().$leavedata["LeaveDocPath"];
+                        $this->email->attach($atch);
+                    }
+                    $this->email->send();
+
                     $message = array('message' => 'Leave applied successfully.');
                     $message['status'] = true;
                     $this->response($message, REST_Controller::HTTP_CREATED);
@@ -688,4 +748,21 @@ class Leave extends REST_Controller
             $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
         }
 	}
+
+    public function get_manager_get()
+    {
+        $data = $this->user_model->get_user($this->userdetails->Manager);
+
+        if($data)
+        {
+            $message = array('results' => $data);
+            $message['status'] = true;
+            $this->response($message, REST_Controller::HTTP_OK);
+        }
+        else{ 
+            $message = array('message' => 'Something went wrong!.');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_OK);
+        }
+    }
 }

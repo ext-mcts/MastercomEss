@@ -1199,25 +1199,31 @@ class AccuredLeaves_model extends CI_Model {
     {
         switch($leavetype) {
             case 'LOP':
-                $sql = "SELECT LOP FROM `mcts_extranet`.`dbo.accuredleaves` WHERE EmployeeID='$empid'";
+                $sql = "SELECT LOP AS balance FROM `mcts_extranet`.`dbo.accuredleaves` WHERE EmployeeID='$empid'";
                 $query=$this->db->query($sql);
                 return $query->row();
                 break;
             
             case 'Compoff':
-                $sql = "SELECT CompOffs FROM `mcts_extranet`.`dbo.accuredleaves` WHERE EmployeeID='$empid'";
+                $sql = "SELECT CompOffs AS balance FROM `mcts_extranet`.`dbo.accuredleaves` WHERE EmployeeID='$empid'";
                 $query=$this->db->query($sql);
                 return $query->row();
                 break;
 
             case 'Annualleave':
-                $sql = "SELECT LeaveBalance FROM `mcts_extranet`.`dbo.accuredleaves` WHERE EmployeeID='$empid'";
+                $sql = "SELECT LeaveBalance AS balance FROM `mcts_extranet`.`dbo.accuredleaves` WHERE EmployeeID='$empid'";
                 $query=$this->db->query($sql);
                 return $query->row();
                 break;
 
             case 'Paternityleave':
-                $sql = "SELECT PaternityLeaves FROM `mcts_extranet`.`dbo.accuredleaves` WHERE EmployeeID='$empid'";
+                $sql = "SELECT PaternityLeaves AS balance FROM `mcts_extranet`.`dbo.accuredleaves` WHERE EmployeeID='$empid'";
+                $query=$this->db->query($sql);
+                return $query->row();
+                break;
+
+            case 'Maternityleave':
+                $sql = "SELECT MaternityLeaves AS balance FROM `mcts_extranet`.`dbo.accuredleaves` WHERE EmployeeID='$empid'";
                 $query=$this->db->query($sql);
                 return $query->row();
                 break;

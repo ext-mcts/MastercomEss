@@ -20,7 +20,7 @@ class Leaves_model extends CI_Model {
 
         $query=$this->db->query($sql);
         if($query)
-            return true;
+            return $this->db->insert_id();
         else
             return false;
     }
