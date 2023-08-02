@@ -49,7 +49,7 @@ class User_model extends CI_Model {
 	public function resolve_user_login($username, $password) {
 	
 		#$password = base64_encode($password);
-		$sql = "SELECT Password from `mcts_extranet`.`dbo.employees` where EmailName = '$username' AND Password='$password' AND RelievingDt IS NOT NULL";
+		$sql = "SELECT Password from `mcts_extranet`.`dbo.employees` where EmailName = '$username' AND Password='$password' AND (RelievingDt IS NULL OR RelievingDt='')";
 		$query=$this->db->query($sql);
 		#$hash = $query->row('Password');
 		#return $this->verify_password_hash($password, $hash);
@@ -346,5 +346,43 @@ class User_model extends CI_Model {
 		$sql = "SELECT * FROM `mcts_extranet`.`dbo.employees` WHERE RelievingDt IS NULL AND QuitDate IS NULL";
 		$query=$this->db->query($sql);
 		return $query->result();
+	}
+
+	public function get_personal_details($empid)
+	{
+		$sql = "SELECT EmployeeID, CONCAT(`FirstName`, ' ', `LastName`) as name, FathersName, CONCAT(EmailName,'@mastercom.co.in') as EmailName, Phone1, DOB, FathersName,
+				Address, AltEmailID, Phone2, LocationName from mcts_extranet.`dbo.employees` e 
+				left join mcts_extranet.`dbo.locations` l on e.WorkLocation=l.LocationID
+				where e.EmployeeID='$empid'";
+
+		$query=$this->db->query($sql);
+		return $query->row();
+	}
+
+	public function get_account_stationary($empid)
+	{
+		$sql = "SELECT PANNumber,BankAccNumber,BranchDetails,PFAccount,bank_name from mcts_extranet.`dbo.employees` e
+				left join mcts_extranet.`dbo.banks` b on e.BankName=b.id
+				where e.EmployeeID='$empid'";
+
+		$query=$this->db->query($sql);
+		return $query->row();
+	}
+
+	public function get_employment($empid)
+	{
+		$sql = "SELECT dept_name, desgn_name, GradeName, LocationName, CONCAT(emp.FirstName, ' ', emp.LastName) as Manager, ProjectName 
+				from mcts_extranet.`dbo.employees` e
+				left join mcts_extranet.`dbo.grade` g on e.Grade=g.GradeID
+				left join mcts_extranet.`dbo.departments` d on e.Department = d.id
+				left join mcts_extranet.`dbo.designations` de on e.Designation = de.id
+				left join mcts_extranet.`dbo.locations` l on e.WorkLocation = l.LocationID
+				left join mcts_extranet.`dbo.employees` emp on e.Manager = emp.EmployeeID
+				left join mcts_extranet.`dbo.employee2project` ep on e.EmployeeID=ep.EmployeeID
+				left join mcts_extranet.`dbo.projects` p on ep.ProjectID=p.ProjectID
+				where e.EmployeeID='$empid'";
+
+		$query=$this->db->query($sql);
+		return $query->row();
 	}
 }
