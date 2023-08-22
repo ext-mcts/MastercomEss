@@ -385,4 +385,50 @@ class User_model extends CI_Model {
 		$query=$this->db->query($sql);
 		return $query->row();
 	}
+
+	public function do_resign($data)
+	{
+		$sql = "INSERT INTO `mcts_extranet`.`dbo.resignation` (EmployeeID, Reason, ExpectedDt, submitdt)
+		VALUES ('".$data['EmployeeID']."','".$data['Reason']."','".date('Y-m-d',strtotime($data['ExpectedDt']))."',
+				'".date('Y-m-d')."')";
+		$query=$this->db->query($sql);
+
+		$sql2 = "UPDATE `mcts_extranet`.`dbo.employees` SET ResignationDt = '".date('Y-m-d')."' WHERE EmployeeID = '".$data['EmployeeID']."'";
+		$query=$this->db->query($sql2);
+
+		if($query)
+			return true;
+		else
+			return false;
+	}
+
+	public function accept_resign($data)
+	{
+		$sql2 = "UPDATE `mcts_extranet`.`dbo.resignation` SET Status = 1 WHERE EmployeeID = '".$data['EmployeeID']."'";
+		$query=$this->db->query($sql2);
+
+		$sql = "UPDATE `mcts_extranet`.`dbo.employees` SET AceptancesDt = '".date('Y-m-d')."', RelievingDt= '".$data['RelievingDt']."'
+				WHERE EmployeeID = '".$data['EmployeeID']."'";
+		$query=$this->db->query($sql);
+
+		if($query)
+			return true;
+		else
+			return false;
+	}
+
+	public function reject_resign($data)
+	{
+		$sql2 = "UPDATE `mcts_extranet`.`dbo.resignation` SET Status = 2 WHERE EmployeeID = '".$data['EmployeeID']."'";
+		$query=$this->db->query($sql2);
+
+		$sql = "UPDATE `mcts_extranet`.`dbo.employees` SET AceptancesDt = '', RelievingDt= ''
+				WHERE EmployeeID = '".$data['EmployeeID']."'";
+		$query=$this->db->query($sql);
+
+		if($query)
+			return true;
+		else
+			return false;
+	}
 }

@@ -705,4 +705,60 @@ class Timesheet extends REST_Controller
             $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
         }
     }
+
+    public function summary_get()
+    {
+
+        $_GET['Page'] = $_GET['Page'] ?? 1;
+
+        $headers = $this->input->request_headers(); 
+        if (isset($headers['Authorization'])) 
+        {
+            $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+            if ($decodedToken['status'])
+            {
+                if($this->userdetails->Role==3)
+                {
+                    $filterdata = array();
+                
+                    if($this->input->get("EmployeeID")) $filterdata['EmployeeID']=$this->input->get("EmployeeID");
+                    if($this->input->get("ProjecyId")) $filterdata['ProjecyId']=$this->input->get("ProjecyId");
+
+                    $filterdata['Page'] = $_GET['Page'];
+
+                    $data = $this->timesheet_model->get_timesheet_summary($filterdata); // getting all timesheets
+                    
+                    if($data)
+                    {
+                        $message = array('page' => $_GET['Page'],
+                                        'total_rows' => count($data),
+                                        'results' => $data,);
+                        $message['status'] = true;
+                        $this->response($message, REST_Controller::HTTP_OK);
+                    }
+                    else{ 
+                        $message = array('message' => 'No Data found!');
+                        $message['status'] = false;
+                        $this->response($message, REST_Controller::HTTP_OK);
+                    }
+                }
+                else
+                {
+                    $message = array('message' => 'This Role not allowed to view Employees Timesheets');
+                    $message['status'] = false;
+                    $this->response($message,REST_Controller::HTTP_UNAUTHORIZED);
+                }
+            }
+            else
+            {
+                $this->response($decodedToken);
+            }
+        }
+        else 
+        {
+            $message = array('message' => 'Authentication failed');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+        }       
+    }
 }

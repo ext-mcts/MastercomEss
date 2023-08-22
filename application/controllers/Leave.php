@@ -765,4 +765,78 @@ class Leave extends REST_Controller
             $this->response($message, REST_Controller::HTTP_OK);
         }
     }
+
+    public function balance_get()
+    {
+        $headers = $this->input->request_headers(); 
+        if (isset($headers['Authorization'])) 
+        {
+            $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+            if ($decodedToken['status'])
+            {
+                $data = $this->accuredleaves_model->get_emp_balance($this->userdetails->EmployeeID);
+
+                if($data)
+				{
+					$message = array('results' => $data);
+					$message['status'] = true;
+					$this->response($message, REST_Controller::HTTP_OK);
+				}
+				else{ 
+					$message = array('message' => 'Something went wrong!.');
+					$message['status'] = false;
+					$this->response($message, REST_Controller::HTTP_OK);
+				}
+            }
+            else {
+                $this->response($decodedToken);
+            }
+        }
+        else {
+            $message = array('message' => 'Authentication failed');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+        }
+    }
+
+    public function all_emp_summary_get()
+    {
+        $_GET['Page'] = $_GET['Page'] ?? 1;
+        $headers = $this->input->request_headers(); 
+        if (isset($headers['Authorization'])) 
+        {
+            $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+            if ($decodedToken['status'])
+            {
+                $filterdata['Page'] = $_GET['Page'];
+
+                if($this->input->get("EmployeeID")) $filterdata['EmployeeID']=$this->input->get("EmployeeID");
+                if($this->input->get("ProjectID")) $filterdata['ProjectID']=$this->input->get("ProjectID");
+                
+                $data = $this->accuredleaves_model->get_all_emp_summary($filterdata);
+
+                if(count($data)>=1)
+                {
+                    $message = array('page' => $_GET['Page'],
+                                    'total_rows' => count($data),
+                                    'results' => $data,);
+                    $message['status'] = true;
+                    $this->response($message, REST_Controller::HTTP_OK);
+                }
+				else{ 
+					$message = array('message' => 'Something went wrong!.');
+					$message['status'] = false;
+					$this->response($message, REST_Controller::HTTP_OK);
+				}
+            }
+            else {
+                $this->response($decodedToken);
+            }
+        }
+        else {
+            $message = array('message' => 'Authentication failed');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+        }
+    }
 }

@@ -159,4 +159,31 @@ class Timesheet_model extends CI_Model
 		$query=$this->db->query($sql);
 		return $query->result();
 	}
+
+    public function get_timesheet_summary($data)
+    {
+        $wherecond = 'WHERE 1=1 AND';
+        $wherecond .=' MONTH(TSDate)='.date('m').' AND';
+        $wherecond = rtrim($wherecond, ' AND');
+
+        $sql = "SELECT * FROM `mcts_extranet`.`dbo.timesheetdetails` $wherecond ORDER BY TSDate desc";
+
+        if(!empty($data['EmployeeID']) || !empty($data['ProjectId']))
+		{
+            $page = (isset($data['Page']) && is_numeric($data['Page']) ) ? $data['Page'] : 1;
+            $paginationStart = ($page - 1) * PER_PAGE_RECORDS;
+            $wherecond = 'WHERE 1=1 AND';
+
+            if(!empty($data['EmployeeID'])) $wherecond .= " TSID LIKE '%TS".$data['EmployeeID']."%' AND";
+            if(!empty($data['ProjectId'])) $wherecond .= " TSID LIKE '%_".$data['ProjectId']."' AND";
+
+            if(!empty($data['EmployeeID']) && !empty($data['ProjectId'])) $wherecond .= " (TSID LIKE '%TS".$data['EmployeeID']."%' ) OR (TSID LIKE '%_".$data['ProjectId']."')";
+
+            $wherecond = rtrim($wherecond, ' AND');
+			$sql = "SELECT * FROM `mcts_extranet`.`dbo.timesheetdetails` $wherecond ORDER BY TSDate desc LIMIT $paginationStart,".PER_PAGE_RECORDS;
+        }
+
+        $query=$this->db->query($sql);
+		return $query->result();
+    }
 }

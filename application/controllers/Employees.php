@@ -596,5 +596,271 @@ class Employees extends REST_Controller
         }
 
     }
+
+    public function resignation_post()
+    {
+        $headers = $this->input->request_headers(); 
+        if (isset($headers['Authorization'])) 
+        {
+            $_POST = json_decode(file_get_contents("php://input"), true);
+
+            $this->form_validation->set_rules('Reason', 'Resignation Reason', 'trim|required|max_length[500]');
+            $this->form_validation->set_rules('ExpectedDt', 'Expected Date', 'trim|required|max_length[50]');
+
+            if ($this->form_validation->run() === false) 
+            {
+                $errors = $this->form_validation->error_array();
+                $errors['status'] = false;
+                $this->response($errors,REST_Controller::HTTP_BAD_REQUEST);
+                return false;
+            }
+
+            $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+            if ($decodedToken['status'])
+            {
+                $resdata = array();
+                $resdata = $this->input->post();
+                $resdata['EmployeeID'] = $this->userdetails->EmployeeID;
+
+                $data = $this->user_model->do_resign($resdata);
+
+                if($data)
+                {
+                    $config = Array(        
+                        'protocol' => 'smtp',
+                        'smtp_host' => 'smtp.mailhostbox.com',
+                        'smtp_port' => 587,
+                        'smtp_user' => 'autoreply@mastercom.co.in',
+                        'smtp_pass' => 'aqQcleX9',
+                        'smtp_timeout' => '4',
+                        'mailtype'  => 'html', 
+                        'charset'   => 'iso-8859-1'
+                    );
+
+                    $empdet = $this->user_model->get_user($this->userdetails->Manager);
+
+                    $this->load->library('email', $config);
+                    $this->email->set_newline("\r\n"); 
+                    $getconfigmail = $this->user_model->get_config_email(); 
+                    $from_email = $getconfigmail[0]->ConfigEmail;
+                    $this->email->from($from_email, 'Mastercom - Resignation!'); 
+                    $this->email->to('aharshavardhan04@gmail.com');
+                    //$this->email->to(trim($empdet->EmailName).'@mastercom.co.in',trim($this->userdetails->EmailName).'@mastercom.co.in');
+                    //$this->email->cc($list);
+                    $this->email->subject('Resignation - Details');
+                    $message = '<html><body>';
+                    $message .= '<h3>Dear '.$empdet->FirstName.',</h3>'; 
+                    $message .= '<p> You got Resignation Request from '.$this->userdetails->EmailName.'. Here are the details,</P>';  
+                    $message .= '<p>Reason:'.$resdata['Reason'].'</p>';
+                    $message .= '<p>Expected Date:'.date('d M Y',strtotime($resdata['ExpectedDt'])).'</p>';
+                    $message .= '<br><br>';
+                    $message .= '<p><h4>Mastercom HR Team.<h4></p>';
+                    $message .= '</body></html>';  
+                                
+                    $this->email->message($message);
+                    $this->email->send();
+
+                    $message = array('message' => 'Resignation Submitted successfully.');
+                    $message['status'] = true;
+                    $this->response($message, REST_Controller::HTTP_OK);
+                    return false;
+                }
+                else{ 
+                    $message = array('message' => 'Something went wrong!.');
+                    $message['status'] = false;
+                    $this->response($message, REST_Controller::HTTP_OK);
+                    return false;
+                }
+            }
+            else
+            {
+                $this->response($decodedToken);
+            }
+        }
+        else 
+        {
+            $message = array('message' => 'Authentication failed');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+        }    
+    }
+
+    public function accept_resignation_put()
+    {
+        $empid = $this->uri->segment(3);
+
+        $headers = $this->input->request_headers(); 
+        if (isset($headers['Authorization'])) 
+        {
+            $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+            if ($decodedToken['status'])
+            {
+                if($this->userdetails->Role==1 || $this->userdetails->Role==3)
+                {
+                    $_POST = json_decode(file_get_contents("php://input"), true);
+
+                    $this->form_validation->set_data($this->put());
+                    $this->form_validation->set_rules('RelievingDt', 'Relieving Date', 'trim|required|max_length[50]');
+
+                    $resdata = array();
+                    $resdata = $this->put();
+                    $resdata['EmployeeID'] =  $empid;
+
+                    $data = $this->user_model->accept_resign($resdata);
+
+                    if($data)
+                    {
+                        $config = Array(        
+                            'protocol' => 'smtp',
+                            'smtp_host' => 'smtp.mailhostbox.com',
+                            'smtp_port' => 587,
+                            'smtp_user' => 'autoreply@mastercom.co.in',
+                            'smtp_pass' => 'aqQcleX9',
+                            'smtp_timeout' => '4',
+                            'mailtype'  => 'html', 
+                            'charset'   => 'iso-8859-1'
+                        );
+
+                        $empdet = $this->user_model->get_user($empid);
+
+                        $this->load->library('email', $config);
+                        $this->email->set_newline("\r\n"); 
+                        $getconfigmail = $this->user_model->get_config_email(); 
+                        $from_email = $getconfigmail[0]->ConfigEmail;
+                        $this->email->from($from_email, 'Mastercom - Resignation Accepted!'); 
+                        $this->email->to('aharshavardhan04@gmail.com');
+                        //$this->email->to(trim($empdet->EmailName).'@mastercom.co.in',trim($this->userdetails->EmailName).'@mastercom.co.in');
+                        //$this->email->cc($list);
+                        $this->email->subject('Resignation Accepted - Details');
+                        $message = '<html><body>';
+                        $message .= '<h3>Dear '.$empdet->FirstName.',</h3>'; 
+                        $message .= '<p> Your Resignation Request Accepted by  <h3>'.$this->userdetails->EmailName.'</h3>. Here are the details,</P>';  
+                        $message .= '<p>Relieving Date:'.date('d M Y',strtotime($resdata['RelievingDt'])).'</p>';
+                        $message .= '<br><br>';
+                        $message .= '<p><h4>Mastercom HR Team.<h4></p>';
+                        $message .= '</body></html>';  
+                                    
+                        $this->email->message($message);
+                        $this->email->send();
+
+                        $message = array('message' => 'Resignation Accepted successfully.');
+                        $message['status'] = true;
+                        $this->response($message, REST_Controller::HTTP_OK);
+                        return false;
+                    }
+                    else{ 
+                        $message = array('message' => 'Something went wrong!.');
+                        $message['status'] = false;
+                        $this->response($message, REST_Controller::HTTP_OK);
+                        return false;
+                    }
+                }
+                else 
+                {
+                    $message = array('message' => 'This Role not allowed to Approve/Reject Resignation!');
+                    $message['status'] = false;
+                    $this->response($message,REST_Controller::HTTP_UNAUTHORIZED);
+                    return false;
+                }
+            }
+            else
+            {
+                $this->response($decodedToken);
+            }
+        }
+        else 
+        {
+            $message = array('message' => 'Authentication failed');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+        }    
+    }
+
+    public function reject_resignation_put()
+    {
+        $empid = $this->uri->segment(3);
+
+        $headers = $this->input->request_headers(); 
+        if (isset($headers['Authorization'])) 
+        {
+            $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+            if ($decodedToken['status'])
+            {
+                if($this->userdetails->Role==1 || $this->userdetails->Role==3)
+                {
+                    $_POST = json_decode(file_get_contents("php://input"), true);
+
+                    $resdata = array();
+                    $resdata['EmployeeID'] =  $empid;
+
+                    $data = $this->user_model->reject_resign($resdata);
+
+                    if($data)
+                    {
+                        $config = Array(        
+                            'protocol' => 'smtp',
+                            'smtp_host' => 'smtp.mailhostbox.com',
+                            'smtp_port' => 587,
+                            'smtp_user' => 'autoreply@mastercom.co.in',
+                            'smtp_pass' => 'aqQcleX9',
+                            'smtp_timeout' => '4',
+                            'mailtype'  => 'html', 
+                            'charset'   => 'iso-8859-1'
+                        );
+
+                        $empdet = $this->user_model->get_user($empid);
+
+                        $this->load->library('email', $config);
+                        $this->email->set_newline("\r\n"); 
+                        $getconfigmail = $this->user_model->get_config_email(); 
+                        $from_email = $getconfigmail[0]->ConfigEmail;
+                        $this->email->from($from_email, 'Mastercom - Resignation Rejected!'); 
+                        $this->email->to('aharshavardhan04@gmail.com');
+                        //$this->email->to(trim($empdet->EmailName).'@mastercom.co.in',trim($this->userdetails->EmailName).'@mastercom.co.in');
+                        //$this->email->cc($list);
+                        $this->email->subject('Resignation Rejected - Details');
+                        $message = '<html><body>';
+                        $message .= '<h3>Dear '.$empdet->FirstName.',</h3>'; 
+                        $message .= '<p> Your Resignation Request Rejected by <h3>'.$this->userdetails->EmailName.'</h3>.</P>';  
+                        $message .= '<p>Please contact your RM.</p>';
+                        $message .= '<br><br>';
+                        $message .= '<p><h4>Mastercom HR Team.<h4></p>';
+                        $message .= '</body></html>';  
+                                    
+                        $this->email->message($message);
+                        $this->email->send();
+
+                        $message = array('message' => 'Resignation Rejected successfully.');
+                        $message['status'] = true;
+                        $this->response($message, REST_Controller::HTTP_OK);
+                        return false;
+                    }
+                    else{ 
+                        $message = array('message' => 'Something went wrong!.');
+                        $message['status'] = false;
+                        $this->response($message, REST_Controller::HTTP_OK);
+                        return false;
+                    }
+                }
+                else 
+                {
+                    $message = array('message' => 'This Role not allowed to Approve/Reject Resignation!');
+                    $message['status'] = false;
+                    $this->response($message,REST_Controller::HTTP_UNAUTHORIZED);
+                    return false;
+                }
+            }
+            else
+            {
+                $this->response($decodedToken);
+            }
+        }
+        else 
+        {
+            $message = array('message' => 'Authentication failed');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+        }    
+    }
 }
 ?>

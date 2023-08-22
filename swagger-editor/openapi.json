@@ -65,6 +65,14 @@
         "description": "Find out more",
         "url": "http://swagger.io"
       }
+    },
+    {
+      "name": "R1",
+      "description": "Everything about R1 Release",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "http://swagger.io"
+      }
     }
   ],
   "components": {
@@ -1506,6 +1514,353 @@
         "responses": {
           "200": {
             "description": "List of Tickets!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/documents/mydocs": {
+      "get": {
+        "tags": [
+          "R1"
+        ],
+        "summary": "List of Employee Document",
+        "responses": {
+          "200": {
+            "description": "List of Employee Documents!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/policies/mypolicies": {
+      "get": {
+        "tags": [
+          "R1"
+        ],
+        "summary": "List of Employee Policies",
+        "responses": {
+          "200": {
+            "description": "List of Employee Policies",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/employees/resignation": {
+      "post": {
+        "tags": [
+          "R1"
+        ],
+        "summary": "Employee Resignation",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Reason": {
+                    "type": "string"
+                  },
+                  "ExpectedDt": {
+                    "type": "date"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resignation submitted successfully!",
+            "content": {
+              "application/json": {
+                "schema": null
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/leave/balance": {
+      "get": {
+        "tags": [
+          "R1"
+        ],
+        "summary": "List of Employee Leave Balance",
+        "responses": {
+          "200": {
+            "description": "List of Employee Leave Balance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/projects/view_emp_projects": {
+      "get": {
+        "tags": [
+          "R1"
+        ],
+        "summary": "List of Employee Assigned Projects",
+        "responses": {
+          "200": {
+            "description": "List of Employee Assigned Projects",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/reviews/add": {
+      "post": {
+        "tags": [
+          "R1"
+        ],
+        "summary": "Add Review by Employee",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Review": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Review Posted Successfully!",
+            "content": {
+              "application/json": {
+                "schema": null
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/leave/all_emp_summary": {
+      "get": {
+        "tags": [
+          "R1"
+        ],
+        "summary": "View Leave Summary of All Employees",
+        "responses": {
+          "200": {
+            "description": "View Leave Summary of All Employees",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/employees/accept_resignation/{EmployeeID}": {
+      "put": {
+        "tags": [
+          "R1"
+        ],
+        "summary": "Accepting Resignation by EmployeeID",
+        "parameters": [
+          {
+            "name": "EmployeeID",
+            "in": "path",
+            "required": true,
+            "description": "ID of Employee",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "RelievingDt": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resignation Accepted successfully!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/employees/reject_resignation/{EmployeeID}": {
+      "put": {
+        "tags": [
+          "R1"
+        ],
+        "summary": "Rejecting Resignation by EmployeeID",
+        "parameters": [
+          {
+            "name": "EmployeeID",
+            "in": "path",
+            "required": true,
+            "description": "ID of Employee",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "RelievingDt": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resignation Rejected Successfully!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/timesheet/summary": {
+      "get": {
+        "tags": [
+          "R1"
+        ],
+        "summary": "View Timesheet Summary of All Employees",
+        "parameters": [
+          {
+            "name": "EmployeeID",
+            "in": "query",
+            "description": "Employee ID",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "ProjectId",
+            "in": "query",
+            "description": "Project ID",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "View Timesheet Summary of All Employees",
             "content": {
               "application/json": {
                 "schema": {

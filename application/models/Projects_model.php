@@ -138,4 +138,15 @@ class Projects_model extends CI_Model {
 		return $query->row();
 		
 	}
+
+    public function get_emp_projects($empid)
+    {
+        $sql = "select p.ProjectName,e.FirstName as manager,AssignedDt,ReleaseDt from mcts_extranet.`dbo.employee2project` ep
+                left join mcts_extranet.`dbo.projects` p on ep.ProjectID=p.ProjectID
+                left join mcts_extranet.`dbo.employees` e on ep.ReportingTo=e.EmployeeID
+                where ep.EmployeeID='$empid'";
+
+        $query=$this->db->query($sql);
+        return $query->result();
+    }
 }

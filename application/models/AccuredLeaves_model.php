@@ -1229,4 +1229,41 @@ class AccuredLeaves_model extends CI_Model {
                 break;
         }
     }
+
+    public function get_emp_balance($empid)
+    {
+        $sql = "select * from mcts_extranet.`dbo.accuredleaves` where EmployeeID ='$empid'";
+        $query=$this->db->query($sql);
+        return $query->row();
+    }
+
+    public function get_all_emp_summary($data=null)
+    {
+        $sql = "SELECT * FROM `mcts_extranet`.`dbo.accuredleaves`";
+
+        if(!empty($data))
+		{
+            $page = (isset($data['Page']) && is_numeric($data['Page']) ) ? $data['Page'] : 1;
+            $paginationStart = ($page - 1) * PER_PAGE_RECORDS;
+            $wherecond = '1=1 AND';
+            if(!empty($data['EmployeeID']))
+            {
+                $sql = "SELECT * FROM `mcts_extranet`.`dbo.accuredleaves` WHERE EmployeeID=".$data['EmployeeID']." LIMIT $paginationStart,".PER_PAGE_RECORDS;
+            }
+            if(!empty($data['ProjectId']))
+            {
+                $sql = "SELECT * FROM `mcts_extranet`.`dbo.accuredleaves` WHERE EmployeeID in (select EmployeeID from mcts_extranet.`dbo.employee2project` where ProjectID=".$data['ProjectId'].") LIMIT $paginationStart,".PER_PAGE_RECORDS;
+            }
+            if(!empty($data['ProjectId']) && !empty($data['EmployeeID']))
+            {
+                $sql = "SELECT * FROM `mcts_extranet`.`dbo.accuredleaves` WHERE 
+                ( (EmployeeID in (select EmployeeID from mcts_extranet.`dbo.employee2project` where ProjectID=".$data['ProjectId'].")) OR 
+                (EmployeeID=".$data['EmployeeID'].")) 
+                LIMIT $paginationStart,".PER_PAGE_RECORDS;
+            }
+        }
+
+        $query=$this->db->query($sql);
+		return $query->result();
+    }
 }
