@@ -12,8 +12,10 @@ class Reviews_model extends CI_Model {
 
     public function add_review($data)
     {
-        $sql = "INSERT INTO `mcts_extranet`.`dbo.reviews` (EmployeeID,Review,Manager)
-                VALUES('".$data['EmployeeID']."','".$data['Review']."','".$data['Manager']."')";
+        $sql = "INSERT INTO `mcts_extranet`.`dbo.reviews` (EmployeeID,Manager,Accomplishments,AreasOfImprovement,
+                                                            CurrentSkillSet,NewInitiatives,AddlResponsibilities)
+                VALUES('".$data['EmployeeID']."','".$data['Manager']."','".$data['Accomplishments']."','".$data['AreasOfImprovement']."',
+                        '".$data['CurrentSkillSet']."','".$data['NewInitiatives']."','".$data['AddlResponsibilities']."')";
 
         $query=$this->db->query($sql);
         if($query)

@@ -48,8 +48,12 @@ class Reviews extends REST_Controller
             {
                 $_POST = json_decode(file_get_contents("php://input"), true);
 
-                $this->form_validation->set_rules('Review', 'Review', 'trim|required|max_length[1000]');
-
+                $this->form_validation->set_rules('Accomplishments', 'Accomplishments', 'trim|required|max_length[1000]');
+                $this->form_validation->set_rules('AreasOfImprovement', 'Area of Improvement', 'trim|required|max_length[1000]');
+                $this->form_validation->set_rules('CurrentSkillSet', 'Current Skill Set', 'trim|required|max_length[1000]');
+                $this->form_validation->set_rules('NewInitiatives', 'New Initiatives', 'trim|required|max_length[1000]');
+                $this->form_validation->set_rules('AddlResponsibilities', 'Additional Responsibilities', 'trim|required|max_length[1000]');
+                
                 if ($this->form_validation->run() === false) 
                 {
                     $errors = $this->form_validation->error_array();

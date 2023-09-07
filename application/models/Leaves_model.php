@@ -131,4 +131,20 @@ class Leaves_model extends CI_Model {
         $query=$this->db->query($sql);
 		return $query->result();
     }
+
+    public function get_emp_leaves($empid)
+    {
+        $sql = "SELECT LeaveID, LStartDt, SessionFrom, LFinishDt, SessionTo, Reason, lt.LeaveType, e.FirstName as Manager,
+                    case l.Approved
+                        when '1' then 'Approved'
+                        when '0' then 'Pending'
+                        when '2' then 'Rejected'
+                    end as Status from mcts_extranet.`dbo.leave` l
+                left join mcts_extranet.`dbo.employees` e on l.Manager=e.EmployeeID
+                left join mcts_extranet.`dbo.leavetypes` lt on l.LeaveType=lt.id
+                where l.EmployeeID='$empid'";
+
+        $query=$this->db->query($sql);
+		return $query->result();
+    }
 }

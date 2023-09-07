@@ -56,7 +56,7 @@ class Leave extends REST_Controller
                 $this->form_validation->set_rules('ToDate', 'To Date', 'trim|required');
                 $this->form_validation->set_rules('ToSession', 'To Session', 'trim|required');
                 $this->form_validation->set_rules('Reason', 'Leave Reason', 'trim|required|max_length[255]');
-                $this->form_validation->set_rules('Manager', 'Select Manager', 'trim|required|numeric');
+                //$this->form_validation->set_rules('Manager', 'Select Manager', 'trim|required|numeric');
                 $this->form_validation->set_rules('Manager2', 'Select CC', 'trim|max_length[255]');
                 $this->form_validation->set_rules('Contact', 'Contact Number', 'trim|required|numeric');
                 $this->form_validation->set_rules('Image', 'Image', 'trim');
@@ -91,6 +91,7 @@ class Leave extends REST_Controller
                 $leavedata = array();
                 $leavedata = $this->input->post();
                 $leavedata["EmployeeID"] = $this->userdetails->EmployeeID;
+                $leavedata["Manager"] = $this->userdetails->Manager;
                 $leavedata["Manager2"] = '';
 
                 if($this->input->post('Manager2')) 
@@ -825,6 +826,39 @@ class Leave extends REST_Controller
                 }
 				else{ 
 					$message = array('message' => 'Something went wrong!.');
+					$message['status'] = false;
+					$this->response($message, REST_Controller::HTTP_OK);
+				}
+            }
+            else {
+                $this->response($decodedToken);
+            }
+        }
+        else {
+            $message = array('message' => 'Authentication failed');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+        }
+    }
+
+    public function my_leaves_get()
+    {
+        $headers = $this->input->request_headers(); 
+        if (isset($headers['Authorization'])) 
+        {
+            $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+            if ($decodedToken['status'])
+            {
+                $data = $this->leaves_model->get_emp_leaves($this->userdetails->EmployeeID);
+
+                if($data)
+				{
+					$message = array('results' => $data);
+					$message['status'] = true;
+					$this->response($message, REST_Controller::HTTP_OK);
+				}
+				else{ 
+					$message = array('message' => 'No records found!.');
 					$message['status'] = false;
 					$this->response($message, REST_Controller::HTTP_OK);
 				}
