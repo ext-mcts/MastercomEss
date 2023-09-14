@@ -431,4 +431,12 @@ class User_model extends CI_Model {
 		else
 			return false;
 	}
+
+	public function get_hr()
+	{
+		$sql = "SELECT * FROM `mcts_extranet`.`dbo.employees` WHERE Role=5";
+
+		$query=$this->db->query($sql);
+		return $query->row();
+	}
 }

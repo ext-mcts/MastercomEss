@@ -87,3 +87,4 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 /* APIs Constants */
 define('PER_PAGE_RECORDS', 10);
 define('TIME_ZONE','Asia/Kolkata');
+define('SMTP_PASS','aqQcleX9');

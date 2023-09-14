@@ -12,22 +12,34 @@ class Reviews_model extends CI_Model {
 
     public function add_review($data)
     {
+        $action = 0;
+        if($data['Action']=='submit')   $action = 1;
+
         $sql = "INSERT INTO `mcts_extranet`.`dbo.reviews` (EmployeeID,Manager,Accomplishments,AreasOfImprovement,
-                                                            CurrentSkillSet,NewInitiatives,AddlResponsibilities)
+                                                            CurrentSkillSet,NewInitiatives,AddlResponsibilities,ReviewBy,ReviewAction)
                 VALUES('".$data['EmployeeID']."','".$data['Manager']."','".$data['Accomplishments']."','".$data['AreasOfImprovement']."',
-                        '".$data['CurrentSkillSet']."','".$data['NewInitiatives']."','".$data['AddlResponsibilities']."')";
+                        '".$data['CurrentSkillSet']."','".$data['NewInitiatives']."','".$data['AddlResponsibilities']."',
+                        '".$data['EmployeeID']."',$action)";
 
         $query=$this->db->query($sql);
+
+        if($data['Action']=='submit')
+            $sql2 = "UPDATE `mcts_extranet`.`dbo.reviews` SET ReviewAction=1, SubmittedDate='".date('Y-m-d')."' 
+                    WHERE EmployeeID='".$data['EmployeeID']."' AND Manager='".$data['Manager']."' AND YEAR(CreatedDate)=year(curdate())";
+        $query2=$this->db->query($sql2);
         if($query)
 			return true;
 		else
 			return false;
     }
 
-    public function add_reply($data)
+    public function add_comment($data,$id)
     {
-        $sql = "INSERT INTO `mcts_extranet`.`dbo.reviews` (Review,ReplyFor)
-                VALUES('".$data['Review']."','".$data['ReplyFor']."')";
+        $action = 0;
+        if($data['Action']=='submit')   $action = 1;
+
+        $sql = "UPDATE `mcts_extranet`.`dbo.reviews` SET ReviewComments='".$data['Comments']."',CommentedDate='".date('Y-m-d H:i:s')."',
+                CommentAction='$action' WHERE Id='$id'";
 
         $query=$this->db->query($sql);
         if($query)
@@ -38,13 +50,100 @@ class Reviews_model extends CI_Model {
 
     public function add_annual_review($data)
     {
-        $sql = "INSERT INTO `mcts_extranet`.`dbo.reviews` (EmployeeID,Review,Manager,AnnualReview,ReviewYear)
-                VALUES('".$data['EmployeeID']."','".$data['Review']."','".$data['Manager']."','1','".date('Y')."')";
+        $sql = "INSERT INTO `mcts_extranet`.`dbo.reviews` (EmployeeID,Accomplishments,AreasOfImprovement,CurrentSkillSet,KRAOfTheYear,OverAllRating,Manager,AnnualReview,ReviewYear)
+                VALUES('".$data['EmployeeID']."','".$data['Accomplishments']."','".$data['AreasOfImprovement']."','".$data['CurrentSkillSet']."',
+                '".$data['KRAOfTheYear']."','".$data['OverAllRating']."','".$data['Manager']."','1','".date('Y')."')";
 
         $query=$this->db->query($sql);
+
+        $sql2 = "UPDATE `mcts_extranet`.`dbo.reviews` SET CommentAction=1 WHERE EmployeeID='".$data['EmployeeID']."'";
+
+        $query=$this->db->query($sql2);
+
         if($query)
 			return true;
 		else
 			return false;
+    }
+
+    public function check_review($id)
+    {
+        $sql = "SELECT * FROM `mcts_extranet`.`dbo.reviews` WHERE Id='$id' AND ReviewAction=1";
+
+        $query=$this->db->query($sql);
+		return $query->row();
+    }
+
+    public function update_review($data,$id)
+    {
+        $sql = "UPDATE `mcts_extranet`.`dbo.reviews` SET Accomplishments='".$data['Accomplishments']."',AreasOfImprovement='".$data['AreasOfImprovement']."',
+                CurrentSkillSet='".$data['CurrentSkillSet']."',NewInitiatives='".$data['NewInitiatives']."',AddlResponsibilities='".$data['AddlResponsibilities']."',
+                UpdatedDate='".date('Y-m-d')."'
+                WHERE Id='$id'";
+
+        $query=$this->db->query($sql);
+        if($query==1)
+            return true;
+        else
+            return false;
+    }
+
+    public function get_emp_submitted_reviews($empid)
+    {
+        $sql = "SELECT Accomplishments,AreasOfImprovement,CurrentSkillSet,NewInitiatives,AddlResponsibilities,CreatedDate,UpdatedDate,SubmittedDate FROM `mcts_extranet`.`dbo.reviews`
+                WHERE EmployeeID='$empid' AND ReviewAction=1";
+
+        $query=$this->db->query($sql);
+        return $query->result();
+    }
+
+    public function get_emp_reviews_comments($empid)
+    {
+        $sql = "SELECT Id,Accomplishments,AreasOfImprovement,CurrentSkillSet,NewInitiatives,AddlResponsibilities,ReviewComments,CommentedDate,CreatedDate,UpdatedDate 
+                FROM `mcts_extranet`.`dbo.reviews`
+                WHERE EmployeeID='$empid'";
+
+        $query=$this->db->query($sql);
+        return $query->result();
+    }
+
+    public function get_appraisal_comments($empid)
+    {
+        $sql = "SELECT Id,AppraisalComments,CreatedDate from `mcts_extranet`.`dbo.reviews` WHERE AppraisalComments IS NOT NULL AND EmployeeID='$empid'";
+
+        $query=$this->db->query($sql);
+        return $query->row();
+    }
+
+    public function accept_reject_review($revid,$status,$data=null)
+    {
+        $sql = "UPDATE `mcts_extranet`.`dbo.reviews` SET
+                Status='$status', Reason='".$data['Reason']."'
+                WHERE Id='$revid'";
+            
+        $query=$this->db->query($sql);
+
+        if($query==1)
+            return true;
+        else
+            return false;
+    }
+
+    public function get_manager_submitted_reviews($manid)
+    {
+        $sql = "SELECT Id,Accomplishments,AreasOfImprovement,CurrentSkillSet,KRAOfTheYear,OverAllRating,e.FirstName as EmployeeName,CreatedDate from `mcts_extranet`.`dbo.reviews` r
+                LEFT JOIN mcts_extranet.`dbo.employees` e on r.EmployeeID=e.EmployeeID
+                WHERE r.Manager='$manid' AND AnnualReview=1";
+
+        $query=$this->db->query($sql);
+        return $query->result();
+    }
+
+    public function get_review($revid)
+    {
+        $sql = "SELECT * FROM `mcts_extranet`.`dbo.reviews` WHERE Id='$revid'";
+
+        $query=$this->db->query($sql);
+        return $query->row();
     }
 }

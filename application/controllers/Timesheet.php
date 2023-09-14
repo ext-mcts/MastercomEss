@@ -135,7 +135,7 @@ class Timesheet extends REST_Controller
                             'smtp_host' => 'smtp.mailhostbox.com',
                             'smtp_port' => 587,
                             'smtp_user' => 'autoreply@mastercom.co.in',
-                            'smtp_pass' => 'aqQcleX9',
+                            'smtp_pass' => SMTP_PASS,
                             'smtp_timeout' => '4',
                             'mailtype'  => 'html', 
                             'charset'   => 'iso-8859-1'
@@ -367,7 +367,7 @@ class Timesheet extends REST_Controller
                             'smtp_host' => 'smtp.mailhostbox.com',
                             'smtp_port' => 587,
                             'smtp_user' => 'autoreply@mastercom.co.in',
-                            'smtp_pass' => 'aqQcleX9',
+                            'smtp_pass' => SMTP_PASS,
                             'smtp_timeout' => '4',
                             'mailtype'  => 'html', 
                             'charset'   => 'iso-8859-1'
@@ -473,7 +473,7 @@ class Timesheet extends REST_Controller
                             'smtp_host' => 'smtp.mailhostbox.com',
                             'smtp_port' => 587,
                             'smtp_user' => 'autoreply@mastercom.co.in',
-                            'smtp_pass' => 'aqQcleX9',
+                            'smtp_pass' => SMTP_PASS,
                             'smtp_timeout' => '4',
                             'mailtype'  => 'html', 
                             'charset'   => 'iso-8859-1'

@@ -67,6 +67,14 @@
       }
     },
     {
+      "name": "Reviews",
+      "description": "Everything about Reviews",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "http://swagger.io"
+      }
+    },
+    {
       "name": "R1",
       "description": "Everything about R1 Release",
       "externalDocs": {
@@ -511,7 +519,9 @@
             "description": "Timesheets added!",
             "content": {
               "application/json": {
-                "schema": null
+                "schema": {
+                  "$ref": ""
+                }
               }
             }
           }
@@ -1366,7 +1376,9 @@
             "description": "Ticket Created successfully!",
             "content": {
               "application/json": {
-                "schema": null
+                "schema": {
+                  "$ref": ""
+                }
               }
             }
           }
@@ -1530,6 +1542,419 @@
         ]
       }
     },
+    "/reviews/add": {
+      "post": {
+        "tags": [
+          "Reviews"
+        ],
+        "summary": "Add Review by Employee",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Accomplishments": {
+                    "type": "string"
+                  },
+                  "AreasOfImprovement": {
+                    "type": "string"
+                  },
+                  "CurrentSkillSet": {
+                    "type": "string"
+                  },
+                  "NewInitiatives": {
+                    "type": "string"
+                  },
+                  "AddlResponsibilities": {
+                    "type": "string"
+                  },
+                  "Action": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Review Posted Successfully!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/reviews/update/{ReviewID}": {
+      "put": {
+        "tags": [
+          "Reviews"
+        ],
+        "summary": "Update a Review by ID",
+        "parameters": [
+          {
+            "name": "ReviewID",
+            "in": "path",
+            "required": true,
+            "description": "ID of Review",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Accomplishments": {
+                    "type": "string"
+                  },
+                  "AreasOfImprovement": {
+                    "type": "string"
+                  },
+                  "CurrentSkillSet": {
+                    "type": "string"
+                  },
+                  "NewInitiatives": {
+                    "type": "string"
+                  },
+                  "AddlResponsibilities": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Review Updated Successfully!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/reviews/manager_view_reviews/{EmployeeID}": {
+      "get": {
+        "tags": [
+          "Reviews"
+        ],
+        "summary": "List of Reviews for Manager",
+        "parameters": [
+          {
+            "name": "EmployeeID",
+            "in": "path",
+            "required": true,
+            "description": "ID of Employee",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of Review for Manager!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/reviews/add_comment/{ReviewID}": {
+      "put": {
+        "tags": [
+          "Reviews"
+        ],
+        "summary": "Add Comments for Review by ID",
+        "parameters": [
+          {
+            "name": "ReviewID",
+            "in": "path",
+            "required": true,
+            "description": "ID of Review",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Comments": {
+                    "type": "string"
+                  },
+                  "Action": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Commented successfully!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/reviews/annual_review": {
+      "post": {
+        "tags": [
+          "Reviews"
+        ],
+        "summary": "Annaul Review By Manager",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "EmployeeID": {
+                    "type": "integer"
+                  },
+                  "Accomplishments": {
+                    "type": "string"
+                  },
+                  "AreasOfImprovement": {
+                    "type": "string"
+                  },
+                  "CurrentSkillSet": {
+                    "type": "string"
+                  },
+                  "KRAOfTheYear": {
+                    "type": "string"
+                  },
+                  "OverAllRating": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Annual Appraisal done!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/reviews/hr_view_reviews/{ManagerID}": {
+      "get": {
+        "tags": [
+          "Reviews"
+        ],
+        "summary": "List of Reviews for HR Manager",
+        "parameters": [
+          {
+            "name": "ManagerID",
+            "in": "path",
+            "required": true,
+            "description": "ID of Manager",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of Review for HR Manager!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/reviews/accept_review/{ReviewID}/{status}": {
+      "put": {
+        "tags": [
+          "Reviews"
+        ],
+        "summary": "Accept Annual Review by HR Manager",
+        "parameters": [
+          {
+            "name": "ReviewID",
+            "in": "path",
+            "required": true,
+            "description": "ID of Review",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "status",
+            "in": "path",
+            "required": true,
+            "description": "1-accept",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Reason": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Review Accepted!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/reviews/reject_review/{ReviewID}/{status}": {
+      "put": {
+        "tags": [
+          "Reviews"
+        ],
+        "summary": "Reject Annual Review by HR Manager",
+        "parameters": [
+          {
+            "name": "ReviewID",
+            "in": "path",
+            "required": true,
+            "description": "ID of Review",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "status",
+            "in": "path",
+            "required": true,
+            "description": "2-accept",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Reason": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Review Rejected!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
     "/documents/mydocs": {
       "get": {
         "tags": [
@@ -1596,7 +2021,7 @@
                     "type": "string"
                   },
                   "ExpectedDt": {
-                    "type": "date"
+                    "type": "string"
                   }
                 }
               }
@@ -1608,7 +2033,9 @@
             "description": "Resignation submitted successfully!",
             "content": {
               "application/json": {
-                "schema": null
+                "schema": {
+                  "$ref": ""
+                }
               }
             }
           }
@@ -1659,43 +2086,6 @@
                 "schema": {
                   "$ref": ""
                 }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ]
-      }
-    },
-    "/reviews/add": {
-      "post": {
-        "tags": [
-          "R1"
-        ],
-        "summary": "Add Review by Employee",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "Review": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Review Posted Successfully!",
-            "content": {
-              "application/json": {
-                "schema": null
               }
             }
           }
@@ -1861,6 +2251,69 @@
         "responses": {
           "200": {
             "description": "View Timesheet Summary of All Employees",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/leave/apply": {
+      "post": {
+        "tags": [
+          "R1"
+        ],
+        "summary": "Apply Leave by Employee",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "LeaveType": {
+                    "type": "string"
+                  },
+                  "FromDate": {
+                    "type": "string"
+                  },
+                  "FromSession": {
+                    "type": "string"
+                  },
+                  "ToDate": {
+                    "type": "string"
+                  },
+                  "ToSession": {
+                    "type": "string"
+                  },
+                  "Reason": {
+                    "type": "string"
+                  },
+                  "Manager": {
+                    "type": "string"
+                  },
+                  "Manager2": {
+                    "type": "string"
+                  },
+                  "Contact": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Leave Applied Successfully!",
             "content": {
               "application/json": {
                 "schema": {
