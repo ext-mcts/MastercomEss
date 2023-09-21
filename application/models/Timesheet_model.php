@@ -186,4 +186,26 @@ class Timesheet_model extends CI_Model
         $query=$this->db->query($sql);
 		return $query->result();
     }
+
+    public function get_ts_by_empid($empid)
+    {
+        $tsid = "TS".$empid;
+        $sql = "SELECT TSDate,Start,Finish,l.LocationName as Location,Activity,p.ProjectName as ProjectId,t.Status from mcts_extranet.`dbo.timesheetdetails` t
+                left join mcts_extranet.`dbo.locations` l on t.Location=l.LocationID
+                left join mcts_extranet.`dbo.projects` p on t.ProjectId=p.ProjectID
+                 WHERE TSID LIKE '$tsid%' ORDER BY TSDate ASC";
+        $query=$this->db->query($sql);
+		return $query->result();
+    }
+
+    public function get_emp_ts_by_month_year($empid,$mnth,$year)
+    {
+        $tsid = "TS".$empid;
+        $sql = "select TSDetailsID,TSDate,Start,Finish,l.LocationName as Location,Activity,p.ProjectName as ProjectId,t.Status from mcts_extranet.`dbo.timesheetdetails` t
+                left join mcts_extranet.`dbo.locations` l on t.Location=l.LocationID
+                left join mcts_extranet.`dbo.projects` p on t.ProjectId=p.ProjectID
+                where TSID like '%$tsid%' and month(TSDate)='$mnth' and year(TSDate)='$year'";
+        $query=$this->db->query($sql);
+		return $query->result();
+    }
 }

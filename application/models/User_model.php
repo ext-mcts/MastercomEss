@@ -14,6 +14,7 @@ class User_model extends CI_Model {
 		parent::__construct();
 		$this->emptable="mcts_extranet.dbo.employees";
 		$this->load->model('accuredleaves_model');
+		$this->load->model('projects_model');
 	}
 	
 	/*function - Employee creation */
@@ -31,13 +32,22 @@ class User_model extends CI_Model {
 				'".$data['Address']."','".$data['FathersName']."','".$data['TempAddress']."','".$data['Phone2']."',
 				'".$data['AppLetterRef']."','".$data['BranchDetails']."','".date('Y-m-d',strtotime($data['DOB']))."',
 				'".$data['JobRole']."','".$data['Level']."','".$data['Vertical']."','".$data['PFAccount']."',
-				'".$data['AltEmailID']."','".$data['Technology']."','".$data['Language']."','".$data['Aadhar']."','".$data['Passport']."')";
+				'".$data['AltEmailID']."','".$data['Technology']."','".$data['Language']."','".$data['Aadhar']."',
+				'".$data['Passport']."')";
 
 		$query=$this->db->query($sql);
 
 		$insert_id = $this->db->insert_id();
 
 		$this->accuredleaves_model->OnJoiningLeaves($insert_id);
+
+		$proj_data = array();
+		$proj_data["AssignedDt"] = date("Y-m-d");
+		$proj_data["EmployeeID"] = $insert_id;
+		$proj_data["Role"] = $data['Role'];
+		$proj_data["ProjectID"] = $data['Project'];
+
+		$this->projects_model->assign_project($proj_data);
 
 		if($query)
 			return true;
@@ -123,6 +133,7 @@ class User_model extends CI_Model {
 		$sql.="WHERE EmployeeID=$id";
 
 		$query=$this->db->query($sql);
+		
 		if($query==1)
 			return true;
 		else

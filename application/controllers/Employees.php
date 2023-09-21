@@ -112,7 +112,7 @@ class Employees extends REST_Controller
                     $this->form_validation->set_rules('Password', 'Password', 'trim|required|max_length[50]');
                     $this->form_validation->set_rules('Role', 'Role', 'trim|required|numeric|max_length[3]');
                     $this->form_validation->set_rules('WorkLocation', 'Work Location', 'trim|numeric|max_length[3]');
-                    $this->form_validation->set_rules('Department', 'Departmant', 'trim|required|numeric|max_length[3]');
+                    //$this->form_validation->set_rules('Department', 'Departmant', 'trim|required|numeric|max_length[3]');
                     $this->form_validation->set_rules('Designation', 'Designation', 'trim|required|numeric|max_length[3]');
                     $this->form_validation->set_rules('Phone1', 'Phone Number1', 'trim|required|max_length[50]');
                     $this->form_validation->set_rules('PANNumber', 'PAN Number', 'trim|required|max_length[10]');
@@ -138,6 +138,7 @@ class Employees extends REST_Controller
                     $this->form_validation->set_rules('AltEmailID', 'Alternate Email ID', 'trim|max_length[255]');
                     $this->form_validation->set_rules('Technology', 'Technology', 'trim|max_length[255]');
                     $this->form_validation->set_rules('Language', 'Language', 'trim|max_length[255]');
+                    $this->form_validation->set_rules('Project', 'Project', 'trim|numeric');
 
                     if ($this->form_validation->run() === false) 
                     {
@@ -324,7 +325,7 @@ class Employees extends REST_Controller
                     $this->form_validation->set_rules('EmailName', 'Email', 'trim|required|max_length[50]');
                     $this->form_validation->set_rules('Role', 'Role', 'trim|required|numeric|max_length[3]');
                     $this->form_validation->set_rules('WorkLocation', 'Work Location', 'trim|numeric|required|max_length[3]');
-                    $this->form_validation->set_rules('Department', 'Departmant', 'trim|required|numeric|max_length[3]');
+                    //$this->form_validation->set_rules('Department', 'Departmant', 'trim|required|numeric|max_length[3]');
                     $this->form_validation->set_rules('Designation', 'Designation', 'trim|required|numeric|max_length[3]');
                     $this->form_validation->set_rules('Phone1', 'Phone Number1', 'trim|required|max_length[50]');
                     $this->form_validation->set_rules('PANNumber', 'PAN Number', 'trim|required|max_length[10]');

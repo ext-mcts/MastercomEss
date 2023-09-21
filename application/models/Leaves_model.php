@@ -134,7 +134,7 @@ class Leaves_model extends CI_Model {
 
     public function get_emp_leaves($empid)
     {
-        $sql = "SELECT LeaveID, LStartDt, SessionFrom, LFinishDt, SessionTo, Reason, lt.LeaveType, e.FirstName as Manager,
+        /*$sql = "SELECT LeaveID, LStartDt, SessionFrom, LFinishDt, SessionTo, Reason, lt.LeaveType, e.FirstName as Manager,
                     case l.Approved
                         when '1' then 'Approved'
                         when '0' then 'Pending'
@@ -142,7 +142,14 @@ class Leaves_model extends CI_Model {
                     end as Status from mcts_extranet.`dbo.leave` l
                 left join mcts_extranet.`dbo.employees` e on l.Manager=e.EmployeeID
                 left join mcts_extranet.`dbo.leavetypes` lt on l.LeaveType=lt.id
-                where l.EmployeeID='$empid'";
+                where l.EmployeeID='$empid'";*/
+
+        $sql =  "SELECT lt.LeaveType, e.FirstName AppliedTo , date(l.AppliedDate) AppliedOn, CONCAT(l.LStartDt, ' (',case l.SessionFrom when 1 then 'Session 1'
+                when 2 then 'Session 2' end ,')') StartDuration,
+                CONCAT(l.LFinishDt, ' (', case l.SessionTo when 1 then 'Session 1' when 2 then 'Session 2' end ,')') EndDuration, l.Reason, case l.Approved when 0 then 'Pending' when 1 then 'Approved' when 2 then 'Rejected' end Status
+                FROM mcts_extranet.`dbo.leave` AS l, mcts_extranet.`dbo.leavetypes` AS lt, mcts_extranet.`dbo.employees` AS e
+                WHERE l.EmployeeID = '$empid' AND l.LeaveType = lt.id AND l.Manager = e.EmployeeID
+                ORDER BY l.LeaveID asc";
 
         $query=$this->db->query($sql);
 		return $query->result();

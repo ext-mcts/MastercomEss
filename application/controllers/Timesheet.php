@@ -761,4 +761,77 @@ class Timesheet extends REST_Controller
             $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
         }       
     }
+
+    public function byempid_get()
+    {
+        $empid = $this->uri->segment(3); // Employee ID
+
+        if(!is_numeric($empid) || empty($empid) || $empid==0){
+            $message = array('message' => 'Timesheet ID not numeric/empty/too lengthy');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_BAD_REQUEST);
+            return false;
+        }
+
+        $headers = $this->input->request_headers(); 
+        if (isset($headers['Authorization'])) 
+        {
+            $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+            if ($decodedToken['status'])
+            {
+                if($this->userdetails->Role==1)
+                {
+                    $data = $this->timesheet_model->get_ts_by_empid($empid);
+
+                    if($data)
+                    {
+                        $message = array('results' => $data);
+                        $message['status'] = true;
+                        $this->response($message, REST_Controller::HTTP_OK);
+                    }
+                    else{ 
+                        $message = array('message' => 'Something went wrong!.');
+                        $message['status'] = false;
+                        $this->response($message, REST_Controller::HTTP_OK);
+                    }
+                }
+                else
+                {
+                    $message = array('message' => 'This Role not allowed to view Project details');
+                    $message['status'] = false;
+                    $this->response($message,REST_Controller::HTTP_UNAUTHORIZED);
+                }
+            }
+            else
+            {
+                $this->response($decodedToken);
+            }
+        }
+        else 
+        {
+            $message = array('message' => 'Authentication failed');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+        }
+    }
+
+    public function emp_ts_by_month_get()
+    {
+        $empid = $this->uri->segment(3);
+        $month = date('m',strtotime($this->uri->segment(4)));
+        $year = $this->uri->segment(5);
+        $data = $this->timesheet_model->get_emp_ts_by_month_year($empid,$month,$year);
+
+        if($data)
+        {
+            $message = array('results' => $data);
+            $message['status'] = true;
+            $this->response($message, REST_Controller::HTTP_OK);
+        }
+        else{ 
+            $message = array('message' => 'Something went wrong!.');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_OK);
+        }
+    }
 }
