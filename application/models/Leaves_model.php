@@ -147,4 +147,17 @@ class Leaves_model extends CI_Model {
         $query=$this->db->query($sql);
 		return $query->result();
     }
+
+    public function upload_leave_policy_doc($data)
+    {
+        $sql = "INSERT INTO mcts_extranet.`dbo.policies` (PolicyType,PolicyName,PolicyDesc,PolicyDoc,PolicyDocPath) 
+                VALUES (2,'".$data['PolicyName']."','".$data['PolicyDesc']."',
+                        '".$data['PolicyDoc']."','".$data['PolicyDocPath']."')";
+
+        $query=$this->db->query($sql);
+        if($query)
+            return $this->db->insert_id();
+        else
+            return false;
+    }
 }

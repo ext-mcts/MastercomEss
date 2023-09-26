@@ -149,4 +149,15 @@ class Projects_model extends CI_Model {
         $query=$this->db->query($sql);
         return $query->result();
     }
+
+    public function relieve_employee($data)
+    {
+        $sql = "UPDATE mcts_extranet.`dbo.employee2project` SET Status=2 WHERE EmployeeID='".$data['EmployeeID']."' AND ProjectID='".$data['ProjectID']."'";
+
+        $query=$this->db->query($sql);
+        if($query)
+            return true;
+        else
+            return false;
+    }
 }

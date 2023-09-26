@@ -873,4 +873,73 @@ class Leave extends REST_Controller
             $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
         }
     }
+
+    public function upload_leavepolicy_doc_post()
+    {
+        $headers = $this->input->request_headers(); 
+        if (isset($headers['Authorization'])) 
+        {
+            $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+            if ($decodedToken['status'])
+            {
+                if($this->userdetails->Role==1 || $this->userdetails->Role==3 || $this->userdetails->Role==5)
+                {
+                    $_POST = json_decode(file_get_contents("php://input"), true);
+
+                    $this->form_validation->set_rules('Document', 'Leave Policy Document', 'trim|required');
+                    $this->form_validation->set_rules('PolicyName', 'Policy Name', 'trim|required|max_length[100]');
+                    $this->form_validation->set_rules('PolicyDesc', 'Policy Description', 'trim|required|max_length[100]');
+
+                    if ($this->form_validation->run() === false) 
+                    {
+                        $errors = $this->form_validation->error_array();
+                        $errors['status'] = false;
+                        $this->response($errors,REST_Controller::HTTP_BAD_REQUEST);
+                        return false;
+                    }
+
+                    $policydata = array();
+                    $policydata = $this->input->post();
+
+                    $base64file   = new Base64fileUploads();
+                    $return = $base64file->du_uploads('./assets/leave_docs/',trim($policydata['Document']));
+    
+                    $policydata["PolicyDoc"] = $return['file_name'];
+                    $policydata["PolicyDocPath"] = $return['with_path'];
+
+                    $data = $this->leaves_model->upload_leave_policy_doc($policydata);
+
+                    if($data)
+                    {
+                        $message = array('message' => 'Leave Policy Document uploaded successfully!');
+                        $message['status'] = true;
+                        $this->response($message, REST_Controller::HTTP_OK);
+                    }
+                    else{ 
+                        $message = array('message' => 'No records found!.');
+                        $message['status'] = false;
+                        $this->response($message, REST_Controller::HTTP_OK);
+                    }
+                }
+                else 
+                {
+                    $message = array('message' => 'This Role not allowed to Upload Leave Policy Document!');
+                    $message['status'] = false;
+                    $this->response($message,REST_Controller::HTTP_UNAUTHORIZED);
+                    return false;
+                }
+            }
+            else 
+            {
+                $this->response($decodedToken);
+            }
+        }
+        else 
+        {
+            $message = array('message' => 'Authentication failed');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+            return false;
+        }  
+    }
 }
