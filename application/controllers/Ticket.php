@@ -47,8 +47,8 @@ class Ticket extends REST_Controller
             {
                 $_POST = json_decode(file_get_contents("php://input"), true);
 
-                $this->form_validation->set_rules('dept', 'Department', 'trim|required|max_length[50]');
-                $this->form_validation->set_rules('deptperson', 'Department Person', 'trim|required|max_length[50]');
+                $this->form_validation->set_rules('dept', 'Department', 'trim|required|numeric|max_length[3]');
+                $this->form_validation->set_rules('deptperson', 'Department Person', 'trim|required|numeric|max_length[3]');
                 $this->form_validation->set_rules('category', 'Category', 'trim|required|max_length[50]');
                 $this->form_validation->set_rules('priority', 'Priority', 'trim|required|max_length[50]');
                 $this->form_validation->set_rules('subject', 'Ticket Subject', 'trim|required|max_length[150]');
@@ -66,7 +66,7 @@ class Ticket extends REST_Controller
 
                 $tktdata = array();
                 $tktdata = $this->input->post();
-                $tktdata['EmailName'] = $this->userdetails->EmailName;
+                $tktdata['EmployeeID'] = $this->userdetails->EmployeeID;
 
                 $data = $this->ticket_model->create_ticket($tktdata);
 
@@ -131,8 +131,8 @@ class Ticket extends REST_Controller
 
                 $this->form_validation->set_data($this->put());
                 
-                $this->form_validation->set_rules('dept', 'Department', 'trim|required|max_length[50]');
-                $this->form_validation->set_rules('deptperson', 'Department Person', 'trim|required|max_length[50]');
+                $this->form_validation->set_rules('dept', 'Department', 'trim|required|numeric|max_length[3]');
+                $this->form_validation->set_rules('deptperson', 'Department Person', 'trim|required|numeric|max_length[3]');
                 $this->form_validation->set_rules('category', 'Category', 'trim|required|max_length[50]');
                 $this->form_validation->set_rules('priority', 'Priority', 'trim|required|max_length[50]');
                 $this->form_validation->set_rules('subject', 'Ticket Subject', 'trim|required|max_length[150]');
@@ -332,5 +332,89 @@ class Ticket extends REST_Controller
             $message['status'] = false;
             $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
         }
+    }
+
+    public function send_escalate_email_post()
+    {
+        $headers = $this->input->request_headers(); 
+        if (isset($headers['Authorization'])) 
+        {
+            $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+            if ($decodedToken['status'])
+            {
+                if($this->userdetails->Role==1 || $this->userdetails->Role==3 || $this->userdetails->Role==5)
+                {
+                    $data = $this->ticket_model->get_delayed_tickets();
+
+                    if(count($data)>=1)
+                    {
+                        foreach($data as $user)
+                        {
+                            $config = Array(        
+                                'protocol' => 'smtp',
+                                'smtp_host' => 'smtp.mailhostbox.com',
+                                'smtp_port' => 587,
+                                'smtp_user' => 'autoreply@mastercom.co.in',
+                                'smtp_pass' => SMTP_PASS,
+                                'smtp_timeout' => '4',
+                                'mailtype'  => 'html', 
+                                'charset'   => 'iso-8859-1'
+                            );
+    
+                            $empdet = $this->user_model->get_user($user->AssignedToPerson);
+
+                            $empdet2 = $this->user_model->get_user($user->RaisedBy);
+
+                            $this->load->library('email', $config);
+                            $this->email->set_newline("\r\n"); 
+                            $getconfigmail = $this->user_model->get_config_email(); 
+                            $from_email = $getconfigmail[0]->ConfigEmail;
+                            $this->email->from($from_email, 'Mastercom - Ticket Escalated Email!'); 
+                            //$this->email->to($empdet->EmailName);
+                            $this->email->to('harshavardhan4891@gmail.com');
+                            $this->email->subject('Escalated Ticket Details - Details');
+                            $message = '<html><body>';
+                            $message .= '<h3>Dear '.$empdet->FirstName.',</h3>'; 
+                            $message .= '<p> Your Assigned Ticket is delayed. Here are the details,</P>';  
+                            $message .= '<p><h4>Ticket Subject:</h4> '.$user->TktSubject.'</p>';
+                            $message .= '<p><h4>Ticket Description:</h4> '.$user->TktDescription.'</p>';
+                            $message .= '<p><h4>Raised By:</h4> '.$empdet2->FirstName.'</p>';
+                            $message .= '<p><h4>Raised On:</h4> '.date('d M Y',strtotime($user->TktCreatedDt)).'</p>';
+                            $message .= '<p><h4>Mastercom Team.<h4></p>';
+                            $message .= '</body></html>';  
+                                        
+                            $this->email->message($message);
+                            $this->email->send();
+                        }
+                        $message = array('message' => 'Escalated Emails sent successfully!');
+                        $message['status'] = true;
+                        $this->response($message, REST_Controller::HTTP_OK);
+                    }
+                    else{ 
+                        $message = array('message' => 'No Records found!.');
+                        $message['status'] = false;
+                        $this->response($message, REST_Controller::HTTP_OK);
+                    }
+                }
+                else 
+                {
+                    $message = array('message' => 'This Role not allowed to Send Escalete Email!');
+                    $message['status'] = false;
+                    $this->response($message,REST_Controller::HTTP_UNAUTHORIZED);
+                    return false;
+                }
+            }
+            else 
+            {
+                $this->response($decodedToken);
+            }
+        }
+        else 
+        {
+            $message = array('message' => 'Authentication failed');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+            return false;
+        }  
     }
 }

@@ -26,4 +26,12 @@ class Attendance_model extends CI_Model {
 		$query=$this->db->query($sql);
         return $query->result();
     }
+
+    public function GetEmpSwipes($id)
+    {
+        $sql = "SELECT * FROM mcts_extranet.`dbo.attendancelogs` WHERE EmployeeID IN (SELECT EmployeeID FROM mcts_extranet.`dbo.employees` where Manager='$id') AND MONTH(SwipeDate)='".date('m')."'";
+
+        $query=$this->db->query($sql);
+        return $query->result();
+    }
 }

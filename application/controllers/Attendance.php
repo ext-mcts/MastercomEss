@@ -144,4 +144,49 @@ class Attendance extends REST_Controller
             $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
         }
     }
+
+    public function get_emp_swipes_get()
+    {
+        $headers = $this->input->request_headers(); 
+        if (isset($headers['Authorization'])) 
+        {
+            $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+            if ($decodedToken['status'])
+            {
+                if($this->userdetails->Role==3)
+                {
+                    $data = $this->attendance_model->GetEmpSwipes($this->userdetails->EmployeeID);
+                    if(count($data)>=1)
+                    {
+                        $message = array('results' => $data);
+                        $message['status'] = true;
+                        $this->response($message, REST_Controller::HTTP_OK);
+                    }
+                    else{ 
+                        $message = array('message' => 'No Records found!.');
+                        $message['status'] = false;
+                        $this->response($message, REST_Controller::HTTP_OK);
+                    }
+                }
+                else 
+                {
+                    $message = array('message' => 'This Role not allowed to get Employees Swipes!');
+                    $message['status'] = false;
+                    $this->response($message,REST_Controller::HTTP_UNAUTHORIZED);
+                    return false;
+                }
+            }
+            else
+            {
+                $this->response($decodedToken);
+            }
+        }
+        else
+        {
+            $message = array('message' => 'Authentication failed');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+            return false; 
+        }
+    }
 }
