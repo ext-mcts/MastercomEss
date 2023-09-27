@@ -81,6 +81,22 @@
         "description": "Find out more",
         "url": "http://swagger.io"
       }
+    },
+    {
+      "name": "R2R3",
+      "description": "Everything about R1 & R3 Release",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "http://swagger.io"
+      }
+    },
+    {
+      "name": "Leaves",
+      "description": "Everything about Leaves",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "http://swagger.io"
+      }
     }
   ],
   "components": {
@@ -2267,10 +2283,484 @@
         ]
       }
     },
+    "/assets/create": {
+      "post": {
+        "tags": [
+          "R2R3"
+        ],
+        "summary": "Create Asset",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Brand": {
+                    "type": "string"
+                  },
+                  "Model": {
+                    "type": "string"
+                  },
+                  "PurchaseDate": {
+                    "type": "string"
+                  },
+                  "SerialNumber": {
+                    "type": "string"
+                  },
+                  "ChargerSerialNumber": {
+                    "type": "string"
+                  },
+                  "Ram": {
+                    "type": "string"
+                  },
+                  "Rom": {
+                    "type": "string"
+                  },
+                  "Processor": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Asset Created Successfully!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/assets/update/{AssetID}": {
+      "put": {
+        "tags": [
+          "R2R3"
+        ],
+        "summary": "Update Asset with ID",
+        "parameters": [
+          {
+            "name": "AssetID",
+            "in": "path",
+            "required": true,
+            "description": "ID of Asset",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Brand": {
+                    "type": "string"
+                  },
+                  "Model": {
+                    "type": "string"
+                  },
+                  "PurchaseDate": {
+                    "type": "string"
+                  },
+                  "SerialNumber": {
+                    "type": "string"
+                  },
+                  "ChargerSerialNumber": {
+                    "type": "string"
+                  },
+                  "Ram": {
+                    "type": "string"
+                  },
+                  "Rom": {
+                    "type": "string"
+                  },
+                  "Processor": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Asset Updated Successfully!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/assets/assign": {
+      "post": {
+        "tags": [
+          "R2R3"
+        ],
+        "summary": "Assign Asset to Employee",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "EmployeeID": {
+                    "type": "integer"
+                  },
+                  "Asset": {
+                    "type": "integer"
+                  },
+                  "ValidUpTo": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Asset Assigned Successfully!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/assets/delete/{AssetID}": {
+      "delete": {
+        "tags": [
+          "R2R3"
+        ],
+        "summary": "Delete Asset with ID",
+        "parameters": [
+          {
+            "name": "AssetID",
+            "in": "path",
+            "required": true,
+            "description": "ID of Asset",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Asset Deleted Successfully!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/assets/my_assets": {
+      "get": {
+        "tags": [
+          "R2R3"
+        ],
+        "summary": "Get Assets of Employee",
+        "responses": {
+          "200": {
+            "description": "Get Assets of Employee",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/departments/create": {
+      "post": {
+        "tags": [
+          "R2R3"
+        ],
+        "summary": "Create Department",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "DepartmentName": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Department Created Successfully!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/departments/update/{DeptID}": {
+      "put": {
+        "tags": [
+          "R2R3"
+        ],
+        "summary": "Update Department with ID",
+        "parameters": [
+          {
+            "name": "DeptID",
+            "in": "path",
+            "required": true,
+            "description": "ID of Department",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "DepartmentName": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Department Updated Successfully!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/departments/delete/{AssetID}": {
+      "delete": {
+        "tags": [
+          "R2R3"
+        ],
+        "summary": "Delete Department with ID",
+        "parameters": [
+          {
+            "name": "AssetID",
+            "in": "path",
+            "required": true,
+            "description": "ID of Department",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Department Deleted Successfully!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/leave/upload_leavepolicy_doc": {
+      "post": {
+        "tags": [
+          "R2R3"
+        ],
+        "summary": "Upload Leave Policy Document",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Document": {
+                    "type": "string"
+                  },
+                  "PolicyName": {
+                    "type": "string"
+                  },
+                  "PolicyDesc": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Leave Policy Document uploaded Successfully!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/ticket/send_escalate_email": {
+      "post": {
+        "tags": [
+          "R2R3"
+        ],
+        "summary": "Send Escalated Email for Delayed ticktes",
+        "responses": {
+          "200": {
+            "description": "Escalated Emails sent successfully!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/projects/relieve_employee": {
+      "post": {
+        "tags": [
+          "R2R3"
+        ],
+        "summary": "Relieve Employee from Project",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "EmployeeID": {
+                    "type": "integer"
+                  },
+                  "ProjectID": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Employee Relieved from Project Successfully!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
     "/leave/apply": {
       "post": {
         "tags": [
-          "R1"
+          "Leaves"
         ],
         "summary": "Apply Leave by Employee",
         "requestBody": {
@@ -2305,6 +2795,9 @@
                   },
                   "Contact": {
                     "type": "string"
+                  },
+                  "Image": {
+                    "type": "string"
                   }
                 }
               }
@@ -2314,6 +2807,114 @@
         "responses": {
           "200": {
             "description": "Leave Applied Successfully!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/leave/delete/{LeaveID}": {
+      "delete": {
+        "tags": [
+          "Leaves"
+        ],
+        "summary": "Delete Leave with ID",
+        "parameters": [
+          {
+            "name": "LeaveID",
+            "in": "path",
+            "required": true,
+            "description": "ID of Leave",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Leave Deleted Successfully!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/leave/approve/{LeaveID}/1": {
+      "put": {
+        "tags": [
+          "Leaves"
+        ],
+        "summary": "Approve Leave with ID",
+        "parameters": [
+          {
+            "name": "LeaveID",
+            "in": "path",
+            "required": true,
+            "description": "ID of Leave",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Leave Approved Successfully!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": ""
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/leave/reject/{LeaveID}/2": {
+      "put": {
+        "tags": [
+          "Leaves"
+        ],
+        "summary": "Reject Leave with ID",
+        "parameters": [
+          {
+            "name": "LeaveID",
+            "in": "path",
+            "required": true,
+            "description": "ID of Leave",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Leave Rejected Successfully!",
             "content": {
               "application/json": {
                 "schema": {
