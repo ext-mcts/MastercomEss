@@ -181,7 +181,7 @@ class Timesheet extends REST_Controller
             }
             else 
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else 
@@ -316,7 +316,7 @@ class Timesheet extends REST_Controller
             }
             else 
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
 
         }
@@ -355,7 +355,7 @@ class Timesheet extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role==1 || $this->userdetails->Role==3)
+                if($this->userdetails->Role==1 || $this->userdetails->Role==3 || $this->userdetails->Role==4)
                 {
                     $data = $this->timesheet_model->accept_reject_timesheet($tsid,$status); // updating status as Approve
 
@@ -423,7 +423,7 @@ class Timesheet extends REST_Controller
             }
             else 
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else 
@@ -461,7 +461,7 @@ class Timesheet extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role==1 || $this->userdetails->Role==3)
+                if($this->userdetails->Role==1 || $this->userdetails->Role==3 || $this->userdetails->Role==4)
                 {
                     $data = $this->timesheet_model->accept_reject_timesheet($tsid,$status);// updating status as Reject
 
@@ -529,7 +529,7 @@ class Timesheet extends REST_Controller
             }
             else 
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else 
@@ -585,7 +585,7 @@ class Timesheet extends REST_Controller
                 }
             }
             else {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else {
@@ -613,7 +613,7 @@ class Timesheet extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role==1 || $this->userdetails->Role==3)
+                if($this->userdetails->Role==1 || $this->userdetails->Role==3 || $this->userdetails->Role==4)
                 {
                     $data = $this->timesheet_model->delete_timesheet($tsid); // deleting Timesheet
 
@@ -641,7 +641,7 @@ class Timesheet extends REST_Controller
             }
             else
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else
@@ -670,7 +670,7 @@ class Timesheet extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role==1)
+                if($this->userdetails->Role==1 || $this->userdetails->Role==4)
                 {
                     $data = $this->timesheet_model->check_ts_id($tsid);
 
@@ -695,7 +695,7 @@ class Timesheet extends REST_Controller
             }
             else
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else 
@@ -751,7 +751,7 @@ class Timesheet extends REST_Controller
             }
             else
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else 
@@ -779,7 +779,7 @@ class Timesheet extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role==1)
+                if($this->userdetails->Role==1  || $this->userdetails->Role==2 || $this->userdetails->Role==3 || $this->userdetails->Role==4)
                 {
                     $data = $this->timesheet_model->get_ts_by_empid($empid);
 
@@ -797,14 +797,14 @@ class Timesheet extends REST_Controller
                 }
                 else
                 {
-                    $message = array('message' => 'This Role not allowed to view Project details');
+                    $message = array('message' => 'This Role not allowed to view Timesheet details');
                     $message['status'] = false;
                     $this->response($message,REST_Controller::HTTP_UNAUTHORIZED);
                 }
             }
             else
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else 

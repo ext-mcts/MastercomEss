@@ -54,7 +54,7 @@ class Assets_model extends CI_Model {
                 PurchaseDate='".$data['PurchaseDate']."',SerialNumber='".$data['SerialNumber']."',
                 ChargerSerialNumber='".$data['ChargerSerialNumber']."',Ram='".$data['Ram']."',
                 Rom='".$data['Rom']."',Processor='".$data['Processor']."'
-                WHERE Id='$id'";
+                WHERE id='$id'";
 
         $query=$this->db->query($sql);
         if($query==1)
@@ -71,18 +71,6 @@ class Assets_model extends CI_Model {
         return $query->result();
     }
 
-    public function assign_asset($data)
-    {
-        $sql = "INSERT INTO `mcts_extranet`.`dbo.asset2employee` (Asset,EmployeeID,AssignedDate,ValidUpTo)
-                VALUES ('".$data['Asset']."','".$data['EmployeeID']."','".date("Y-m-d")."',
-                        '".date("Y-m-d",strtotime($data['ValidUpTo']))."')";
-
-        $query=$this->db->query($sql);
-        if($query==1)
-            return true;
-        else
-            return false;
-    }
 
     public function check_asset_allocation($id)
     {
@@ -109,5 +97,58 @@ class Assets_model extends CI_Model {
 
         $query=$this->db->query($sql);
 		return $query->result();
+    }
+
+    // Suhas
+
+    public function get_assetsById($id)
+    {
+        // $sql = "SELECT id as assetId, Brand, Model, PurchaseDate, SerialNumber, ChargerSerialNumber, Ram, Rom, Processor FROM `mcts_extranet`.`dbo.assets` WHERE id = '$id'";
+        $sql = "SELECT a.id as assetId, a.Brand, a.Model, a.PurchaseDate, a.SerialNumber, a.ChargerSerialNumber,
+        a.Ram, a.Rom, a.Processor, e.FirstName AS AssignTo, aa.ValidUpTo
+        FROM  `mcts_extranet`.`dbo.assets` AS a , mcts_extranet.`dbo.asset2employee`  AS aa,
+        mcts_extranet.`dbo.employees`  AS e WHERE a.id = '$id' AND aa.Asset = '$id' AND 
+        e.EmployeeID = (SELECT EmployeeID FROM mcts_extranet.`dbo.asset2employee` WHERE Asset = '$id')";
+        $query = $this->db->query($sql);
+        return $query->result()[0];
+    }
+
+    public function add_asset($data)
+    {
+        $sql = "INSERT INTO `mcts_extranet`.`dbo.assets` (Brand,Model,PurchaseDate,SerialNumber,ChargerSerialNumber,Ram,Rom,Processor)
+                VALUES ('".$data['Brand']."','".$data['Model']."','".$data['PurchaseDate']."',
+                        '".$data['SerialNumber']."','".$data['ChargerSerialNumber']."','".$data['Ram']."',
+                        '".$data['Rom']."','".$data['Processor']."')";
+
+        $query=$this->db->query($sql);
+        // return $this->db->insert_id();
+        if($query==1)
+            return $this->db->insert_id();
+        else
+            return false; 
+    }
+
+    public function assign_asset($data, $id)
+    {
+        $sql = "INSERT INTO `mcts_extranet`.`dbo.asset2employee` (Asset,EmployeeID,AssignedDate,ValidUpTo)
+                VALUES ('".$id."','".$data['AssignTo']."','".date("Y-m-d")."',
+                        '".date("Y-m-d",strtotime($data['ValidUpTo']))."')";
+
+        $query=$this->db->query($sql);
+        if($query==1)
+            return true;
+        else
+            return false;
+    }
+
+    public function update_assigned_asset($data, $id)
+    {
+        $sql = "UPDATE `mcts_extranet`.`dbo.asset2employee` SET EmployeeID = '".$data['AssignTo']."' , ValidUpTo = '".date("Y-m-d",strtotime($data['ValidUpTo']))."' WHERE Asset = '".$id."'";
+        $query=$this->db->query($sql);
+        // return $query;
+        if($query==1)
+            return true;
+        else
+            return false;
     }
 }

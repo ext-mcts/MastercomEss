@@ -100,7 +100,7 @@ class Locations extends REST_Controller
             }
             else
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else 
@@ -183,7 +183,7 @@ class Locations extends REST_Controller
             }
             else
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else 
@@ -252,7 +252,7 @@ class Locations extends REST_Controller
             }
             else
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else

@@ -63,7 +63,7 @@ class Policies extends REST_Controller
             }
             else 
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else

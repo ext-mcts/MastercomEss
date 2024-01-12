@@ -13,10 +13,16 @@ class Base64fileUploads {
     }
     
     public function du_uploads($path,$base64string){
+        $bs64str = explode(',',$base64string);
+        // $bs64str = str_split(',');
+        // $split = ",";
+        // $bs64str = explode($split, $bs64str);
+        // list($type, $bs64str) = explode(';', $bs64str);
         if(
-            $this->is_base64($base64string) == true 
+            $this->is_base64($bs64str[1]) == true 
+            // true
         ){  
-            $base64string = "data:image/jpeg;base64,".$base64string;
+            // $base64string = "data:image/jpeg;base64,".$base64string;
             $this->check_size($base64string);
             $this->check_dir($path);
             $this->check_file_type($base64string);
@@ -37,7 +43,7 @@ class Base64fileUploads {
     public function check_size($base64string){
         $file_size = 8000000;
         $size = @getimagesize($base64string);
-        
+        // $size = filesize($base64string)
         if($size['bits'] >= $file_size){
             print_r(json_encode(array('status' =>false,'message' => 'file size not allowed !')));exit;
         }

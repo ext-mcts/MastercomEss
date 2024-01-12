@@ -35,14 +35,12 @@ class Ticket_model extends CI_Model {
         $query = $this->db->query($sql);
         return $query->result();
     }
-
     public function update_ticket($data,$tktid)
     {
         $sql = "UPDATE mcts_extranet.`dbo.ticketmaster2` SET 
                 TktCategory='".$data['category']."',AssignedToDept='".$data['dept']."',AssignedToPerson='".$data['deptperson']."',
                 TktSubject='".$data['subject']."',TktDescription='".$data['description']."',Priority='".$data['priority']."',
-                ContactNo='".$data['contact']."'
-                WHERE TktNo=$tktid";
+                ContactNo='".$data['contact']."', Location='".$data['location']."' WHERE TktNo=$tktid";
 
         $query=$this->db->query($sql);
         if($query==1)
@@ -89,4 +87,29 @@ class Ticket_model extends CI_Model {
         $query=$this->db->query($sql);
 		return $query->result();
     }
+
+    // Suhas
+
+    public function get_ticketById($id)
+    {
+        $sql = "SELECT TktNo as id, TktCategory as category, ContactNo as contact, TktStatus as status, AssignedToDept as dept, AssignedToPerson as deptperson, 
+        TktDescription as description, Location as location, Priority as priority, TktSubject as subject
+         FROM `mcts_extranet`.`dbo.ticketmaster2` WHERE TktNo = '$id'";
+        $query = $this->db->query($sql);
+        return $query->result()[0];
+    }
+
+    public function open_close_ticket($tktid,$status)
+    {
+        $action = $status == 1 ? 'Open' : 'Closed';
+
+        $sql = "UPDATE `mcts_extranet`.`dbo.ticketmaster2` SET TktStatus = '$action' WHERE TktNo='$tktid'";        
+        $query = $this->db->query($sql);
+        if ($query==true) {
+            return ($status == 1 ? array('message' => 'Ticket opened successfully') : array('message' => 'Ticket closed successfully'));
+        } else {
+            return false;        
+        }
+    }
+
 }

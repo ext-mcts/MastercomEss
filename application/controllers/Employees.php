@@ -52,7 +52,7 @@ class Employees extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role==1)  // 1- admin
+                if($this->userdetails->Role==1 || $this->userdetails->Role==4)  // 1- admin
                 {
                     $filterdata = array();
 
@@ -82,7 +82,7 @@ class Employees extends REST_Controller
                 }
             }
             else {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else {
@@ -102,7 +102,7 @@ class Employees extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role==1)  //1- admin
+                if($this->userdetails->Role==1 || $this->userdetails->Role==4)  //1- admin
                 {
                     $_POST = json_decode(file_get_contents("php://input"), true);
 
@@ -279,7 +279,7 @@ class Employees extends REST_Controller
                 }
                 
             } else {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
          else {
@@ -315,7 +315,7 @@ class Employees extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role==1){
+                if($this->userdetails->Role==1 || $this->userdetails->Role==4){
                     
                     $_POST = json_decode(file_get_contents("php://input"), true);
 
@@ -338,7 +338,6 @@ class Employees extends REST_Controller
                     $this->form_validation->set_rules('DOB', 'Date Of Birth', 'trim|required|max_length[50]');
                     $this->form_validation->set_rules('Aadhar', 'Aadhar Number', 'trim|required|numeric|max_length[12]');
                     $this->form_validation->set_rules('Passport', 'Passport Number', 'trim|required');
-
                     $this->form_validation->set_rules('Password', 'Password', 'trim|max_length[50]');
                     $this->form_validation->set_rules('Address', 'Address', 'trim|max_length[200]');
                     $this->form_validation->set_rules('FathersName', 'Father Name', 'trim|max_length[50]');
@@ -352,6 +351,7 @@ class Employees extends REST_Controller
                     $this->form_validation->set_rules('AltEmailID', 'Alternate Email ID', 'trim|max_length[255]');
                     $this->form_validation->set_rules('Technology', 'Technology', 'trim|max_length[255]');
                     $this->form_validation->set_rules('Language', 'Language', 'trim|max_length[255]');
+                    $this->form_validation->set_rules('Project', 'Project', 'trim|numeric');
 
                     if ($this->form_validation->run() === false) {
                         $errors = $this->form_validation->error_array();
@@ -484,7 +484,7 @@ class Employees extends REST_Controller
                 }
             }
             else {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else {
@@ -513,13 +513,22 @@ class Employees extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role==1)
+                if($this->userdetails->Role==1 || $this->userdetails->Role==4)
                 {
                     $data = $this->user_model->get_user($empid); // Getting Employee details with ID
 
                     if($data)
                     {
+                        $data->Role = intval($data->Role);
+                        $data->Designation = intval($data->Designation);
+                        $data->Grade = intval($data->Grade);
+                        $data->Manager = intval($data->Manager);
+                        $data->Project = intval($data->Project);
+                        $data->WorkLocation = intval($data->WorkLocation);
+                        $data->BankName = intval($data->BankName);
+
                         $message = array('results' => $data);
+                        
                         $message['status'] = true;
                         $this->response($message, REST_Controller::HTTP_OK);
                     }
@@ -538,7 +547,7 @@ class Employees extends REST_Controller
             }
             else
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else 
@@ -558,7 +567,7 @@ class Employees extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role==1)
+                if($this->userdetails->Role==1 || $this->userdetails->Role==4)
                 {
                     $filterdata['Page'] = $_GET['Page'];
 
@@ -586,7 +595,7 @@ class Employees extends REST_Controller
             }
             else
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else 
@@ -645,7 +654,8 @@ class Employees extends REST_Controller
                     $getconfigmail = $this->user_model->get_config_email(); 
                     $from_email = $getconfigmail[0]->ConfigEmail;
                     $this->email->from($from_email, 'Mastercom - Resignation!'); 
-                    $this->email->to('aharshavardhan04@gmail.com');
+                    // $this->email->to('aharshavardhan04@gmail.com');
+                    $this->email->to('suhasrlawate1999@gmail.com');
                     //$this->email->to(trim($empdet->EmailName).'@mastercom.co.in',trim($this->userdetails->EmailName).'@mastercom.co.in');
                     //$this->email->cc($list);
                     $this->email->subject('Resignation - Details');
@@ -675,7 +685,7 @@ class Employees extends REST_Controller
             }
             else
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else 
@@ -696,7 +706,7 @@ class Employees extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role==1 || $this->userdetails->Role==3)
+                if($this->userdetails->Role==1 || $this->userdetails->Role==3 || $this->userdetails->Role==4)
                 {
                     $_POST = json_decode(file_get_contents("php://input"), true);
 
@@ -729,7 +739,8 @@ class Employees extends REST_Controller
                         $getconfigmail = $this->user_model->get_config_email(); 
                         $from_email = $getconfigmail[0]->ConfigEmail;
                         $this->email->from($from_email, 'Mastercom - Resignation Accepted!'); 
-                        $this->email->to('aharshavardhan04@gmail.com');
+                        // $this->email->to('aharshavardhan04@gmail.com');
+                        $this->email->to('suhasrlawate1999@gmail.com');
                         //$this->email->to(trim($empdet->EmailName).'@mastercom.co.in',trim($this->userdetails->EmailName).'@mastercom.co.in');
                         //$this->email->cc($list);
                         $this->email->subject('Resignation Accepted - Details');
@@ -766,7 +777,7 @@ class Employees extends REST_Controller
             }
             else
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else 
@@ -787,7 +798,7 @@ class Employees extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role==1 || $this->userdetails->Role==3)
+                if($this->userdetails->Role==1 || $this->userdetails->Role==3 || $this->userdetails->Role==4)
                 {
                     $_POST = json_decode(file_get_contents("php://input"), true);
 
@@ -816,7 +827,8 @@ class Employees extends REST_Controller
                         $getconfigmail = $this->user_model->get_config_email(); 
                         $from_email = $getconfigmail[0]->ConfigEmail;
                         $this->email->from($from_email, 'Mastercom - Resignation Rejected!'); 
-                        $this->email->to('aharshavardhan04@gmail.com');
+                        // $this->email->to('aharshavardhan04@gmail.com');
+                        $this->email->to('suhasrlawate1999@gmail.com');
                         //$this->email->to(trim($empdet->EmailName).'@mastercom.co.in',trim($this->userdetails->EmailName).'@mastercom.co.in');
                         //$this->email->cc($list);
                         $this->email->subject('Resignation Rejected - Details');
@@ -853,7 +865,7 @@ class Employees extends REST_Controller
             }
             else
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else 

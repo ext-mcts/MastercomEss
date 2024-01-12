@@ -90,7 +90,7 @@ class AccuredLeaves extends REST_Controller
             }
             else 
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else
@@ -151,7 +151,7 @@ class AccuredLeaves extends REST_Controller
             }
             else 
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else
@@ -172,6 +172,7 @@ class AccuredLeaves extends REST_Controller
             {
                 if($this->userdetails->Role==1)
                 {
+
                     $data = $this->accuredleaves_model->RunScheduleForLeaveCalculation();
 
                     if($data)
@@ -181,6 +182,7 @@ class AccuredLeaves extends REST_Controller
                         $this->response($message, REST_Controller::HTTP_OK);
                         return false;
                     }
+                    
                     else{ 
                         $message = array('message' => 'Something went wrong!.');
                         $message['status'] = false;
@@ -198,7 +200,7 @@ class AccuredLeaves extends REST_Controller
             }
             else 
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else

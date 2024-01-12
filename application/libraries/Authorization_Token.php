@@ -123,7 +123,7 @@ class Authorization_Token
                         $time_difference = strtotime('now') - $token_decode->API_TIME;
                         if( $time_difference >= $this->token_expire_time )
                         {
-                            return ['status' => FALSE, 'message' => 'Token Time Expire.'];
+                            return ['status' => false, 'message' => 'Token Time Expire.'];
 
                         }else
                         {

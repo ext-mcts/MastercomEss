@@ -57,7 +57,7 @@ class Leave extends REST_Controller
                 $this->form_validation->set_rules('ToSession', 'To Session', 'trim|required');
                 $this->form_validation->set_rules('Reason', 'Leave Reason', 'trim|required|max_length[255]');
                 //$this->form_validation->set_rules('Manager', 'Select Manager', 'trim|required|numeric');
-                $this->form_validation->set_rules('Manager2', 'Select CC', 'trim|max_length[255]');
+                // $this->form_validation->set_rules('Manager2', 'Select CC', 'trim|max_length[255]');
                 $this->form_validation->set_rules('Contact', 'Contact Number', 'trim|required|numeric');
                 $this->form_validation->set_rules('Image', 'Image', 'trim');
 
@@ -94,9 +94,24 @@ class Leave extends REST_Controller
                 $leavedata["Manager"] = $this->userdetails->Manager;
                 $leavedata["Manager2"] = '';
 
-                if($this->input->post('Manager2')) 
-                    $leavedata["Manager2"] = $this->input->post('Manager2');
+                // if($this->input->post('Manager2')) 
+                // // Get the raw POST data
+                // $raw_post_data = file_get_contents("php://input");
 
+                // // Decode the JSON data
+                // $payload = json_decode($raw_post_data, true);
+                $manager2 = "";
+                $length = count($_POST['Manager2']);
+                for ($i = 0; $i < $length; $i++) {
+                    if ($i == 0) {
+                        $manager2 = "".$_POST['Manager2'][$i]['opt_id']."";
+                    } else {
+                        $manager2 .= "," .$_POST['Manager2'][$i]['opt_id']."";
+                    }
+                }
+                $leavedata["Manager2"] = $manager2;
+
+                // $leavedata["Manager2"] = $this->input->post('Manager2');
                 $leavedata["LeaveDoc"] = '';
                 $leavedata["LeaveDocPath"] = '';
 
@@ -127,7 +142,8 @@ class Leave extends REST_Controller
                     $empdet = $this->user_model->get_user($leavedata["Manager"]);
                     $leavedet = $this->leaves_model->get_leave($data);
                     $list = '';
-                    if($this->input->post('Manager2')) 
+                    // if($this->input->post('Manager2')) 
+                    if($leavedata["Manager2"])
                     {
                         $ids = explode(',', $leavedata["Manager2"]);
                         foreach($ids as $id)
@@ -143,7 +159,8 @@ class Leave extends REST_Controller
                     $getconfigmail = $this->user_model->get_config_email(); 
                     $from_email = $getconfigmail[0]->ConfigEmail;
                     $this->email->from($from_email, 'Mastercom - Leave Application!'); 
-                    $this->email->to('aharshavardhan04@gmail.com');
+                    // $this->email->to('aharshavardhan04@gmail.com');
+                    $this->email->to('suhasrlawate1999@gmail.com');
                     //$this->email->to(trim($empdet->EmailName).'@mastercom.co.in',trim($this->userdetails->EmailName).'@mastercom.co.in');
                     //if($this->input->post('Manager2')) 
                         //$this->email->cc($list);
@@ -181,7 +198,7 @@ class Leave extends REST_Controller
             }
             else 
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else
@@ -192,6 +209,177 @@ class Leave extends REST_Controller
         }
     }
 
+
+    // //suhas
+    // public function apply_post()
+    // {
+    //     // Get the raw POST data
+    //     $raw_post_data = file_get_contents("php://input");
+
+    //     // Decode the JSON data
+    //     $payload = json_decode($raw_post_data, true);
+    //     $manager2 = "";
+    //     $length = count($payload['Manager2']);
+    //     for ($i = 0; $i < $length; $i++) {
+    //         if ($i == 0) {
+    //             $manager2 = "".$payload['Manager2'][$i]['opt_id']."";
+    //         } else {
+    //             $manager2 .= "," .$payload['Manager2'][$i]['opt_id']."";
+    //         }
+    //     }
+    //     $this->response($manager2, REST_Controller::HTTP_OK);
+
+    //     // $headers = $this->input->request_headers(); 
+    //     // if (isset($headers['Authorization'])) 
+    //     // {
+    //     //     $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+    //     //     if ($decodedToken['status'])
+    //     //     {
+    //     //         $_POST = json_decode(file_get_contents("php://input"), true);
+                
+    //     //         $this->form_validation->set_rules('LeaveType', 'Leave Type', 'trim|required');
+    //     //         $this->form_validation->set_rules('FromDate', 'From Date', 'trim|required');
+    //     //         $this->form_validation->set_rules('FromSession', 'From Session', 'trim|required');
+    //     //         $this->form_validation->set_rules('ToDate', 'To Date', 'trim|required');
+    //     //         $this->form_validation->set_rules('ToSession', 'To Session', 'trim|required');
+    //     //         $this->form_validation->set_rules('Reason', 'Leave Reason', 'trim|required|max_length[255]');
+    //     //         //$this->form_validation->set_rules('Manager', 'Select Manager', 'trim|required|numeric');
+    //     //         // $this->form_validation->set_rules('Manager2', 'Select CC', 'trim|max_length[255]');
+    //     //         $this->form_validation->set_rules('Contact', 'Contact Number', 'trim|required|numeric');
+    //     //         // $this->form_validation->set_rules('Image', 'Image', 'trim');
+
+    //     //         if ($this->form_validation->run() === false) 
+    //     //         {
+    //     //             $errors = $this->form_validation->error_array();
+    //     //             $errors['status'] = false;
+    //     //             $this->response($errors,REST_Controller::HTTP_BAD_REQUEST);
+    //     //             return false;
+    //     //         }
+
+    //     //         /*$startDate = strtotime(date('Y-m-d', strtotime($this->input->post('Date')) ) );
+    //     //         $currentDate = strtotime(date('Y-m-d'));
+
+    //     //         if($startDate < $currentDate) {
+    //     //             $message = array('message' => 'Past Dates not allowed to select!');
+    //     //             $message['status'] = false;
+    //     //             $this->response($message, REST_Controller::HTTP_BAD_REQUEST);
+    //     //             return false;
+    //     //         }*/
+
+    //     //         /*$check = $this->leaves_model->check_leaves($this->userdetails->EmployeeID,$this->input->post('Date'));
+
+    //     //         if(count($check)==1){
+    //     //             $message = array('message' => 'This Employee already applied leave for this date!');
+    //     //             $message['status'] = false;
+    //     //             $this->response($message,REST_Controller::HTTP_BAD_REQUEST);
+    //     //             return false;
+    //     //         }*/
+
+    //     //         $leavedata = array();
+    //     //         $leavedata = $this->input->post();
+    //     //         $this->response($leavedata); //suhas
+    //     //         $leavedata["EmployeeID"] = $this->userdetails->EmployeeID;
+    //     //         $leavedata["Manager"] = $this->userdetails->Manager;
+    //     //         // $leavedata["Manager2"] = '';
+
+    //     //         if($this->input->post('Manager2')) 
+    //     //         $leavedata["Manager2"] = $this->input->post('Manager2');
+    //     //         $leavedata["LeaveDoc"] = '';
+    //     //         $leavedata["LeaveDocPath"] = '';
+
+    //     //         if(isset($leavedata['Image']))
+    //     //         {
+    //     //             $base64file   = new Base64fileUploads();
+    //     //             $return = $base64file->du_uploads('./assets/leave_docs/',trim($leavedata['Image']));
+    
+    //     //             $leavedata["LeaveDoc"] = $return['file_name'];
+    //     //             $leavedata["LeaveDocPath"] = $return['with_path'];
+    //     //         }
+                
+    //     //         $data = $this->leaves_model->apply_leave($leavedata);
+
+    //     //         if($data)
+    //     //         {
+    //     //             $config = Array(        
+    //     //                 'protocol' => 'smtp',
+    //     //                 'smtp_host' => 'smtp.mailhostbox.com',
+    //     //                 'smtp_port' => 587,
+    //     //                 'smtp_user' => 'autoreply@mastercom.co.in',
+    //     //                 'smtp_pass' => SMTP_PASS,
+    //     //                 'smtp_timeout' => '4',
+    //     //                 'mailtype'  => 'html', 
+    //     //                 'charset'   => 'iso-8859-1'
+    //     //             );
+
+    //     //             $empdet = $this->user_model->get_user($leavedata["Manager"]);
+    //     //             $leavedet = $this->leaves_model->get_leave($data);
+    //     //             $list = '';
+    //     //             if($this->input->post('Manager2')) 
+    //     //             {
+    //     //                 $ids = explode(',', $leavedata["Manager2"]);
+    //     //                 foreach($ids as $id)
+    //     //                 {
+    //     //                     $empdet = $this->user_model->get_user($id);
+    //     //                     $list .= trim($empdet->EmailName).'@mastercom.co.in'.',';
+    //     //                 }
+    //     //                 $list = rtrim($list, ',');
+    //     //             }
+                    
+    //     //             $this->load->library('email', $config);
+    //     //             $this->email->set_newline("\r\n"); 
+    //     //             $getconfigmail = $this->user_model->get_config_email(); 
+    //     //             $from_email = $getconfigmail[0]->ConfigEmail;
+    //     //             $this->email->from($from_email, 'Mastercom - Leave Application!'); 
+    //     //             // $this->email->to('aharshavardhan04@gmail.com');
+    //     //             $this->email->to('suhasrlawate1999@gmail.com');
+    //     //             //$this->email->to(trim($empdet->EmailName).'@mastercom.co.in',trim($this->userdetails->EmailName).'@mastercom.co.in');
+    //     //             //if($this->input->post('Manager2')) 
+    //     //                 //$this->email->cc($list);
+    //     //             $this->email->subject('Leave Application - Details');
+    //     //             $message = '<html><body>';
+    //     //             $message .= '<h3>Dear '.$empdet->FirstName.',</h3>'; 
+    //     //             $message .= '<p> You got leave application from '.$this->userdetails->EmailName.'. Here are the details,</P>';  
+    //     //             $message .= '<p>From Date:'.date('d M Y',strtotime($leavedet[0]->LStartDt)).' Session: '.$leavedet[0]->SessionFrom.'</p>';
+    //     //             $message .= '<p>To Date:'.date('d M Y',strtotime($leavedet[0]->LFinishDt)).' Session: '.$leavedet[0]->SessionTo.'</p>';
+    //     //             $message .= '<p>Total Days:'.$this->CaluculateDaysWithSession($leavedet[0]->LStartDt,$leavedet[0]->SessionFrom,$leavedet[0]->LFinishDt,$leavedet[0]->SessionTo).'</p>';
+    //     //             $message .= '<p>Reason:'.$leavedet[0]->Reason.'</p>';
+    //     //             $message .= '<p>For more details: <a href="/mcts_extranet-api/leaves">Click Here</a></p>';
+    //     //             $message .= '<br><br>';
+    //     //             $message .= '<p><h4>Mastercom HR Team.<h4></p>';
+    //     //             $message .= '</body></html>';  
+                                
+    //     //             $this->email->message($message);
+    //     //             if(isset($leavedata['Image']))
+    //     //             {
+    //     //                 $atch=base_url().$leavedata["LeaveDocPath"];
+    //     //                 $this->email->attach($atch);
+    //     //             }
+    //     //             $this->email->send();
+
+    //     //             $message = array('message' => 'Leave applied successfully.');
+    //     //             $message['status'] = true;
+    //     //             $this->response($message, REST_Controller::HTTP_CREATED);
+    //     //         }
+    //     //         else{ 
+    //     //             $message = array('message' => 'Something went wrong!.');
+    //     //             $message['status'] = false;
+    //     //             $this->response($message, REST_Controller::HTTP_OK);
+    //     //         }
+
+    //     //     }
+    //     //     else 
+    //     //     {
+    //     //         $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
+    //     //     }
+    //     // }
+    //     // else
+    //     // {
+    //     //     $message = array('message' => 'Authentication failed');
+    //     //     $message['status'] = false;
+    //     //     $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+    //     // }
+    // }
+    // //suhas
     public function index_delete()
     {
         $leaveid = $this->uri->segment(3);
@@ -232,7 +420,7 @@ class Leave extends REST_Controller
             }
             else 
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else
@@ -269,7 +457,7 @@ class Leave extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role==1 || $this->userdetails->Role==3)
+                if($this->userdetails->Role==1 || $this->userdetails->Role==2)
                 {
                     $data = $this->leaves_model->accept_reject_leave($leaveid,$status); // updating status as Approve
 
@@ -332,7 +520,7 @@ class Leave extends REST_Controller
             }
             else 
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else 
@@ -442,7 +630,7 @@ class Leave extends REST_Controller
             }
             else 
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else 
@@ -485,7 +673,7 @@ class Leave extends REST_Controller
                 
             }
             else {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else {
@@ -545,7 +733,7 @@ class Leave extends REST_Controller
             }
             else 
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else 
@@ -582,7 +770,7 @@ class Leave extends REST_Controller
 				}
             }
             else {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else {
@@ -602,14 +790,14 @@ class Leave extends REST_Controller
             {
                 $data = $this->leaves_model->get_leaves($this->userdetails->EmployeeID,0);
                 $i=0;
-                foreach($data as $leaves)
-                {
+                // foreach($data as $leaves)
+                // {
 
-                    $days = $this->CaluculateDaysWithSession($leaves->LStartDt,$leaves->SessionFrom,$leaves->LFinishDt,$leaves->SessionTo);
+                //     $days = $this->CaluculateDaysWithSession($leaves->LStartDt,$leaves->SessionFrom,$leaves->LFinishDt,$leaves->SessionTo);
                     
-                    $data[$i]->noofdays = $days;
-                    $i++;
-                }
+                //     $data[$i]->noofdays = $days;
+                //     $i++;
+                // }
 
 				if($data)
 				{
@@ -624,7 +812,7 @@ class Leave extends REST_Controller
 				}
             }
             else {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else {
@@ -707,7 +895,7 @@ class Leave extends REST_Controller
 				}
             }
             else {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else {
@@ -740,7 +928,7 @@ class Leave extends REST_Controller
 				}
 			}
             else {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else {
@@ -790,7 +978,7 @@ class Leave extends REST_Controller
 				}
             }
             else {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else {
@@ -831,7 +1019,7 @@ class Leave extends REST_Controller
 				}
             }
             else {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else {
@@ -864,7 +1052,7 @@ class Leave extends REST_Controller
 				}
             }
             else {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else {
@@ -931,7 +1119,7 @@ class Leave extends REST_Controller
             }
             else 
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else 
@@ -941,5 +1129,127 @@ class Leave extends REST_Controller
             $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
             return false;
         }  
+    }
+    public function get_emp_pending_leaves_get()
+    {
+        $headers = $this->input->request_headers(); 
+        if (isset($headers['Authorization'])) 
+        {
+            $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+            if ($decodedToken['status'])
+            {
+                if($this->userdetails->Role==1 || $this->userdetails->Role==2)
+                {
+                    $data = $this->leaves_model->get_emp_pending_leaves($this->userdetails->EmployeeID);
+
+                    if($data)
+                    {
+                        $message = array('results' => $data);
+                        $message['status'] = true;
+                        $this->response($message, REST_Controller::HTTP_OK);
+                    }
+                    else{ 
+                        $message = array('message' => 'No records found!.');
+                        $message['status'] = false;
+                        $this->response($message, REST_Controller::HTTP_OK);
+                    }
+                }
+                else 
+                {
+                    $message = array('message' => 'This Role not allowed to View Employee pending leaves!');
+                    $message['status'] = false;
+                    $this->response($message,REST_Controller::HTTP_UNAUTHORIZED);
+                    return false;
+                }
+            }
+            else 
+            {
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
+            }
+        }
+        else 
+        {
+            $message = array('message' => 'Authentication failed');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+            return false;
+        }   
+    }
+
+
+    // suhas
+
+    // LeaveDetails API
+    public function leave_Details_get()
+    {
+        $headers = $this->input->request_headers(); 
+        if (isset($headers['Authorization'])) 
+        {
+            $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+            if ($decodedToken['status'])
+            {
+                $data = $this->leaves_model->get_emp_Leaves_details($this->userdetails->EmployeeID);
+                if($data)
+				{
+					$message = array('results' => $data);
+					$message['status'] = true;
+					$this->response($message, REST_Controller::HTTP_OK);
+				}
+				else{ 
+					$message = array('message' => 'No records found!.');
+					$message['status'] = false;
+					$this->response($message, REST_Controller::HTTP_OK);
+				}
+            }
+            else {
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
+            }
+        }
+        else {
+            $message = array('message' => 'Authentication failed');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+        }
+    }
+
+    // LeaveDetailsByEmpID API
+    public function emp_Leave_Details_get()
+    {
+        $empid = $this->uri->segment(3); // Employee ID
+        if(!is_numeric($empid) || empty($empid) || $empid==0){
+            $message = array('message' => 'Employee ID not numeric/empty/too lengthy');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_BAD_REQUEST);
+            return false;
+        }
+
+        $headers = $this->input->request_headers(); 
+        if (isset($headers['Authorization'])) 
+        {
+            $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+            if ($decodedToken['status'])
+            {
+                $data = $this->leaves_model->get_emp_Leaves_detailsByID($empid);
+                if($data)
+				{
+					$message = array('results' => $data);
+					$message['status'] = true;
+					$this->response($message, REST_Controller::HTTP_OK);
+				}
+				else{ 
+					$message = array('message' => 'No records found!.');
+					$message['status'] = false;
+					$this->response($message, REST_Controller::HTTP_OK);
+				}
+            }
+            else {
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
+            }
+        }
+        else {
+            $message = array('message' => 'Authentication failed');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+        }
     }
 }

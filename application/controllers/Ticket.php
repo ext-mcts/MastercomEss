@@ -83,7 +83,7 @@ class Ticket extends REST_Controller
                 }
 
             } else {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
          else {
@@ -166,7 +166,7 @@ class Ticket extends REST_Controller
                 }
 
             } else {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
          else {
@@ -219,7 +219,7 @@ class Ticket extends REST_Controller
                 }
 
             } else {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
          else {
@@ -260,7 +260,7 @@ class Ticket extends REST_Controller
                 }
             }
             else {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else {
@@ -292,7 +292,7 @@ class Ticket extends REST_Controller
 				}
 			}
             else {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else {
@@ -324,7 +324,7 @@ class Ticket extends REST_Controller
 				}
 			}
             else {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else {
@@ -406,7 +406,7 @@ class Ticket extends REST_Controller
             }
             else 
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else 
@@ -417,4 +417,115 @@ class Ticket extends REST_Controller
             return false;
         }  
     }
+
+    // Suhas
+
+ /* Ticket details view API */
+ public function view_get()
+ {
+     $tktId = $this->uri->segment(3); // Ticket ID
+
+     if(!is_numeric($tktId) || empty($tktId) || $tktId==0){
+         $message = array('message' => 'Ticket ID not numeric/empty/too lengthy');
+         $message['status'] = false;
+         $this->response($message, REST_Controller::HTTP_BAD_REQUEST);
+         return false;
+     }
+
+     $headers = $this->input->request_headers(); 
+     if (isset($headers['Authorization'])) 
+     {
+         $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+         if ($decodedToken['status'])
+         {
+             if($this->userdetails->Role==1)
+             {
+                 $data = $this->ticket_model->get_ticketById($tktId); // Getting ticket details with ID
+
+                 if($data)
+                 {
+                     $message = array('results' => $data);
+                     $message['status'] = true;
+                     $this->response($message, REST_Controller::HTTP_OK);
+                 }
+                 else{ 
+                     $message = array('message' => 'Something went wrong!.');
+                     $message['status'] = false;
+                     $this->response($message, REST_Controller::HTTP_OK);
+                 }
+             }
+             else
+             {
+                 $message = array('message' => 'This Role not allowed to view Ticket details');
+                 $message['status'] = false;
+                 $this->response($message,REST_Controller::HTTP_UNAUTHORIZED);
+             }
+         }
+         else
+         {
+             $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
+         }
+     }
+     else 
+     {
+         $message = array('message' => 'Authentication failed');
+         $message['status'] = false;
+         $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+     }
+ }
+
+ public function status_get()
+    {
+        $tktId = $this->uri->segment(3); // ticket id
+        $status = $this->uri->segment(4); // status 1- open
+
+        if(empty($tktId) || $tktId==0){
+            $message = array('message' => 'Ticket ID required/can not be zero');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_BAD_REQUEST);
+            return false;
+        }
+
+        if(empty($status) || $status==0){
+            $message = array('message' => 'Status required/can not be zero');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_BAD_REQUEST);
+            return false;
+        }
+
+        $headers = $this->input->request_headers(); 
+        if (isset($headers['Authorization'])) 
+        {
+            $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+            if ($decodedToken['status'])
+            {
+                if($this->userdetails->Role==1 || $this->userdetails->Role==2)
+                {
+                    $data = $this->ticket_model->open_close_ticket($tktId,$status); // updating status as open or close
+                    $message =  $data;
+                    $message['status'] = true;
+                    $this->response($message, REST_Controller::HTTP_OK);
+                }
+                else 
+                {
+                    $message = array('message' => 'This Role not allowed to Open/Close Ticket');
+                    $message['status'] = false;
+                    $this->response($message,REST_Controller::HTTP_UNAUTHORIZED);
+                    return false;
+                }
+            }
+            else 
+            {
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
+            }
+        }
+        else 
+        {
+            $message = array('message' => 'Authentication failed');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+            return false;
+        }
+    }
+
 }

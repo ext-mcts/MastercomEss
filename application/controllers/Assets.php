@@ -40,175 +40,176 @@ class Assets extends REST_Controller
 
     }
 
-    public function create_post()
-    {
-        $headers = $this->input->request_headers(); 
-        if (isset($headers['Authorization'])) 
-        {
-            $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
-            if ($decodedToken['status'])
-            {
-                if($this->userdetails->Role==1)  //1- admin
-                {
-                    $_POST = json_decode(file_get_contents("php://input"), true);
+    // public function create_post()
+    // {
+    //     $headers = $this->input->request_headers(); 
+    //     if (isset($headers['Authorization'])) 
+    //     {
+    //         $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+    //         if ($decodedToken['status'])
+    //         {
+    //             if($this->userdetails->Role==1)  //1- admin
+    //             {
+    //                 $_POST = json_decode(file_get_contents("php://input"), true);
 
-                    $this->form_validation->set_rules('Brand', 'AssetBrand', 'trim|required|max_length[100]');
-                    $this->form_validation->set_rules('Model', 'Asset Model', 'trim|required|max_length[100]');
-                    $this->form_validation->set_rules('PurchaseDate', 'Purchased Date', 'trim|required');
-                    $this->form_validation->set_rules('SerialNumber', 'Asset Serial Number', 'trim|required|max_length[100]');
-                    $this->form_validation->set_rules('ChargerSerialNumber', 'Asset Charger Serial Number', 'trim|required|max_length[100]');
-                    $this->form_validation->set_rules('Ram', 'Asset Ram', 'trim|required|max_length[45]');
-                    $this->form_validation->set_rules('Rom', 'Asset Rom', 'trim|required|max_length[45]');
-                    $this->form_validation->set_rules('Processor', 'Asset Processor', 'trim|required|max_length[45]');
+    //                 $this->form_validation->set_rules('Brand', 'AssetBrand', 'trim|required|max_length[100]');
+    //                 $this->form_validation->set_rules('Model', 'Asset Model', 'trim|required|max_length[100]');
+    //                 $this->form_validation->set_rules('PurchaseDate', 'Purchased Date', 'trim|required');
+    //                 $this->form_validation->set_rules('SerialNumber', 'Asset Serial Number', 'trim|required|max_length[100]');
+    //                 $this->form_validation->set_rules('ChargerSerialNumber', 'Asset Charger Serial Number', 'trim|required|max_length[100]');
+    //                 $this->form_validation->set_rules('Ram', 'Asset Ram', 'trim|required|max_length[45]');
+    //                 $this->form_validation->set_rules('Rom', 'Asset Rom', 'trim|required|max_length[45]');
+    //                 $this->form_validation->set_rules('Processor', 'Asset Processor', 'trim|required|max_length[45]');
 
-                    if ($this->form_validation->run() === false) 
-                    {
-                        $errors = $this->form_validation->error_array();
-                        $errors['status'] = false;
-                        $this->response($errors,REST_Controller::HTTP_BAD_REQUEST);
-                        return false;
-                    }
+    //                 if ($this->form_validation->run() === false) 
+    //                 {
+    //                     $errors = $this->form_validation->error_array();
+    //                     $errors['status'] = false;
+    //                     $this->response($errors,REST_Controller::HTTP_BAD_REQUEST);
+    //                     return false;
+    //                 }
 
-                    if($this->input->post('SerialNumber')) { 
-                        $check = $this->assets_model->validate_asset("SerialNumber",$this->input->post('SerialNumber'));
-                        if(count($check)>=1){
-                            $message = array('message' => "Asset Serial Number is duplicate!");
-                            $message['status'] = false;
-                            $this->response($message,REST_Controller::HTTP_BAD_REQUEST);
-                            return false;
-                        }
-                    }
+    //                 if($this->input->post('SerialNumber')) { 
+    //                     $check = $this->assets_model->validate_asset("SerialNumber",$this->input->post('SerialNumber'));
+    //                     if(count($check)>=1){
+    //                         $message = array('message' => "Asset Serial Number is duplicate!");
+    //                         $message['status'] = false;
+    //                         $this->response($message,REST_Controller::HTTP_BAD_REQUEST);
+    //                         return false;
+    //                     }
+    //                 }
 
-                    if($this->input->post('ChargerSerialNumber')) { 
-                        $check = $this->assets_model->validate_asset("ChargerSerialNumber",$this->input->post('ChargerSerialNumber'));
-                        if(count($check)>=1){
-                            $message = array('message' => "Asset Charger Serial Number is duplicate!");
-                            $message['status'] = false;
-                            $this->response($message,REST_Controller::HTTP_BAD_REQUEST);
-                            return false;
-                        }
-                    }
+    //                 if($this->input->post('ChargerSerialNumber')) { 
+    //                     $check = $this->assets_model->validate_asset("ChargerSerialNumber",$this->input->post('ChargerSerialNumber'));
+    //                     if(count($check)>=1){
+    //                         $message = array('message' => "Asset Charger Serial Number is duplicate!");
+    //                         $message['status'] = false;
+    //                         $this->response($message,REST_Controller::HTTP_BAD_REQUEST);
+    //                         return false;
+    //                     }
+    //                 }
 
-                    $assetdata = array();
-                    $assetdata = $this->input->post();
+    //                 $assetdata = array();
+    //                 $assetdata = $this->input->post();
 
-                    $data = $this->assets_model->create_asset($assetdata);
+    //                 $data = $this->assets_model->create_asset($assetdata);
 
-                    if($data)
-                    {
-                        $message = array('message' => 'Asset created successfully.');
-                        $message['status'] = true;
-                        $this->response($message, REST_Controller::HTTP_CREATED);
-                    }
-                    else{ 
-                        $message = array('message' => 'Something went wrong!.');
-                        $message['status'] = false;
-                        $this->response($message, REST_Controller::HTTP_OK);
-                    }
+    //                 if($data)
+    //                 {
+    //                     $message = array('message' => 'Asset created successfully.');
+    //                     $message['status'] = true;
+    //                     $this->response($message, REST_Controller::HTTP_CREATED);
+    //                 }
+    //                 else{ 
+    //                     $message = array('message' => 'Something went wrong!.');
+    //                     $message['status'] = false;
+    //                     $this->response($message, REST_Controller::HTTP_OK);
+    //                 }
 
-                } else {
-                    $message = array('message' => 'This Role not allowed to create Asset');
-                    $message['status'] = false;
-                    $this->response($message,REST_Controller::HTTP_UNAUTHORIZED);
-                }
+    //             } else {
+    //                 $message = array('message' => 'This Role not allowed to create Asset');
+    //                 $message['status'] = false;
+    //                 $this->response($message,REST_Controller::HTTP_UNAUTHORIZED);
+    //             }
                 
-            } else {
-                $this->response($decodedToken);
-            }
-        }
-         else {
-            $message = array('message' => 'Authentication failed');
-            $message['status'] = false;
-            $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
-        }
-    }
+    //         } else {
+    //             $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
+    //         }
+    //     }
+    //      else {
+    //         $message = array('message' => 'Authentication failed');
+    //         $message['status'] = false;
+    //         $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+    //     }
+    // }
 
-    public function update_put()
-    {
-        $astid = $this->uri->segment(3);
+    // public function update_put()
+    // {
+    //     $astid = $this->uri->segment(3);
 
-        $headers = $this->input->request_headers(); 
-        if (isset($headers['Authorization'])) 
-        {
-            $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
-            if ($decodedToken['status'])
-            {
-                if($this->userdetails->Role==1)
-                {
-                    $_POST = json_decode(file_get_contents("php://input"), true);
+    //     $headers = $this->input->request_headers(); 
+    //     if (isset($headers['Authorization'])) 
+    //     {
+    //         $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+    //         if ($decodedToken['status'])
+    //         {
+    //             if($this->userdetails->Role==1)
+    //             {
+    //                 $_POST = json_decode(file_get_contents("php://input"), true);
+                    
+    //                 $this->form_validation->set_data($this->put());
+    //                 $this->form_validation->set_rules('Brand', 'AssetBrand', 'trim|required|max_length[100]');
+    //                 $this->form_validation->set_rules('Model', 'Asset Model', 'trim|required|max_length[100]');
+    //                 $this->form_validation->set_rules('PurchaseDate', 'Purchased Date', 'trim|required');
+    //                 $this->form_validation->set_rules('SerialNumber', 'Asset Serial Number', 'trim|required|max_length[100]');
+    //                 $this->form_validation->set_rules('ChargerSerialNumber', 'Asset Charger Serial Number', 'trim|required|max_length[100]');
+    //                 $this->form_validation->set_rules('Ram', 'Asset Ram', 'trim|required|max_length[45]');
+    //                 $this->form_validation->set_rules('Rom', 'Asset Rom', 'trim|required|max_length[45]');
+    //                 $this->form_validation->set_rules('Processor', 'Asset Processor', 'trim|required|max_length[45]');
 
-                    $this->form_validation->set_rules('Brand', 'AssetBrand', 'trim|required|max_length[100]');
-                    $this->form_validation->set_rules('Model', 'Asset Model', 'trim|required|max_length[100]');
-                    $this->form_validation->set_rules('PurchaseDate', 'Purchased Date', 'trim|required');
-                    $this->form_validation->set_rules('SerialNumber', 'Asset Serial Number', 'trim|required|max_length[100]');
-                    $this->form_validation->set_rules('ChargerSerialNumber', 'Asset Charger Serial Number', 'trim|required|max_length[100]');
-                    $this->form_validation->set_rules('Ram', 'Asset Ram', 'trim|required|max_length[45]');
-                    $this->form_validation->set_rules('Rom', 'Asset Rom', 'trim|required|max_length[45]');
-                    $this->form_validation->set_rules('Processor', 'Asset Processor', 'trim|required|max_length[45]');
+    //                 if ($this->form_validation->run() === false) 
+    //                 {
+    //                     $errors = $this->form_validation->error_array();
+    //                     $errors['status'] = false;
+    //                     $this->response($errors,REST_Controller::HTTP_BAD_REQUEST);
+    //                     return false;
+    //                 }
 
-                    if ($this->form_validation->run() === false) 
-                    {
-                        $errors = $this->form_validation->error_array();
-                        $errors['status'] = false;
-                        $this->response($errors,REST_Controller::HTTP_BAD_REQUEST);
-                        return false;
-                    }
+    //                 if($this->put('SerialNumber')) {
+    //                     $check = $this->assets_model->validate_asset("SerialNumber",$this->put('SerialNumber'),$astid);
+    //                     if(count($check)>=1){
+    //                         $message = array('message' => "Asset Serial Number is duplicate!");
+    //                         $message['status'] = false;
+    //                         $this->response($message,REST_Controller::HTTP_BAD_REQUEST);
+    //                         return false;
+    //                     }
+    //                 }
 
-                    if($this->input->post('SerialNumber')) {
-                        $check = $this->assets_model->validate_asset("SerialNumber",$this->input->post('SerialNumber'),$astid);
-                        if(count($check)>=1){
-                            $message = array('message' => "Asset Serial Number is duplicate!");
-                            $message['status'] = false;
-                            $this->response($message,REST_Controller::HTTP_BAD_REQUEST);
-                            return false;
-                        }
-                    }
+    //                 if($this->put('ChargerSerialNumber')) { 
+    //                     $check = $this->assets_model->validate_asset("ChargerSerialNumber",$this->put('ChargerSerialNumber'),$astid);
+    //                     if(count($check)>=1){
+    //                         $message = array('message' => "Asset Charger Serial Number is duplicate!");
+    //                         $message['status'] = false;
+    //                         $this->response($message,REST_Controller::HTTP_BAD_REQUEST);
+    //                         return false;
+    //                     }
+    //                 }
 
-                    if($this->input->post('ChargerSerialNumber')) { 
-                        $check = $this->assets_model->validate_asset("ChargerSerialNumber",$this->input->post('ChargerSerialNumber'),$astid);
-                        if(count($check)>=1){
-                            $message = array('message' => "Asset Charger Serial Number is duplicate!");
-                            $message['status'] = false;
-                            $this->response($message,REST_Controller::HTTP_BAD_REQUEST);
-                            return false;
-                        }
-                    }
+    //                 $assetdata = array();
+    //                 $assetdata = $this->put();
 
-                    $assetdata = array();
-                    $assetdata = $this->put();
+    //                 $data = $this->assets_model->update_asset($astid,$assetdata);
 
-                    $data = $this->assets_model->update_asset($assetdata,$astid);
-
-                    if($data)
-                    {
-                        $message = array('message' => 'Asset updated successfully.');
-                        $message['status'] = true;
-                        $this->response($message, REST_Controller::HTTP_CREATED);
-                    }
-                    else{ 
-                        $message = array('message' => 'Something went wrong!.');
-                        $message['status'] = false;
-                        $this->response($message, REST_Controller::HTTP_OK);
-                    }
-                }
-                else {
-                    $message = array('message' => 'This Role not allowed to modify Asset details');
-                    $message['status'] = false;
-                    $this->response($message,REST_Controller::HTTP_UNAUTHORIZED);
-                    return false;
-                }
-            }
-            else {
-                $this->response($decodedToken);
-            }
-        }
-        else {
-            $message = array('message' => 'Authentication failed');
-            $message['status'] = false;
-            $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
-            return false;
-        }
-    }
+    //                 if($data)
+    //                 {
+    //                     $message = array('message' => 'Asset updated successfully.');
+    //                     $message['status'] = true;
+    //                     $this->response($message, REST_Controller::HTTP_CREATED);
+    //                 }
+    //                 else{ 
+    //                     $message = array('message' => 'Something went wrong!.');
+    //                     $message['status'] = false;
+    //                     $this->response($message, REST_Controller::HTTP_OK);
+    //                 }
+    //             }
+    //             else {
+    //                 $message = array('message' => 'This Role not allowed to modify Asset details');
+    //                 $message['status'] = false;
+    //                 $this->response($message,REST_Controller::HTTP_UNAUTHORIZED);
+    //                 return false;
+    //             }
+    //         }
+    //         else {
+    //             $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
+    //         }
+    //     }
+    //     else {
+    //         $message = array('message' => 'Authentication failed');
+    //         $message['status'] = false;
+    //         $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+    //         return false;
+    //     }
+    // }
 
     public function assign_post()
     {
@@ -248,7 +249,7 @@ class Assets extends REST_Controller
 
                     $data = $this->assets_model->assign_asset($assetdata);
 
-                    if($data)
+                    if($data) 
                     {
                         $message = array('message' => 'Asset asigned to Employee Successfully!.');
                         $message['status'] = true;
@@ -268,7 +269,7 @@ class Assets extends REST_Controller
                 }
             }
             else {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else {
@@ -326,7 +327,7 @@ class Assets extends REST_Controller
             }
             else
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else
@@ -362,7 +363,7 @@ class Assets extends REST_Controller
             }
             else
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
 
         }
@@ -373,4 +374,264 @@ class Assets extends REST_Controller
             $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
         }
     }
+
+    // Suhas
+
+     /* Assets details view API */
+ public function view_get()
+ {
+     $assetId = $this->uri->segment(3); 
+
+     if(!is_numeric($assetId) || empty($assetId) || $assetId==0){
+         $message = array('message' => 'Employee ID not numeric/empty/too lengthy');
+         $message['status'] = false;
+         $this->response($message, REST_Controller::HTTP_BAD_REQUEST);
+         return false;
+     }
+
+     $headers = $this->input->request_headers(); 
+     if (isset($headers['Authorization'])) 
+     {
+         $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+         if ($decodedToken['status'])
+         {
+             if($this->userdetails->Role==1)
+             {
+                 $data = $this->assets_model->get_assetsById($assetId); // Getting assets details with ID
+
+                 if($data)
+                 {
+                     $message = array('results' => $data);
+                     $message['status'] = true;
+                     $this->response($message, REST_Controller::HTTP_OK);
+                 }
+                 else{ 
+                     $message = array('message' => 'Something went wrong!.');
+                     $message['status'] = false;
+                     $this->response($message, REST_Controller::HTTP_OK);
+                 }
+             }
+             else
+             {
+                 $message = array('message' => 'This Role not allowed to view Asset details');
+                 $message['status'] = false;
+                 $this->response($message,REST_Controller::HTTP_UNAUTHORIZED);
+             }
+         }
+         else
+         {
+             $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
+         }
+     }
+     else 
+     {
+         $message = array('message' => 'Authentication failed');
+         $message['status'] = false;
+         $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+     }
+ }
+
+ public function create_post()
+ {
+     $headers = $this->input->request_headers(); 
+     if (isset($headers['Authorization'])) 
+     {
+         $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+         if ($decodedToken['status'])
+         {
+             if($this->userdetails->Role==1)  //1- admin
+             {
+                 $_POST = json_decode(file_get_contents("php://input"), true);
+
+                 $this->form_validation->set_rules('Brand', 'AssetBrand', 'trim|required|max_length[100]');
+                 $this->form_validation->set_rules('Model', 'Asset Model', 'trim|required|max_length[100]');
+                 $this->form_validation->set_rules('PurchaseDate', 'Purchased Date', 'trim|required');
+                 $this->form_validation->set_rules('SerialNumber', 'Asset Serial Number', 'trim|required|max_length[100]');
+                 $this->form_validation->set_rules('ChargerSerialNumber', 'Asset Charger Serial Number', 'trim|required|max_length[100]');
+                 $this->form_validation->set_rules('Ram', 'Asset Ram', 'trim|required|max_length[45]');
+                 $this->form_validation->set_rules('Rom', 'Asset Rom', 'trim|required|max_length[45]');
+                 $this->form_validation->set_rules('Processor', 'Asset Processor', 'trim|required|max_length[45]');
+                 $this->form_validation->set_rules('AssignTo', 'Asset Assign To', 'trim|required|max_length[100]');
+                 $this->form_validation->set_rules('ValidUpTo', 'Asset Valid Upto', 'trim|required');
+                 if ($this->form_validation->run() === false) 
+                 {
+                     $errors = $this->form_validation->error_array();
+                     $errors['status'] = false;
+                     $this->response($errors,REST_Controller::HTTP_BAD_REQUEST);
+                     return false;
+                 }
+
+                 if($this->input->post('SerialNumber')) { 
+                     $check = $this->assets_model->validate_asset("SerialNumber",$this->input->post('SerialNumber'));
+                     if(count($check)>=1){
+                         $message = array('message' => "Asset Serial Number is duplicate!");
+                         $message['status'] = false;
+                         $this->response($message,REST_Controller::HTTP_BAD_REQUEST);
+                         return false;
+                     }
+                 }
+
+                 if($this->input->post('ChargerSerialNumber')) { 
+                     $check = $this->assets_model->validate_asset("ChargerSerialNumber",$this->input->post('ChargerSerialNumber'));
+                     if(count($check)>=1){
+                         $message = array('message' => "Asset Charger Serial Number is duplicate!");
+                         $message['status'] = false;
+                         $this->response($message,REST_Controller::HTTP_BAD_REQUEST);
+                         return false;
+                     }
+                 }
+
+                 $assetdata = array();
+                 $assetdata = $this->input->post();
+
+                 $data = $this->assets_model->add_asset($assetdata);
+                //  $this->response($data);
+                 if($data)
+                  {
+                    $assignAsset = $this->assets_model->assign_asset($assetdata,$data);
+                      if($assignAsset)
+                       {
+                           $message = array('message' => 'Asset created successfully.');
+                           $message['status'] = true;
+                           $this->response($message, REST_Controller::HTTP_CREATED);
+                       }
+                       else{ 
+                           $message = array('message' => 'Something went wrong!.');
+                           $message['status'] = false;
+                           $this->response($message, REST_Controller::HTTP_OK);
+                       }
+                  }
+                  else{ 
+                      $message = array('message' => 'Something went wrong!.');
+                      $message['status'] = false;
+                      $this->response($message, REST_Controller::HTTP_OK);
+                  }
+
+             } else {
+                 $message = array('message' => 'This Role not allowed to create Asset');
+                 $message['status'] = false;
+                 $this->response($message,REST_Controller::HTTP_UNAUTHORIZED);
+             }
+             
+         } else {
+             $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
+         }
+     }
+      else {
+         $message = array('message' => 'Authentication failed');
+         $message['status'] = false;
+         $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+     }
+ }
+
+
+ public function update_put()
+ {
+     $astid = $this->uri->segment(3);
+
+     $headers = $this->input->request_headers(); 
+     if (isset($headers['Authorization'])) 
+     {
+         $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+         if ($decodedToken['status'])
+         {
+             if($this->userdetails->Role==1)
+             {
+                 $_POST = json_decode(file_get_contents("php://input"), true);
+                 
+                 $this->form_validation->set_data($this->put());
+                 $this->form_validation->set_rules('Brand', 'AssetBrand', 'trim|required|max_length[100]');
+                 $this->form_validation->set_rules('Model', 'Asset Model', 'trim|required|max_length[100]');
+                 $this->form_validation->set_rules('PurchaseDate', 'Purchased Date', 'trim|required');
+                 $this->form_validation->set_rules('SerialNumber', 'Asset Serial Number', 'trim|required|max_length[100]');
+                 $this->form_validation->set_rules('ChargerSerialNumber', 'Asset Charger Serial Number', 'trim|required|max_length[100]');
+                 $this->form_validation->set_rules('Ram', 'Asset Ram', 'trim|required|max_length[45]');
+                 $this->form_validation->set_rules('Rom', 'Asset Rom', 'trim|required|max_length[45]');
+                 $this->form_validation->set_rules('Processor', 'Asset Processor', 'trim|required|max_length[45]');
+                 $this->form_validation->set_rules('AssignTo', 'Asset Assign To', 'trim|required|max_length[100]');
+                 $this->form_validation->set_rules('ValidUpTo', 'Asset Valid Upto', 'trim|required');
+
+                 if ($this->form_validation->run() === false) 
+                 {
+                     $errors = $this->form_validation->error_array();
+                     $errors['status'] = false;
+                     $this->response($errors,REST_Controller::HTTP_BAD_REQUEST);
+                     return false;
+                 }
+
+                 if($this->put('SerialNumber')) {
+                     $check = $this->assets_model->validate_asset("SerialNumber",$this->put('SerialNumber'),$astid);
+                     if(count($check)>=1){
+                         $message = array('message' => "Asset Serial Number is duplicate!");
+                         $message['status'] = false;
+                         $this->response($message,REST_Controller::HTTP_BAD_REQUEST);
+                         return false;
+                     }
+                 }
+
+                 if($this->put('ChargerSerialNumber')) { 
+                     $check = $this->assets_model->validate_asset("ChargerSerialNumber",$this->put('ChargerSerialNumber'),$astid);
+                     if(count($check)>=1){
+                         $message = array('message' => "Asset Charger Serial Number is duplicate!");
+                         $message['status'] = false;
+                         $this->response($message,REST_Controller::HTTP_BAD_REQUEST);
+                         return false;
+                     }
+                 }
+
+                 $assetdata = array();
+                 $assetdata = $this->put();
+
+                 $data = $this->assets_model->update_asset($astid,$assetdata);
+                 if($data)
+                 {
+                   $updateAsset = $this->assets_model->update_assigned_asset($assetdata,$astid);
+                     if($updateAsset)
+                      {
+                          $message = array('message' => 'Asset updated successfully.');
+                          $message['status'] = true;
+                          $this->response($message, REST_Controller::HTTP_CREATED);
+                      }
+                      else{ 
+                          $message = array('message' => 'Something went wrong!.');
+                          $message['status'] = false;
+                          $this->response($message, REST_Controller::HTTP_OK);
+                      }
+                 }
+                 else{ 
+                     $message = array('message' => 'Something went wrong!.');
+                     $message['status'] = false;
+                     $this->response($message, REST_Controller::HTTP_OK);
+                 }
+                //  if($data)
+                //  {
+                //      $message = array('message' => 'Asset updated successfully.');
+                //      $message['status'] = true;
+                //      $this->response($message, REST_Controller::HTTP_CREATED);
+                //  }
+                //  else{ 
+                //      $message = array('message' => 'Something went wrong!.');
+                //      $message['status'] = false;
+                //      $this->response($message, REST_Controller::HTTP_OK);
+                //  }
+             }
+             else {
+                 $message = array('message' => 'This Role not allowed to modify Asset details');
+                 $message['status'] = false;
+                 $this->response($message,REST_Controller::HTTP_UNAUTHORIZED);
+                 return false;
+             }
+         }
+         else {
+             $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
+         }
+     }
+     else {
+         $message = array('message' => 'Authentication failed');
+         $message['status'] = false;
+         $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+         return false;
+     }
+ }
+
 }

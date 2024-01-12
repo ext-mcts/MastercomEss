@@ -54,7 +54,8 @@ class Reviews extends REST_Controller
                 $this->form_validation->set_rules('CurrentSkillSet', 'Current Skill Set', 'trim|required|max_length[1000]');
                 $this->form_validation->set_rules('NewInitiatives', 'New Initiatives', 'trim|required|max_length[1000]');
                 $this->form_validation->set_rules('AddlResponsibilities', 'Additional Responsibilities', 'trim|required|max_length[1000]');
-                $this->form_validation->set_rules('Action', 'Action', 'trim|required|max_length[10]');
+                $this->form_validation->set_rules('ReviewAction', 'Review Action', 'trim|required|max_length[10]');
+                $this->form_validation->set_rules('Month', 'Month', 'trim|required|max_length[10]');
                 
                 if ($this->form_validation->run() === false) 
                 {
@@ -71,7 +72,14 @@ class Reviews extends REST_Controller
 
                 $data = $this->reviews_model->add_review($revdata);
 
-                if($revdata["Action"]=='submit')
+                if($data==true){
+                    $message = array('message' => 'Review saved successfully.');
+                    $message['status'] = true;
+                    $this->response($message, REST_Controller::HTTP_OK);
+                    // return false;
+                }
+
+                if($revdata["ReviewAction"]=='submit')
                 {
                     $config = Array(        
                         'protocol' => 'smtp',
@@ -93,7 +101,8 @@ class Reviews extends REST_Controller
                     $getconfigmail = $this->user_model->get_config_email(); 
                     $from_email = $getconfigmail[0]->ConfigEmail;
                     $this->email->from($from_email, 'Mastercom - Review Submitted!'); 
-                    $this->email->to('aharshavardhan04@gmail.com');
+                    // $this->email->to('aharshavardhan04@gmail.com');
+                    $this->email->to('suhasrlawate1999@gmail.com');
                     //$this->email->to(trim($empdet->EmailName).'@mastercom.co.in',trim($this->userdetails->EmailName).'@mastercom.co.in');
                     $this->email->subject('Review Submitted - Details');
                     $message = '<html><body>';
@@ -121,16 +130,17 @@ class Reviews extends REST_Controller
                     $this->response($message, REST_Controller::HTTP_OK);
                     return false;
                 }
-                else{ 
-                    $message = array('message' => 'Something went wrong!.');
-                    $message['status'] = false;
-                    $this->response($message, REST_Controller::HTTP_OK);
-                    return false;
-                }
+                // else{ 
+                //     $message = array('message' => 'Something went wrong!.');
+                //     $message['status'] = false;
+                //     $this->response($message, REST_Controller::HTTP_OK);
+                //     return false;
+                // }
+
             }
             else 
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else
@@ -141,7 +151,7 @@ class Reviews extends REST_Controller
         }
     }
 
-    public function add_comment_put()
+    public function add_comment_post()
     {
         $revid = $this->uri->segment(3);
 
@@ -151,14 +161,14 @@ class Reviews extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role==3)
+                if($this->userdetails->Role==1 || $this->userdetails->Role==2 || $this->userdetails->Role==3)
                 {
                     $_POST = json_decode(file_get_contents("php://input"), true);
 
                     $this->form_validation->set_data($this->put());
                     
                     $this->form_validation->set_rules('Comments', 'Comments', 'trim|required|max_length[1000]');
-                    $this->form_validation->set_rules('Action', 'Action', 'trim|required|max_length[10]');
+                    $this->form_validation->set_rules('ReviewAction', 'ReviewAction', 'trim|required|max_length[10]');
 
                     if ($this->form_validation->run() === false) {
                         $errors = $this->form_validation->error_array();
@@ -168,7 +178,7 @@ class Reviews extends REST_Controller
                     }
 
                     $revdata = array();
-                    $revdata = $this->put();
+                    $revdata = $this->post();
                     $revdata['ReplyFor'] = $revid;
 
                     $data = $this->reviews_model->add_comment($revdata,$revid);
@@ -198,7 +208,7 @@ class Reviews extends REST_Controller
             }
             else 
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else
@@ -260,7 +270,8 @@ class Reviews extends REST_Controller
                     $getconfigmail = $this->user_model->get_config_email(); 
                     $from_email = $getconfigmail[0]->ConfigEmail;
                     $this->email->from($from_email, 'Mastercom - Annual Review!'); 
-                    $this->email->to('aharshavardhan04@gmail.com');
+                    // $this->email->to('aharshavardhan04@gmail.com');
+                    $this->email->to('suhasrlawate1999@gmail.com');
                     //$this->email->to(trim($empdet->EmailName).'@mastercom.co.in',trim($this->userdetails->EmailName).'@mastercom.co.in');
                     $this->email->subject('Annual Review Submitted - Details');
                     $message = '<html><body>';
@@ -297,7 +308,7 @@ class Reviews extends REST_Controller
             }
             else 
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else
@@ -363,7 +374,7 @@ class Reviews extends REST_Controller
             }
             else
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else 
@@ -385,7 +396,7 @@ class Reviews extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role==3)
+                if($this->userdetails->Role==1)
                 {
                     $data = $this->reviews_model->get_emp_submitted_reviews($empid);
 
@@ -410,7 +421,7 @@ class Reviews extends REST_Controller
             }
             else
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else 
@@ -457,7 +468,7 @@ class Reviews extends REST_Controller
             }
             else
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else 
@@ -520,7 +531,8 @@ class Reviews extends REST_Controller
                         $getconfigmail = $this->user_model->get_config_email(); 
                         $from_email = $getconfigmail[0]->ConfigEmail;
                         $this->email->from($from_email, 'Mastercom - Review Accepted!'); 
-                        $this->email->to('aharshavardhan04@gmail.com');
+                        // $this->email->to('aharshavardhan04@gmail.com');
+                        $this->email->to('suhasrlawate1999@gmail.com');
                         //$this->email->to(trim($empdet->EmailName).'@mastercom.co.in',trim($this->userdetails->EmailName).'@mastercom.co.in');
                         $this->email->subject('Review Accepted - Details');
                         $message = '<html><body>';
@@ -556,7 +568,7 @@ class Reviews extends REST_Controller
             }
             else 
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else 
@@ -619,7 +631,8 @@ class Reviews extends REST_Controller
                         $getconfigmail = $this->user_model->get_config_email(); 
                         $from_email = $getconfigmail[0]->ConfigEmail;
                         $this->email->from($from_email, 'Mastercom - Review Rejected!'); 
-                        $this->email->to('aharshavardhan04@gmail.com');
+                        // $this->email->to('aharshavardhan04@gmail.com');
+                        $this->email->to('suhasrlawate1999@gmail.com');
                         //$this->email->to(trim($empdet->EmailName).'@mastercom.co.in',trim($this->userdetails->EmailName).'@mastercom.co.in');
                         $this->email->subject('Review Rejected - Details');
                         $message = '<html><body>';
@@ -656,7 +669,7 @@ class Reviews extends REST_Controller
             }
             else 
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else 
@@ -666,5 +679,132 @@ class Reviews extends REST_Controller
             $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
             return false;
         }  
+    }
+     /* Review by ID */
+ public function view_get()
+ {
+     $revId = $this->uri->segment(3); // Review ID
+
+     if(!is_numeric($revId) || empty($revId) || $revId==0){
+         $message = array('message' => 'Review ID not numeric/empty/too lengthy');
+         $message['status'] = false;
+         $this->response($message, REST_Controller::HTTP_BAD_REQUEST);
+         return false;
+     }
+
+     $headers = $this->input->request_headers(); 
+     if (isset($headers['Authorization'])) 
+     {
+         $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+         if ($decodedToken['status'])
+         {
+             if($this->userdetails->Role==1 || $this->userdetails->Role==3)
+             {
+                 $data = $this->reviews_model->get_reviewById($revId); // Getting review details with ID
+
+                 if($data)
+                 {
+                     $message = array('results' => $data);
+                     $message['status'] = true;
+                     $this->response($message, REST_Controller::HTTP_OK);
+                 }
+                 else{ 
+                     $message = array('message' => 'Something went wrong!.');
+                     $message['status'] = false;
+                     $this->response($message, REST_Controller::HTTP_OK);
+                 }
+             }
+             else
+             {
+                 $message = array('message' => 'This Role not allowed to view review details');
+                 $message['status'] = false;
+                 $this->response($message,REST_Controller::HTTP_UNAUTHORIZED);
+             }
+         }
+         else
+         {
+             $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
+         }
+     }
+     else 
+     {
+         $message = array('message' => 'Authentication failed');
+         $message['status'] = false;
+         $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+     }
+ }
+     /* Review by EmployeeID and Month */
+     public function view_monthly_get()
+     {
+         $empId = $this->uri->segment(3); // Employee ID
+         $revMonth = $this->uri->segment(4); // Review Month
+    
+         if(!is_numeric($empId) || empty($empId) || $empId==0){
+             $message = array('message' => 'Employee ID not numeric/empty/too lengthy');
+             $message['status'] = false;
+             $this->response($message, REST_Controller::HTTP_BAD_REQUEST);
+             return false;
+         }
+    
+         $headers = $this->input->request_headers(); 
+         if (isset($headers['Authorization'])) 
+         {
+             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+             if ($decodedToken['status'])
+             {
+                 if($this->userdetails->Role==1 || $this->userdetails->Role==2 || $this->userdetails->Role==3)
+                 {
+                     $data = $this->reviews_model->get_monthlyReviewById($empId,$revMonth); // Getting review details with employeID and month
+    
+                     if($data)
+                     {
+                         $message = array('results' => $data);
+                         $message['status'] = true;
+                         $this->response($message, REST_Controller::HTTP_OK);
+                     }
+                     else{ 
+                         $message = array('message' => 'Something went wrong!.');
+                         $message['status'] = false;
+                         $this->response($message, REST_Controller::HTTP_OK);
+                     }
+                 }
+                 else
+                 {
+                     $message = array('message' => 'This Role not allowed to view review details');
+                     $message['status'] = false;
+                     $this->response($message,REST_Controller::HTTP_UNAUTHORIZED);
+                 }
+             }
+             else
+             {
+                 $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
+             }
+         }
+         else 
+         {
+             $message = array('message' => 'Authentication failed');
+             $message['status'] = false;
+             $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+         }
+     }
+// http://localhost/MastercomEss/reviews/emp_review_by_year/165/2023
+     public function emp_review_by_year_get()
+    {
+        $empid = $this->uri->segment(3);
+        // $month = date('m',strtotime($this->uri->segment(4)));
+        $year = $this->uri->segment(4);
+        $data = $this->reviews_model->get_emp_review_by_year($empid,$year);
+
+        if($data)
+        {
+            $message = array('results' => $data);
+            $message['status'] = true;
+            $this->response($message, REST_Controller::HTTP_OK);
+        }
+        else{ 
+            $message = array('message' => 'Something went wrong!.');
+            $message['status'] = false;
+            $this->response($message, REST_Controller::HTTP_OK);
+        }
     }
 }

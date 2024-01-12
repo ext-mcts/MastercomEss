@@ -20,25 +20,24 @@ class User_model extends CI_Model {
 	/*function - Employee creation */
 	public function create_user($data=array()) {
 		$sql = "INSERT INTO `mcts_extranet`.`dbo.employees` 
-				(FirstName,LastName,EmailName,Password,Role,WorkLocation,
-				Department,Designation,JoinDate,Phone1,PANNumber,BankName,BankAccNumber,Manager,Grade,Address,
+				(FirstName,LastName,EmailName,Password,Role,WorkLocation,Designation,JoinDate,Phone1,PANNumber,BankName,BankAccNumber,Manager,Grade,Address,
 				FathersName,TempAddress,Phone2,AppLetterRef,BranchDetails,DOB,JobRole,Level,Vertical,PFAccount,AltEmailID,
-				Technology,Language,Aadhar,PassportNumber) 
+				Technology,Language,Aadhar,Passport,Project) 
 				VALUES 
 				('".$data['FirstName']."','".$data['LastName']."','".$data['EmailName']."',
-				'".$data['Password']."','".$data['Role']."','".$data['WorkLocation']."','".$data['Department']."',
+				'".$data['Password']."','".$data['Role']."','".$data['WorkLocation']."',
 				'".$data['Designation']."','".date('Y-m-d',strtotime($data['JoinDate']))."','".$data['Phone1']."','".$data['PANNumber']."',
 				'".$data['BankName']."','".$data['BankAccNumber']."','".$data['Manager']."','".$data['Grade']."',
 				'".$data['Address']."','".$data['FathersName']."','".$data['TempAddress']."','".$data['Phone2']."',
 				'".$data['AppLetterRef']."','".$data['BranchDetails']."','".date('Y-m-d',strtotime($data['DOB']))."',
 				'".$data['JobRole']."','".$data['Level']."','".$data['Vertical']."','".$data['PFAccount']."',
 				'".$data['AltEmailID']."','".$data['Technology']."','".$data['Language']."','".$data['Aadhar']."',
-				'".$data['Passport']."')";
+				'".$data['Passport']."','".$data['Project']."')";
 
 		$query=$this->db->query($sql);
 
 		$insert_id = $this->db->insert_id();
-
+		$this->user_roles($insert_id,$data['Role']);
 		$this->accuredleaves_model->OnJoiningLeaves($insert_id);
 
 		$proj_data = array();
@@ -46,13 +45,18 @@ class User_model extends CI_Model {
 		$proj_data["EmployeeID"] = $insert_id;
 		$proj_data["Role"] = $data['Role'];
 		$proj_data["ProjectID"] = $data['Project'];
-
+		$proj_data['ReportingTo'] = $data['Manager'];
 		$this->projects_model->assign_project($proj_data);
 
 		if($query)
 			return true;
 		else
 			return false;
+	}
+
+	public function user_roles($userID,$role){
+		$sql = "INSERT INTO `mcts_plannerui`.`user_roles` (`userId`, `roleId`) VALUES ('".$userID."', '".$role."')";
+		$query=$this->db->query($sql);
 	}
 	
 	/* function - Login by using Password */
@@ -109,7 +113,7 @@ class User_model extends CI_Model {
 				FirstName='".$data['FirstName']."',LastName='".$data['LastName']."',
 				EmailName='".$data['EmailName']."',FirstName='".$data['FirstName']."',
 				Role='".$data['Role']."',WorkLocation='".$data['WorkLocation']."',
-				Department='".$data['Department']."',Designation='".$data['Designation']."'";
+				Designation='".$data['Designation']."',BankName='".$data['BankName']."'";
 
 		if(isset($data['Phone1']))	$sql.=",Phone1='".$data['Phone1']."'";
 		if(isset($data['Password']))	$sql.=",Password='".$data['Password']."'";
@@ -128,18 +132,27 @@ class User_model extends CI_Model {
 		if(isset($data['Vertical']))	$sql.=",Vertical='".$data['Vertical']."'";
 		if(isset($data['PFAccount']))	$sql.=",PFAccount='".$data['PFAccount']."'";
 		if(isset($data['Aadhar']))	$sql.=",Aadhar='".$data['Aadhar']."'";
-		if(isset($data['Passport']))	$sql.=",PassportNumber='".$data['Passport']."'";
-
+		if(isset($data['Passport']))	$sql.=",Passport='".$data['Passport']."'";
+		if(isset($data['Project']))	$sql.=",Project='".$data['Project']."'";
+		if(isset($data['BankAccNumber']))	$sql.=",BankAccNumber='".$data['BankAccNumber']."'";
+		if(isset($data['PANNumber']))	$sql.=",PANNumber='".$data['PANNumber']."'";
+		if(isset($data['Manager']))	$sql.=",Manager='".$data['Manager']."'";
+		if(isset($data['Grade']))	$sql.=",Grade='".$data['Grade']."'";
+		if(isset($data['JoinDate']))	$sql.=",JoinDate='".date('Y-m-d',strtotime($data['JoinDate']))."'";
 		$sql.="WHERE EmployeeID=$id";
 
 		$query=$this->db->query($sql);
-		
+		$this->update_user_roles($id,$data['Role']);
 		if($query==1)
 			return true;
 		else
 			return false;
 	}
 
+	public function update_user_roles($userID,$role){
+		$sql = "UPDATE `mcts_plannerui`.`user_roles` SET `roleId` = '".$role."' WHERE (`userId` = '".$userID."')";
+		$query=$this->db->query($sql);
+	}
 	/* function - checking Email */
 	public function check_email($email,$id=null){
 		$cond = '';
@@ -183,8 +196,8 @@ class User_model extends CI_Model {
 				break;
 
 			case "PASSPORT":
-				$selectcol = "PassportNumber"; 
-				$cond="PassportNumber='$columnvalue'";
+				$selectcol = "Passport"; 
+				$cond="Passport='$columnvalue'";
 				$cond2 = '';
 				if($id)	$cond2 = " AND EmployeeID !=$id";
 				$sql = "SELECT $selectcol from `mcts_extranet`.`dbo.employees` WHERE $cond $cond2";

@@ -83,7 +83,7 @@ class Projects extends REST_Controller
                 }
             }
             else {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else {
@@ -150,7 +150,7 @@ class Projects extends REST_Controller
             }
             else 
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else 
@@ -229,7 +229,7 @@ class Projects extends REST_Controller
             }
             else 
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else 
@@ -259,7 +259,7 @@ class Projects extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role==1 || $this->userdetails->Role==3)
+                if($this->userdetails->Role==1 || $this->userdetails->Role==2 || $this->userdetails->Role==3)
                 {
                     $_POST = json_decode(file_get_contents("php://input"), true);
                     
@@ -309,7 +309,7 @@ class Projects extends REST_Controller
             }
             else
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else 
@@ -338,7 +338,7 @@ class Projects extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role==1)
+                if($this->userdetails->Role==1 || $this->userdetails->Role==2 || $this->userdetails->Role==3)
                 {
                     $data = $this->projects_model->get_project($projid); // Getting Employee details with ID
 
@@ -363,7 +363,7 @@ class Projects extends REST_Controller
             }
             else
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else 
@@ -402,7 +402,7 @@ class Projects extends REST_Controller
 				}
 			}
             else {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else {
@@ -440,7 +440,7 @@ class Projects extends REST_Controller
 				}
 			}
             else {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else {
@@ -473,7 +473,7 @@ class Projects extends REST_Controller
 				}
             }
             else {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else {
@@ -532,7 +532,7 @@ class Projects extends REST_Controller
             }
             else
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else 

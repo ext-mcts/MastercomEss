@@ -67,7 +67,7 @@ class Attendance extends REST_Controller
                     }
             }
             else {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else {
@@ -103,7 +103,7 @@ class Attendance extends REST_Controller
                     }
             }
             else {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else {
@@ -135,7 +135,7 @@ class Attendance extends REST_Controller
                 }
             }
             else {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else {
@@ -153,7 +153,7 @@ class Attendance extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role==3)
+                if($this->userdetails->Role==3 || $this->userdetails->Role==2)
                 {
                     $data = $this->attendance_model->GetEmpSwipes($this->userdetails->EmployeeID);
                     if(count($data)>=1)
@@ -178,7 +178,7 @@ class Attendance extends REST_Controller
             }
             else
             {
-                $this->response($decodedToken);
+                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
             }
         }
         else
