@@ -83,8 +83,7 @@ class Reviews_model extends CI_Model {
         $sql = 'UPDATE `mcts_extranet`.`dbo.reviews` SET Accomplishments="'.$data['Accomplishments'].'",AreasOfImprovement="'.$data['AreasOfImprovement'].'",
                 CurrentSkillSet="'.$data['CurrentSkillSet'].'",NewInitiatives="'.$data['NewInitiatives'].'",AddlResponsibilities="'.$data['AddlResponsibilities'].'",
                 UpdatedDate="'.date('Y-m-d').'"
-                WHERE Id="$id"';
-
+                WHERE Id="'.$data['ReviewID'].'"';
         $query=$this->db->query($sql);
         if($query==1)
             return true;

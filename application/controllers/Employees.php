@@ -15,6 +15,7 @@ class Employees extends REST_Controller
         $this->load->model("user_model");
         $this->load->model("locations_model");
         $this->load->library('Authorization_Token');
+        $this->load->model('documents_model');
         #$this->load->library('MY_Form_validation'); 
         
         $this->userdetails = decode_token($this->input->get_request_header('Authorization')); // here we are calling helper
@@ -460,8 +461,9 @@ class Employees extends REST_Controller
                     if($this->put('Level'))  $empdata['Level'] = $this->put('Level');
                     if($this->put('Vertical'))  $empdata['Vertical'] = $this->put('Vertical');
                     if($this->put('PFAccount'))  $empdata['PFAccount'] = $this->put('PFAccount');
+                    if($this->put('UploadedFile'))  $empdata['UploadedFile'] = $this->put('UploadedFile');
 
-                    $data = $this->user_model->update_user($empdata,$empid); //updating Employee details
+                    $data = $this->user_model->update_user($empdata,$empid); //updating Employee details 
                     if($data)
                     {
                         $message = array('message' => 'Employee Updated successfully.');
@@ -516,7 +518,12 @@ class Employees extends REST_Controller
                 if($this->userdetails->Role==1 || $this->userdetails->Role==4)
                 {
                     $data = $this->user_model->get_user($empid); // Getting Employee details with ID
-
+                    $docs = $this->documents_model->get_doc($empid);
+                    if ($docs) {
+                        $data->UploadedFile = $docs;
+                    }else{
+                        $data->UploadedFile = [];
+                    }
                     if($data)
                     {
                         $data->Role = intval($data->Role);
@@ -526,7 +533,6 @@ class Employees extends REST_Controller
                         $data->Project = intval($data->Project);
                         $data->WorkLocation = intval($data->WorkLocation);
                         $data->BankName = intval($data->BankName);
-
                         $message = array('results' => $data);
                         
                         $message['status'] = true;

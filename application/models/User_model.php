@@ -39,6 +39,7 @@ class User_model extends CI_Model {
 		$insert_id = $this->db->insert_id();
 		$this->user_roles($insert_id,$data['Role']);
 		$this->accuredleaves_model->OnJoiningLeaves($insert_id);
+		$this->documents_model->create_doc($data['NewFile'],$insert_id);
 
 		$proj_data = array();
 		$proj_data["AssignedDt"] = date("Y-m-d");
@@ -143,6 +144,7 @@ class User_model extends CI_Model {
 
 		$query=$this->db->query($sql);
 		$this->update_user_roles($id,$data['Role']);
+		$this->documents_model->update_doc($data['UploadedFile'],$data['NewFile'],$id);
 		if($query==1)
 			return true;
 		else

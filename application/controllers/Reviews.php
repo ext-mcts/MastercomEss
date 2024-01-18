@@ -501,7 +501,7 @@ class Reviews extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role==5)
+                if($this->userdetails->Role==1 || $this->userdetails->Role==2 || $this->userdetails->Role==5)
                 {
                     $rdata = $this->put();
                     $data = $this->reviews_model->accept_reject_review($revid,$status,$rdata);

@@ -22,6 +22,7 @@ class User extends REST_Controller {
         $this->load->library('Authorization_Token');
 		$this->load->model('user_model');
 		$this->load->model('accuredleaves_model');
+		$this->load->model('documents_model');
 
 		/* Start - this block is for avoiding CROS error */
         if (isset($_SERVER['HTTP_ORIGIN'])) {

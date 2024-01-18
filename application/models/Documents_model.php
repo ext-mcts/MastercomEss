@@ -46,4 +46,101 @@ class Documents_model extends CI_Model {
         $query=$this->db->query($sql);
 		return $query->result();
     }
+
+    // create doc suhas
+    public function create_doc($data,$empid)
+    {
+        // $sql = "INSERT INTO `mcts_extranet`.`dbo.documents` (EmployeeID,Doc_name,Doc_path,Doc_type) 
+        //         VALUES ('".$empid."','".$data['Doc_name']."','".$data['Doc_path']."','".$data['Doc_type']."')";
+        // $query=$this->db->query($sql);
+        // if($query)
+        //     return true;
+        // else
+        //     return false;
+
+        // File_type doc_bs64string doc_detail doc_name
+
+        foreach ($data as $document) {
+            // Assuming $document is an object with properties like Doc_name, Doc_path, Doc_type
+        
+            // Construct the SQL query for each object
+            $sql = "INSERT INTO `mcts_extranet`.`dbo.documents` (EmployeeID, Doc_name, Doc_type, File_type, Doc_bs64string) 
+                        VALUES ('" . $empid . "','" . $document['doc_name'] . "','" . $document['doc_detail'] . "','" . $document['File_type'] . "','" . $document['doc_bs64string'] . "')";
+        
+            // Execute the query for each object
+            $query = $this->db->query($sql);
+        
+            // Check if the query was successful for each iteration
+            if (!$query) {
+                // Handle error if needed
+                return false;
+            }
+        }
+        
+            // If the loop completes without errors, return true
+        return true;
+    }
+
+    public function get_doc($empid){
+        $sql = "SELECT Document_ID as id, File_type, Doc_bs64string as doc_bs64string, Doc_type as doc_detail, Doc_name as doc_name FROM `mcts_extranet`.`dbo.documents` WHERE EmployeeID = '$empid'";
+        $query=$this->db->query($sql);
+		return $query->result();
+    }
+    // UploadedFile
+    public function update_doc($UploadedFileData,$newFileData,$empId){
+        // $sql = "SELECT Document_ID as id, File_type, Doc_bs64string as doc_bs64string, Doc_type as doc_detail, Doc_name as doc_name FROM `mcts_extranet`.`dbo.documents` WHERE EmployeeID = '$empid'";
+        // $sql = "UPDATE `mcts_extranet`.`dbo.documents` SET `Doc_name` = '', `File_type` = '', `Doc_bs64string` = '' WHERE (`Document_ID` = '')"
+        // $query = $this->db->query($sql);
+		// return $query->result();
+        foreach ($UploadedFileData as $document) {
+            // Assuming $document is an object with properties like Doc_name, Doc_path, Doc_type
+        
+            // Construct the SQL query for each object
+            $sql = "UPDATE `mcts_extranet`.`dbo.documents` SET `Doc_name` = '" . $document['doc_name'] . "', `File_type` = '" . $document['File_type'] . "',
+             `Doc_bs64string` = '" . $document['doc_bs64string'] . "' WHERE (`Document_ID` = '" . $document['id'] . "')";
+
+            // Execute the query for each object
+            $query = $this->db->query($sql);
+        
+            // Check if the query was successful for each iteration
+            // if (!$query) {
+            //     // Handle error if needed
+            //     return false;
+            // }
+        }
+        if (count($UploadedFileData)>0) {
+            # code...
+            $this->delete_docs($UploadedFileData);
+        }
+        if (count($newFileData)>0) {
+            # code...
+            $this->create_doc($newFileData,$empId);
+        }
+
+            // If the loop completes without errors, return true
+        // return true;
+    }
+    public function delete_docs($UploadedFileData)
+    {
+    // Extracting docId values from the array of objects
+    $docIds = array_map(function ($document) {
+        return $document['id'];
+    }, $UploadedFileData);
+
+    // Constructing the SQL query
+    $sql = "DELETE FROM `mcts_extranet`.`dbo.documents` WHERE Document_ID NOT IN (" . implode(',', $docIds) . ")";
+
+    // Execute the delete query
+    $query = $this->db->query($sql);
+
+    // // Check if the query was successful
+    // if ($query) {
+    //     // If successful, return true
+    //     return true;
+    // } else {
+    //     // Handle error if needed
+    //     return false;
+    // }
+}
+
 }
