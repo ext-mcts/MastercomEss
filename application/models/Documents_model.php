@@ -60,21 +60,24 @@ class Documents_model extends CI_Model {
 
         // File_type doc_bs64string doc_detail doc_name
 
+
         foreach ($data as $document) {
             // Assuming $document is an object with properties like Doc_name, Doc_path, Doc_type
         
             // Construct the SQL query for each object
+        if ($document['File_type']!=null) {
             $sql = "INSERT INTO `mcts_extranet`.`dbo.documents` (EmployeeID, Doc_name, Doc_type, File_type, Doc_bs64string) 
                         VALUES ('" . $empid . "','" . $document['doc_name'] . "','" . $document['doc_detail'] . "','" . $document['File_type'] . "','" . $document['doc_bs64string'] . "')";
         
             // Execute the query for each object
             $query = $this->db->query($sql);
-        
-            // Check if the query was successful for each iteration
             if (!$query) {
                 // Handle error if needed
                 return false;
             }
+        }
+        
+            // Check if the query was successful for each iteration
         }
         
             // If the loop completes without errors, return true
@@ -110,7 +113,7 @@ class Documents_model extends CI_Model {
         }
         if (count($UploadedFileData)>0) {
             # code...
-            $this->delete_docs($UploadedFileData);
+            $this->delete_docs($UploadedFileData,$empId);
         }
         if (count($newFileData)>0) {
             # code...
@@ -120,7 +123,7 @@ class Documents_model extends CI_Model {
             // If the loop completes without errors, return true
         // return true;
     }
-    public function delete_docs($UploadedFileData)
+    public function delete_docs($UploadedFileData,$empId)
     {
     // Extracting docId values from the array of objects
     $docIds = array_map(function ($document) {
@@ -128,7 +131,7 @@ class Documents_model extends CI_Model {
     }, $UploadedFileData);
 
     // Constructing the SQL query
-    $sql = "DELETE FROM `mcts_extranet`.`dbo.documents` WHERE Document_ID NOT IN (" . implode(',', $docIds) . ")";
+    $sql = "DELETE FROM `mcts_extranet`.`dbo.documents` WHERE EmployeeID = '$empId' AND  Document_ID NOT IN (" . implode(',', $docIds) . ")";
 
     // Execute the delete query
     $query = $this->db->query($sql);
