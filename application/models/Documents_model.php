@@ -60,7 +60,6 @@ class Documents_model extends CI_Model {
 
         // File_type doc_bs64string doc_detail doc_name
 
-
         foreach ($data as $document) {
             // Assuming $document is an object with properties like Doc_name, Doc_path, Doc_type
         
@@ -81,7 +80,7 @@ class Documents_model extends CI_Model {
         }
         
             // If the loop completes without errors, return true
-        return true;
+        return $data;
     }
 
     public function get_doc($empid){

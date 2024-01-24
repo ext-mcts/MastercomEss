@@ -40,102 +40,102 @@ class Documents extends REST_Controller
 
     }
 
-    public function upload_post()
-    {
-        $headers = $this->input->request_headers(); 
-        if (isset($headers['Authorization'])) 
-        {
-            $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
-            if ($decodedToken['status'])
-            {
-                if($this->userdetails->Role==1)
-                {
+    // public function upload_post()
+    // {
+    //     $headers = $this->input->request_headers(); 
+    //     if (isset($headers['Authorization'])) 
+    //     {
+    //         $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+    //         if ($decodedToken['status'])
+    //         {
+    //             if($this->userdetails->Role==1 || $this->userdetails->Role==2 || $this->userdetails->Role==3)
+    //             {
 
-                    if(empty($_FILES))
-                    {
-                        $message = array('message' => 'Any one Document upload required!');
-                        $message['status'] = false;
-                        $this->response($message, REST_Controller::HTTP_BAD_REQUEST);
-                        return false;
-                    }
+    //                 if(empty($_FILES))
+    //                 {
+    //                     $message = array('message' => 'Any one Document upload required!');
+    //                     $message['status'] = false;
+    //                     $this->response($message, REST_Controller::HTTP_BAD_REQUEST);
+    //                     return false;
+    //                 }
 
-                    $files = $_FILES;
-                    $status = 1;
-                    $doctype = '';
-                    $doc='';
-                    foreach ($files as $key => $image) {
+    //                 $files = $_FILES;
+    //                 $status = 1;
+    //                 $doctype = '';
+    //                 $doc='';
+    //                 foreach ($files as $key => $image) {
 
-                        if($key=="PAN")   $doctype=2;
-                        if($key=="Aadhar")   $doctype=3;
-                        if($key=="Offet Letter")   $doctype=1;
-                        if($key=="Voter ID")   $doctype=4;
+    //                     if($key=="PAN")   $doctype=2;
+    //                     if($key=="Aadhar")   $doctype=3;
+    //                     if($key=="Offet Letter")   $doctype=1;
+    //                     if($key=="Voter ID")   $doctype=4;
                         
-                        $config = array(
-                            'upload_path' => "./assets/documents/",
-                            'allowed_types' => "gif|jpg|png|jpeg|pdf",
-                            'file_name' => $image['name']
-                            );
+    //                     $config = array(
+    //                         'upload_path' => "./assets/documents/",
+    //                         'allowed_types' => "gif|jpg|png|jpeg|pdf",
+    //                         'file_name' => $image['name']
+    //                         );
 
-                        $id = $this->userdetails->EmployeeID;
+    //                     $id = $this->userdetails->EmployeeID;
 
-                        if (!is_dir($config['upload_path'].$id)) {
-                            //Create our directory if it does not exist
-                            mkdir($config['upload_path'].$id);
-                        }
-                        $config['upload_path'] = "./assets/documents/".$id."/";
+    //                     if (!is_dir($config['upload_path'].$id)) {
+    //                         //Create our directory if it does not exist
+    //                         mkdir($config['upload_path'].$id);
+    //                     }
+    //                     $config['upload_path'] = "./assets/documents/".$id."/";
 
-                        $this->load->library('upload', $config);
-                        $this->upload->initialize($config);
-                        if ($this->upload->do_upload($key)) {
+    //                     $this->load->library('upload', $config);
+    //                     $this->upload->initialize($config);
+    //                     if ($this->upload->do_upload($key)) {
 
-                            $data['Doc_name'] = $this->upload->data('file_name');
-                            $data['Doc_path'] = "./assets/documents/".$id."/".$this->upload->data('file_name');
-                            $data['EmployeeID'] = $id;
-                            $data['Doc_type'] = $doctype;
+    //                         $data['Doc_name'] = $this->upload->data('file_name');
+    //                         $data['Doc_path'] = "./assets/documents/".$id."/".$this->upload->data('file_name');
+    //                         $data['EmployeeID'] = $id;
+    //                         $data['Doc_type'] = $doctype;
 
-                            $insert = $this->documents_model->create_docs($data);
-                            if($insert)
-                            {
-                                $message = array('message' => "Documents uploaded successfully!");
-                                $message['status'] = true;
-                                $this->response($message, REST_Controller::HTTP_OK);
-                            }
-                            else{ 
-                                $message = array('message' => 'Something went wrong!.');
-                                $message['status'] = false;
-                                $this->response($message, REST_Controller::HTTP_OK);
-                            }
-                        }
-                        else
-                        {
-                            $errors = array('error' => $this->upload->display_errors()); 
-                            $errors['status'] = false;
-                            $this->response($errors,REST_Controller::HTTP_BAD_REQUEST);
-                            return false;
-                        }
-                    }
-                }
-                else 
-                {
-                    $message = array('message' => 'This Role not allowed to Upload Documents!');
-                    $message['status'] = false;
-                    $this->response($message,REST_Controller::HTTP_UNAUTHORIZED);
-                }
-            }
-            else
-            {
-                $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
-            }
+    //                         $insert = $this->documents_model->create_docs($data);
+    //                         if($insert)
+    //                         {
+    //                             $message = array('message' => "Documents uploaded successfully!");
+    //                             $message['status'] = true;
+    //                             $this->response($message, REST_Controller::HTTP_OK);
+    //                         }
+    //                         else{ 
+    //                             $message = array('message' => 'Something went wrong!.');
+    //                             $message['status'] = false;
+    //                             $this->response($message, REST_Controller::HTTP_OK);
+    //                         }
+    //                     }
+    //                     else
+    //                     {
+    //                         $errors = array('error' => $this->upload->display_errors()); 
+    //                         $errors['status'] = false;
+    //                         $this->response($errors,REST_Controller::HTTP_BAD_REQUEST);
+    //                         return false;
+    //                     }
+    //                 }
+    //             }
+    //             else 
+    //             {
+    //                 $message = array('message' => 'This Role not allowed to Upload Documents!');
+    //                 $message['status'] = false;
+    //                 $this->response($message,REST_Controller::HTTP_UNAUTHORIZED);
+    //             }
+    //         }
+    //         else
+    //         {
+    //             $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
+    //         }
 
-        }
-        else 
-        {
-            $message = array('message' => 'Authentication failed');
-            $message['status'] = false;
-            $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
-        }
+    //     }
+    //     else 
+    //     {
+    //         $message = array('message' => 'Authentication failed');
+    //         $message['status'] = false;
+    //         $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+    //     }
     
-    }
+    // }
 
     public function view_get()
     {
@@ -373,11 +373,12 @@ class Documents extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                $data = $this->documents_model->get_emp_docs($this->userdetails->EmployeeID);
+                // $data = $this->documents_model->get_emp_docs($this->userdetails->EmployeeID);
+                $data = $this->documents_model->get_doc($this->userdetails->EmployeeID);
 
                 if($data)
                 {
-                    $message = array('results' => $data);
+                    $message = array('UploadedFile' => $data);
                     $message['status'] = true;
                     $this->response($message, REST_Controller::HTTP_OK);
                 }
@@ -400,4 +401,51 @@ class Documents extends REST_Controller
             $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
         }
     }
+
+    
+
+        /* Employee creation API */
+        public function upload_post()
+        {
+            $headers = $this->input->request_headers(); 
+            if (isset($headers['Authorization'])) 
+            {
+                $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+                if ($decodedToken['status'])
+                {
+                    if($this->userdetails->Role==1 || $this->userdetails->Role==2 || $this->userdetails->Role==3)  
+                    {
+                        $_POST = json_decode(file_get_contents("php://input"), true);
+                        $docs = array();
+                        $docs = $this->input->post('NewFile');
+                        $id = $this->userdetails->EmployeeID;
+                        $data = $this->documents_model->create_doc($docs,$id);
+    
+                        if($data)
+                        {
+                            $message = array('message' => 'Document uploaded successfully.');
+                            $message['status'] = true;
+                            $this->response($message, REST_Controller::HTTP_CREATED);
+                        }
+                        else{ 
+                            $message = array('message' => 'Something went wrong!.');
+                            $message['status'] = false;
+                            $this->response($message, REST_Controller::HTTP_OK);
+                        }
+                    } else {
+                        $message = array('message' => 'This Role not allowed to upload documents');
+                        $message['status'] = false;
+                        $this->response($message,REST_Controller::HTTP_UNAUTHORIZED);
+                    }
+                    
+                } else {
+                    $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
+                }
+            }
+             else {
+                $message = array('message' => 'Authentication failed');
+                $message['status'] = false;
+                $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+            }
+        }
 }

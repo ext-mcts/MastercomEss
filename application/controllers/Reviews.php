@@ -480,12 +480,12 @@ class Reviews extends REST_Controller
         }
     }
 
-    public function accept_review_put()
+    public function accept_review_post()
     {
         $revid = $this->uri->segment(3); // Review ID
         $status = $this->uri->segment(4); // status -1 for accept
 
-        $this->form_validation->set_data($this->put());
+        $this->form_validation->set_data($this->post());
         $this->form_validation->set_rules('Reason', 'Accept Reason', 'trim|required|max_length[255]');
 
         if ($this->form_validation->run() === false) {
@@ -503,7 +503,7 @@ class Reviews extends REST_Controller
             {
                 if($this->userdetails->Role==1 || $this->userdetails->Role==2 || $this->userdetails->Role==5)
                 {
-                    $rdata = $this->put();
+                    $rdata = $this->post();
                     $data = $this->reviews_model->accept_reject_review($revid,$status,$rdata);
 
                     if($data)
@@ -580,12 +580,12 @@ class Reviews extends REST_Controller
         }  
     }
 
-    public function reject_review_put()
+    public function reject_review_post()
     {
         $revid = $this->uri->segment(3); // Review ID
         $status = $this->uri->segment(4); // status -1 for accept
 
-        $this->form_validation->set_data($this->put());
+        $this->form_validation->set_data($this->post());
         $this->form_validation->set_rules('Reason', 'Accept Reason', 'trim|required|max_length[255]');
 
         if ($this->form_validation->run() === false) {
@@ -601,9 +601,9 @@ class Reviews extends REST_Controller
             $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
             if ($decodedToken['status'])
             {
-                if($this->userdetails->Role==5)
+                if($this->userdetails->Role==1 || $this->userdetails->Role==2 || $this->userdetails->Role==5)
                 {
-                    $rdata = $this->put();
+                    $rdata = $this->post();
                     $data = $this->reviews_model->accept_reject_review($revid,$status,$rdata);
 
                     if($data)
