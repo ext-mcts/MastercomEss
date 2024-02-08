@@ -20,19 +20,19 @@ class User_model extends CI_Model {
 	/*function - Employee creation */
 	public function create_user($data=array()) {
 		$sql = "INSERT INTO `mcts_extranet`.`dbo.employees` 
-				(FirstName,LastName,EmailName,Password,Role,WorkLocation,Designation,JoinDate,Phone1,PANNumber,BankName,BankAccNumber,Manager,Grade,Address,
+				(FirstName,LastName,EmailName,Role,WorkLocation,Designation,JoinDate,Phone1,PANNumber,BankName,BankAccNumber,Manager,Grade,Address,
 				FathersName,TempAddress,Phone2,AppLetterRef,BranchDetails,DOB,JobRole,Level,Vertical,PFAccount,AltEmailID,
-				Technology,Language,Aadhar,Passport,Project) 
+				Technology,Language,Aadhar,Passport,Project,EmpPhoto,CurrentAddress,PermanentAddress,EmergencyContact,UANNumber) 
 				VALUES 
-				('".$data['FirstName']."','".$data['LastName']."','".$data['EmailName']."',
-				'".$data['Password']."','".$data['Role']."','".$data['WorkLocation']."',
+				('".$data['FirstName']."','".$data['LastName']."','".$data['EmailName']."','".$data['Role']."','".$data['WorkLocation']."',
 				'".$data['Designation']."','".date('Y-m-d',strtotime($data['JoinDate']))."','".$data['Phone1']."','".$data['PANNumber']."',
 				'".$data['BankName']."','".$data['BankAccNumber']."','".$data['Manager']."','".$data['Grade']."',
 				'".$data['Address']."','".$data['FathersName']."','".$data['TempAddress']."','".$data['Phone2']."',
 				'".$data['AppLetterRef']."','".$data['BranchDetails']."','".date('Y-m-d',strtotime($data['DOB']))."',
 				'".$data['JobRole']."','".$data['Level']."','".$data['Vertical']."','".$data['PFAccount']."',
 				'".$data['AltEmailID']."','".$data['Technology']."','".$data['Language']."','".$data['Aadhar']."',
-				'".$data['Passport']."','".$data['Project']."')";
+				'".$data['Passport']."','".$data['Project']."', '".$data['EmpPhoto']."', '".$data['CurrentAddress']."', '".$data['PermanentAddress']."',
+				 '".$data['EmergencyContact']."', '".$data['UANNumber']."')";
 
 		$query=$this->db->query($sql);
 
@@ -114,10 +114,10 @@ class User_model extends CI_Model {
 				FirstName='".$data['FirstName']."',LastName='".$data['LastName']."',
 				EmailName='".$data['EmailName']."',FirstName='".$data['FirstName']."',
 				Role='".$data['Role']."',WorkLocation='".$data['WorkLocation']."',
-				Designation='".$data['Designation']."',BankName='".$data['BankName']."'";
+				Designation='".$data['Designation']."',BankName='".$data['BankName']."',EmpPhoto='".$data['EmpPhoto']."'";
 
 		if(isset($data['Phone1']))	$sql.=",Phone1='".$data['Phone1']."'";
-		if(isset($data['Password']))	$sql.=",Password='".$data['Password']."'";
+		// if(isset($data['Password']))	$sql.=",Password='".$data['Password']."'";
 		if(isset($data['AltEmailID']))	$sql.=",AltEmailID='".$data['AltEmailID']."'";
 		if(isset($data['Technology']))	$sql.=",Technology='".$data['Technology']."'";
 		if(isset($data['Language']))	$sql.=",Language='".$data['Language']."'";
@@ -140,6 +140,10 @@ class User_model extends CI_Model {
 		if(isset($data['Manager']))	$sql.=",Manager='".$data['Manager']."'";
 		if(isset($data['Grade']))	$sql.=",Grade='".$data['Grade']."'";
 		if(isset($data['JoinDate']))	$sql.=",JoinDate='".date('Y-m-d',strtotime($data['JoinDate']))."'";
+		if(isset($data['CurrentAddress']))	$sql.=",CurrentAddress='".$data['CurrentAddress']."'";
+		if(isset($data['PermanentAddress']))	$sql.=",PermanentAddress='".$data['PermanentAddress']."'";
+		if(isset($data['EmergencyContact']))	$sql.=",EmergencyContact='".$data['EmergencyContact']."'";
+		if(isset($data['UANNumber']))	$sql.=",UANNumber='".$data['UANNumber']."'";
 		$sql.="WHERE EmployeeID=$id";
 
 		$query=$this->db->query($sql);
@@ -220,6 +224,15 @@ class User_model extends CI_Model {
 			case "PFNUMBER":
 				$selectcol = "PFAccount"; 
 				$cond="PFAccount='$columnvalue'";
+				$cond2 = '';
+				if($id)	$cond2 = " AND EmployeeID !=$id";
+				$sql = "SELECT $selectcol from `mcts_extranet`.`dbo.employees` WHERE $cond $cond2";
+				$query=$this->db->query($sql);
+				// return $query->result();
+				break;
+			case "UANNUMBER":
+				$selectcol = "UAN_Number"; 
+				$cond="UAN_Number='$columnvalue'";
 				$cond2 = '';
 				if($id)	$cond2 = " AND EmployeeID !=$id";
 				$sql = "SELECT $selectcol from `mcts_extranet`.`dbo.employees` WHERE $cond $cond2";
@@ -464,5 +477,15 @@ class User_model extends CI_Model {
 
 		$query=$this->db->query($sql);
 		return $query->row();
+	}
+
+	// suhas
+	public function reset_password($user_id,$password) {
+		$sql= "UPDATE `mcts_extranet`.`dbo.employees` SET Password = '".$password."' WHERE EmployeeID = '".$user_id."'";
+		$query=$this->db->query($sql);
+		if($query==1)
+			return true;
+		else
+			return false;
 	}
 }

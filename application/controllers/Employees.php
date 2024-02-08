@@ -110,7 +110,7 @@ class Employees extends REST_Controller
                     $this->form_validation->set_rules('FirstName', 'Firstname', 'trim|required|alpha_numeric|max_length[50]');
                     $this->form_validation->set_rules('LastName', 'Lastname', 'trim|required|alpha_numeric|max_length[50]');
                     $this->form_validation->set_rules('EmailName', 'Email', 'trim|required|max_length[50]');
-                    $this->form_validation->set_rules('Password', 'Password', 'trim|required|max_length[50]');
+                    // $this->form_validation->set_rules('Password', 'Password', 'trim|required|max_length[50]');
                     $this->form_validation->set_rules('Role', 'Role', 'trim|required|numeric|max_length[3]');
                     $this->form_validation->set_rules('WorkLocation', 'Work Location', 'trim|numeric|max_length[3]');
                     //$this->form_validation->set_rules('Department', 'Departmant', 'trim|required|numeric|max_length[3]');
@@ -126,11 +126,10 @@ class Employees extends REST_Controller
                     $this->form_validation->set_rules('PFAccount', 'PF Account Number', 'trim|required|max_length[50]');
                     $this->form_validation->set_rules('Aadhar', 'Aadhar Number', 'trim|required|numeric|max_length[12]');
                     $this->form_validation->set_rules('Passport', 'Passport Number', 'trim|required');
-                    
                     $this->form_validation->set_rules('Address', 'Address', 'trim|max_length[200]');
                     $this->form_validation->set_rules('FathersName', 'Father Name', 'trim|max_length[50]');
                     $this->form_validation->set_rules('TempAddress', 'Temparary Addredd', 'trim|max_length[255]');
-                    $this->form_validation->set_rules('Phone2', 'Phone Number2', 'trim|max_length[50]');
+                    // $this->form_validation->set_rules('Phone2', 'Phone Number2', 'trim|max_length[50]');
                     $this->form_validation->set_rules('AppLetterRef', 'Appointment Letter Ref', 'trim|max_length[50]');
                     $this->form_validation->set_rules('BranchDetails', 'Branch Details', 'trim|max_length[50]');
                     $this->form_validation->set_rules('JobRole', 'Job Role', 'trim|max_length[255]');
@@ -140,6 +139,10 @@ class Employees extends REST_Controller
                     $this->form_validation->set_rules('Technology', 'Technology', 'trim|max_length[255]');
                     $this->form_validation->set_rules('Language', 'Language', 'trim|max_length[255]');
                     $this->form_validation->set_rules('Project', 'Project', 'trim|numeric');
+                    $this->form_validation->set_rules('CurrentAddress', 'Current Address', 'trim|max_length[200]');
+                    $this->form_validation->set_rules('PermanentAddress', 'Permanent Address', 'trim|max_length[200]');
+                    $this->form_validation->set_rules('Phone2', 'Emergency Contact', 'trim|required|max_length[50]');
+                    $this->form_validation->set_rules('UAN_Number', 'UAN Number', 'trim|required|max_length[50]');
 
                     if ($this->form_validation->run() === false) 
                     {
@@ -188,7 +191,7 @@ class Employees extends REST_Controller
 
                     // checking duplicacy for PAN, Bank Account Number, AAdhar, Passport, PF Account Number
                     if($this->input->post('PANNumber') || $this->input->post('Aadhar') || $this->input->post('Passport') ||
-                    $this->input->post('BankAccNumber') || $this->input->post('PFAccount'))
+                    $this->input->post('BankAccNumber') || $this->input->post('PFAccount') || $this->input->post('UAN_Number'))
                     {
                         if($this->input->post('PANNumber')) {
                             $col = "PAN"; $post = $this->input->post('PANNumber');
@@ -232,6 +235,16 @@ class Employees extends REST_Controller
                         }
                         if($this->input->post('PFAccount')) { 
                             $col = "PFNUMBER"; $post = $this->input->post('PFAccount');
+                            $check = $this->user_model->check_emp_details($col,$post);
+                            if(count($check)>=1){
+                                $message = array('message' => "$col Number is duplicate!");
+                                $message['status'] = false;
+                                $this->response($message,REST_Controller::HTTP_BAD_REQUEST);
+                                return false;
+                            }
+                        }
+                        if($this->input->post('UAN_Number')) { 
+                            $col = "UANNUMBER"; $post = $this->input->post('UAN_Number');
                             $check = $this->user_model->check_emp_details($col,$post);
                             if(count($check)>=1){
                                 $message = array('message' => "$col Number is duplicate!");
@@ -339,11 +352,11 @@ class Employees extends REST_Controller
                     $this->form_validation->set_rules('DOB', 'Date Of Birth', 'trim|required|max_length[50]');
                     $this->form_validation->set_rules('Aadhar', 'Aadhar Number', 'trim|required|numeric|max_length[12]');
                     $this->form_validation->set_rules('Passport', 'Passport Number', 'trim|required');
-                    $this->form_validation->set_rules('Password', 'Password', 'trim|max_length[50]');
+                    // $this->form_validation->set_rules('Password', 'Password', 'trim|max_length[50]');
                     $this->form_validation->set_rules('Address', 'Address', 'trim|max_length[200]');
                     $this->form_validation->set_rules('FathersName', 'Father Name', 'trim|max_length[50]');
                     $this->form_validation->set_rules('TempAddress', 'Temparary Addredd', 'trim|max_length[255]');
-                    $this->form_validation->set_rules('Phone2', 'Phone Number2', 'trim|max_length[50]');
+                    // $this->form_validation->set_rules('Phone2', 'Phone Number2', 'trim|max_length[50]');
                     $this->form_validation->set_rules('AppLetterRef', 'Appointment Letter Ref', 'trim|max_length[50]');
                     $this->form_validation->set_rules('BranchDetails', 'Branch Details', 'trim|max_length[50]');
                     $this->form_validation->set_rules('JobRole', 'Job Role', 'trim|max_length[255]');
@@ -353,7 +366,10 @@ class Employees extends REST_Controller
                     $this->form_validation->set_rules('Technology', 'Technology', 'trim|max_length[255]');
                     $this->form_validation->set_rules('Language', 'Language', 'trim|max_length[255]');
                     $this->form_validation->set_rules('Project', 'Project', 'trim|numeric');
-
+                    $this->form_validation->set_rules('CurrentAddress', 'Current Address', 'trim|max_length[200]');
+                    $this->form_validation->set_rules('PermanentAddress', 'Permanent Address', 'trim|max_length[200]');
+                    $this->form_validation->set_rules('Phone2', 'Emergency Contact', 'trim|required|max_length[50]');
+                    $this->form_validation->set_rules('UAN_Number', 'UAN Number', 'trim|required|max_length[50]');
                     if ($this->form_validation->run() === false) {
                         $errors = $this->form_validation->error_array();
                         $errors['status'] = false;
@@ -387,7 +403,7 @@ class Employees extends REST_Controller
 
                     // checking duplicacy for PAN, Bank Account Number, AAdhar, Passport, PF Account Number
                     if($this->put('PANNumber') || $this->put('Aadhar') || $this->put('Passport') ||
-                    $this->put('BankAccNumber') || $this->put('PFAccount'))
+                    $this->put('BankAccNumber') || $this->put('PFAccount') || $this->input->put('UAN_Number'))
                     {
                         if($this->input->post('PANNumber')) {
                             $col = "PAN"; $post = $this->input->post('PANNumber');
@@ -439,12 +455,22 @@ class Employees extends REST_Controller
                                 return false;
                             }
                         }
+                        if($this->input->post('UAN_Number')) { 
+                            $col = "UANNUMBER"; $post = $this->input->post('UAN_Number');
+                            $check = $this->user_model->check_emp_details($col,$post);
+                            if(count($check)>=1){
+                                $message = array('message' => "$col Number is duplicate!");
+                                $message['status'] = false;
+                                $this->response($message,REST_Controller::HTTP_BAD_REQUEST);
+                                return false;
+                            }
+                        }
                     }
 
                     $empdata = array();
                     $empdata = $this->put();
 
-                    if($this->put('Password'))  $empdata['Password'] = $this->put('Password');
+                    // if($this->put('Password'))  $empdata['Password'] = $this->put('Password');
 
                     if($this->put('AltEmailID'))  $empdata['AltEmailID'] = $this->put('AltEmailID');
                     if($this->put('Technology'))  $empdata['Technology'] = $this->put('Technology');
@@ -534,7 +560,6 @@ class Employees extends REST_Controller
                         $data->WorkLocation = intval($data->WorkLocation);
                         $data->BankName = intval($data->BankName);
                         $message = array('results' => $data);
-                        
                         $message['status'] = true;
                         $this->response($message, REST_Controller::HTTP_OK);
                     }
@@ -881,5 +906,78 @@ class Employees extends REST_Controller
             $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
         }    
     }
+
+        /* Reset Password API */
+        public function reset_password_put()
+        { 
+            $empid = $this->userdetails->EmployeeID; // Employee ID
+            $username = $this->userdetails->EmailName; // Employee username
+            if(!is_numeric($empid) || empty($empid) || $empid==0){
+                $message = array('message' => 'Employee ID not numeric/empty/too lengthy');
+                $message['status'] = false;
+                $this->response($message, REST_Controller::HTTP_BAD_REQUEST);
+                return false;
+            }
+    
+            $headers = $this->input->request_headers(); 
+            if (isset($headers['Authorization'])) {
+                $decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+                if ($decodedToken['status'])
+                { 
+                        $_POST = json_decode(file_get_contents("php://input"), true);
+                        $this->form_validation->set_data($this->put());
+                        $this->form_validation->set_rules('currentPassword', 'Current Password', 'trim|max_length[50]');
+                        $this->form_validation->set_rules('newPassword', 'New Password', 'trim|max_length[50]');
+    
+                        if ($this->form_validation->run() === false) {
+                            $errors = $this->form_validation->error_array();
+                            $errors['status'] = false;
+                            $this->response($errors,REST_Controller::HTTP_BAD_REQUEST);
+                            return false;
+                        }
+                        $empdata = array();
+                        $empdata = $this->put();
+                        if($this->put('currentPassword'))  $empdata['currentPassword'] = $this->put('currentPassword');
+                        if($this->put('newPassword'))  $empdata['newPassword'] = $this->put('newPassword');
+    
+                        if ($this->user_model->resolve_user_login($username, $empdata['currentPassword'])) {
+				
+                            $data = $this->user_model->reset_password($empid,$empdata['newPassword']); //Updating Employee Password 
+                            if($data)
+                            {
+                                $message = array('message' => 'Password changed successfully.');
+                                $message['status'] = true;
+                                $this->response($message, REST_Controller::HTTP_OK);
+                                return false;
+                            }
+                            else{ 
+                                    $message = array('message' => 'Something went wrong!.');
+                                    $message['status'] = false;
+                                    $this->response($message, REST_Controller::HTTP_OK);
+                                    return false;
+                                } 
+                            
+                        } else {
+                            
+                            // login failed
+                            $message = array('message' => 'Wrong password.');
+                            $message['status'] = false;
+                            $this->response($message, REST_Controller::HTTP_OK);
+                            
+                        }
+    
+           
+                }
+                else {
+                    $this->response($decodedToken,REST_Controller::HTTP_UNAUTHORIZED);
+                }
+            }
+            else {
+                $message = array('message' => 'Authentication failed');
+                $message['status'] = false;
+                $this->response($message, REST_Controller::HTTP_UNAUTHORIZED);
+                return false;
+            }
+        }
 }
 ?>
